@@ -1,0 +1,34 @@
+
+1, number of developers appear to stay consistent on each module except on drivers
+2, number of developers (authors) increase over time, but number of joiners seem to derease, and the proportion of joiners becoming LTCs is decreasing sharply
+3, the number of changes each month increases over time subtantially, the number of files touched increases a bit, and the number of modules touched increases a few
+4, LOC per file per person at each month, LOC per person, number of files touched per person, decrease over time, but something happened in around 2009.
+5, Average number of dvprs on each module increases over time, but the average number of modules a dvpr touches decrease over time, together with the average number of changes touched by a dvpr.
+
+
+community:
+people making changes increase over time, but newcomers decrease, and LTCs decrease sharply.
+
+productivity (team stays constant, but individual gets difficult):
+ the number of changes and the number of people who made changes are increasing, but the average number of changes made by a developer is decreasing.  --- (the project is expanding, and productivity is dropping?
+
+the average number of modules a dvpr touches(avgmofdvp) almost stay constant over time (around 1.5), but the number of files a dvpr touches(avgff) decreases.
+
+team productivity: number of changes, number of files touched, number of modules touched, LOC added (and LOC deleted), overall each month, almost stay stable over time.  --- team capacity is limited?
+
+individual productivity: number of changes, number of files a dvpr did each month, decreases.
+
+ownership:
+each module has a stable increasing number of developers except drivers (increase sharply).
+
+Average number of dvprs on each module increases over time, but the average number of modules a dvpr touches slowly decreases over time(almost constant).  --- more people share the ownership, but the modules are becoming too complicated for an individual to control?
+
+Average number of dvprs on each module increases over time, but the average number of dvprs on each file decreases,  --- more people work on same module, but less people work on the same file, meaning, more people get involved but they don't share files therefore newcomers may have difficulty to learn (too many people and too few communications on code)?
+
+
+#######summary#####################
+1, the intensity of people making contributions increase, but the intensity of new joiners decrease, and LTCs drease sharply.
+2, developers decrease their productivity but increase their ownership (on files).
+
+
+A typical three-month kernel development cycle can involve over 1000 developers working for more than 100 different companies (or for no company at all).

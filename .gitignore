@@ -1,0 +1,14 @@
+log.linux
+linux.l1
+linux.l2
+*~*
+*.swap
+*.pyc
+*Rhistory
+*RData
+*.swp
+*.ipynb
+screenlog*
+*.ign
+*.ignore
+.nfs*
