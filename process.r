@@ -19,9 +19,11 @@ x$m <- floor(x$at/3600/24/365.25*12)/12+1970;
 x$ty<-x$at/3600/24/365.25+1970;
 
 tmin <- tapply(x$ty, x$ae, min, na.rm=T);
-x$fr <- tmin[match(x$ae,names(tmin))];
+#x$fr <- tmin[match(x$ae,names(tmin))];
+x$fr <- tmin[x$ae]
 tmax <- tapply(x$ty, x$ae, max, na.rm=T);
-x$to <- tmax[match(x$ae,names(tmax))];
+#x$to <- tmax[match(x$ae,names(tmax))];
+x$to <- tmax[x$ae]
 x$tenure <- x$ty-x$fr;
 x$tt <- ceiling((x$tenure+.000001)*12); # tenure months, .000001 is used to spare, e.g., one delta people
 
@@ -36,10 +38,14 @@ x$fm<-sub("/[^/]*$","", x$f, perl=T,useBytes=T);
 
 tot <- tapply(x$tt, x$ae,length);
 ten <- tapply(x$tt, x$ae,max);
-x$tot <- tot[match(x$ae,names(tot))]; # number of commits overall
-x$ten <- ten[match(x$ae,names(ten))]; # number of months overall
-x$prod <- (tot/ten)[match(x$ae,names(tot/ten))];
+#x$tot <- tot[match(x$ae,names(tot))]; # number of commits overall
+#x$ten <- ten[match(x$ae,names(ten))]; # number of months overall
+#x$prod <- (tot/ten)[match(x$ae,names(tot/ten))];
+x$tot <- tot[x$ae]
+x$ten <- ten[x$ae]
+x$prod <- (tot/ten)[x$ae]
 
+# number of Changes/Logins in each module/smod/file
 for (i in c("mod","smod","ff")){
   tbl <- table (x[,i]);
   x[,paste(i,"Chg",sep="")] <- tbl[x[,i]];
