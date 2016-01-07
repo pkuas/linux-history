@@ -55,8 +55,8 @@ for (i in c("mod","smod","ff")){
 }
 
 fr <- tapply(x$m, x$ae, min, na.rm=T);
-x$fr1 <- fr[match(x$ae,names(fr))]; #standardize the fr into one of the 12 months
-
+#x$fr1 <- fr[match(x$ae,names(fr))]; #standardize the fr into one of the 12 months
+x$fr1 <- fr[x$ae]
 #######below start calculation by rolling 3-year window month by month
 delta <- x[x$fr1>1970 & x$to<2015.963 & x$tt<=131 & x$m<2015.9 & x$m>=2005 & x$ext=="c",];
 #delta$m1 <- as.factor(delta$m);
@@ -145,7 +145,7 @@ dd11 <- dd1[2:96,];
 dd21 <- dd2[2:96,];
 cmtr1 <- cmtr[2:96,];
 core1 <- core[2:96,];
-modchg1 <- modchg[2:96];
+modchg1 <- modchg[2:96,];
 
 png("core.png", width=800,height=600);
  plot(core1[,1],type="l",ylim=c(0,43),main = "Number of core committers (in 3-year period) over time",xlab="Moving from Jan 2005 by month",ylab="number")
