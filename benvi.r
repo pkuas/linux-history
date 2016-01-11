@@ -42,7 +42,11 @@ cnt.1mod.3year<-function(x) {
 #deltacnt.in.mod.in.drivers.3year <- as.data.frame(
 #	matrix(0, nrow=length(mod.in.drivers), ncol=length(month), 
 #		dimnames=list(mod=mod.in.drivers, month=round(month, 3))))
-deltacnt.in.mod.in.drivers.3year <-data.frame(mod.in.drivers)
-deltacnt.in.mod.in.drivers.3year$numdelta <- tapply(delta$m[drivers.sel.delta], delta$mmod[drivers.sel.delta], cnt.1mod.3year)
-rownames(deltacnt.in.mod.in.drivers.3year) <- names(deltacnt.in.mod.in.drivers.3year$numdelta)
+deltacnt.in.mod.in.drivers.3year <- tapply(delta$m[drivers.sel.delta], delta$mmod[drivers.sel.delta], cnt.1mod.3year)
 mod.to.show<-names(mod.in.drivers.tb)[1:7]
+png(paste(picdir,"deltas-in-mod.png",sep="") , width=800,height=600);
+plot(month, unlist(deltacnt.in.mod.in.drivers.3year[mod.to.show[1]]),
+	type='l', col=1, main="Number of deltas on each drivers/* each month", xlab = "natural month", ylab = "# of deltas")
+for(i in 2:7){lines(month, unlist(deltacnt.in.mod.in.drivers.3year[mod.to.show[i]]),col=i,lty=1)}
+legend(2006,7500,legend=mod.to.show,cex=1,lwd=2,col=rep(1:7),bg="white"); 
+dev.off();
