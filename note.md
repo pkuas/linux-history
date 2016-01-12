@@ -19,3 +19,11 @@ See below
 * Documentation/SubmittingDrivers
 * Documentation/SubmittingPatches
 * Documentation/SubmitChecklist
+
+# Merge Alias
+最初的ae-an列表转换为新的alias-name
+一个的alias数量：
+```
+   1    2    3    4    5    6    7    8    9   10   11   12   13   14   16
+ 154 9195 1908  672  277  107   33   30   14   11    2    2    2    1    1
+```

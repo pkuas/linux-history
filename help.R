@@ -4,6 +4,11 @@ numAnamePerAemail <- tapply(delta$an, delta$ae, numOfUnique)
 numAemailPerAname <- tapply(delta$ae, delta$an, numOfUnique)
 
 # map emails and namey to namex
+tsel <- delta$ce!=""
+cn2ce <- tapply(delta$cn[tsel], delta$ce[tsel], unique)
+
+
+
 idname.mp<-c('^###$')
 numdeltas<-dim(delta)[1]
 for (i in 601787:numdeltas){
@@ -23,6 +28,41 @@ for (i in 601787:numdeltas){
         }
     }
 }
-delta$aid<-idname.mp[delta$an]
-delta$cid<-idname.mp[delta$cn]
+t<-idname.mp[names(idname.mp)!=""]
+tsel<-which(t=='')
+t[tsel]<-names(tsel)
+idname.mp<-t
+returnfunc<-function(x) {return(x)}
+aliasofname<-tapply(names(idname.mp), idname.mp, returnfunc)
+numofaliasofname<-tapply(names(idname.mp), idname.mp, length)
+write.table(data.frame(alias=names(idname.mp), id=idname.mp), file="alias.id", row.names=F, col.names=F)
+delta$aid<-idname.mp[delta$ae]
+# manually inspect, only 3 is na
+tsel<-which(is.na(delta$aid))
+delta$aid[tsel] <- delta$an[tsel]
 
+delta$cid<-idname.mp[delta$ce]
+tsel<-which(is.na(delta$cid))
+delta$cid[tsel] <- delta$cn[tsel]
+tsel<-which(is.na(delta$cid))
+
+######################
+# I have done this work using Python
+t<-read.csv("/store1/chenqy/linuxhistory/all.aliase.id.networkx", header=F, col.names=c('als', 'id'))
+idmp<-as.character(t[,2])
+names(idmp)<-t[,1]
+
+delta$cid<-idmp[tolower(delta$ce)]
+tsel<-which(is.na(delta$cid))
+
+delta$aid<-idmp[tolower(delta$ae)]
+tsel<-which(is.na(delta$aid))
+    # > delta[tsel, 'ae']
+    # [1] "" "" ""
+    # >
+    # > tolower(delta[tsel, 'an'])
+    # [1] "jiayingz@google.com (jiaying zhang)" "solofo.ramangalahy@bull.net"
+    # [3] "
+delta$aid[tsel[1]]<-idmp['jiayingz@google.com']
+delta$aid[tsel[2]]<-idmp['solofo.ramangalahy@bull.net']
+delta$aid[tsel[2]]<-''
