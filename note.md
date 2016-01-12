@@ -8,6 +8,12 @@ drivers的author to committer的比率要比其他模块都高很多。从趋势
 这一点并不是。
 See below 
 ![deltas-in-mod-month.png](./pics/deltas-in-mod-month.png)
+
+> ### 在drivers中，再往下看一层
+
+关于drivers的介绍，请看[drivers的介绍](./docs/drivers-mod.md)
+![a2c-in-mod-in-drivers.png](./pics/a2c-in-mod-in-drivers.png)
+
 > ### 从作者、提交者的邮箱域名看其所属公司、组织
 
 基于邮箱域名的推断能否反映实际情况？从delta记录来看，***gmail.com***是使用最多的邮箱域名，占比为9.8%.
@@ -20,10 +26,10 @@ See below
 * Documentation/SubmittingPatches
 * Documentation/SubmitChecklist
 
-# Merge Alias
-最初的ae-an列表转换为新的alias-name
-一个的alias数量：
-```
-   1    2    3    4    5    6    7    8    9   10   11   12   13   14   16
- 154 9195 1908  672  277  107   33   30   14   11    2    2    2    1    1
-```
+# Merge Aliases
+一个开发者可能有多个name、email，使用简单的文本匹配得到每个开发者使用多少个alias。下表的第一行表示alias数量，第二行表示使用这么多数量alias的开发者数量。
+
+|# aliases|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|17|29|
+|--|--|--|--|--|--|--|--|--|--|--|--|--|--|--|--|--|--|
+|# dvprs|91|9220|1804|639|256|93|49|29|18|9|5|4|1|4|1|3|1|
+|%|0.74|75.41|14.75|5.23|2.09|0.76|0.40|0.24|0.15|0.07|0.04|0.03|0.01|0.03|0.01|0.02|0.01|

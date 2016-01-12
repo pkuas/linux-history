@@ -6,11 +6,13 @@ delta$cn<-as.character(delta$cn)
 numdeltas<-dim(delta)[1]
 
 # dir setting
+## one sei win 10
 setwd("D:/M8400t-N000/linuxhistory/")
 load("./.RData")
 picdir <- "../SyncDirectory/research/linux/pics/"
-mod.month.tb.tb
-mod.month.tb.tb
+## on pae
+picdir <- "./"
+
 # commen
 numOfUnique<-function(x) {return(length(unique(x)))}
 month <- sort(unique(delta$m))
@@ -39,7 +41,7 @@ ccompany.tb <- sort(table(delta$ccompany), decreasing = T)
 drivers.delta.sel<-delta$mod == 'drivers'
 mod.in.drivers <- sort(unique(delta$mmod[drivers.delta.sel]))
 mod.in.drivers.tb<-sort(table(delta$mmod[drivers.delta.sel]), decreasing=T)
-row.delta.sel<-c("mmod", "ae", "ce")
+row.delta.sel<-c("mmod", "aid", "cid")
 authorcnt.in.mod.in.drivers.3year <- as.data.frame(
 	matrix(0, nrow=nummonth-36, ncol=length(mod.in.drivers),
 		dimnames=list(month=round(month[1:(nummonth-36)], 3), mod=mod.in.drivers)))
@@ -49,15 +51,54 @@ st<-minmonth
 ed<-st+3
 while (ed < 2015.91){
 	tmpdelta<-delta[drivers.delta.sel & delta$m >= st & delta$m < ed, row.delta.sel]
-	tres<-tapply(tmpdelta$ae, tmpdelta$mmod, numOfUnique)
+	tres<-tapply(tmpdelta$aid, tmpdelta$mmod, numOfUnique)
 	rowIndex<-as.character(round(st, 3))
 	authorcnt.in.mod.in.drivers.3year[rowIndex, names(tres)]<-tres
-	tres<-tapply(tmpdelta$ce, tmpdelta$mmod, numOfUnique)
+	tres<-tapply(tmpdelta$cid, tmpdelta$mmod, numOfUnique)
 	cmtrcnt.in.mod.in.drivers.3year[rowIndex, names(tres)]<-tres
 	a2cInModInDrivers3year[rowIndex,]<-authorcnt.in.mod.in.drivers.3year[rowIndex,]/cmtrcnt.in.mod.in.drivers.3year[rowIndex,]
 	st<-st+1/12
 	ed<-st+3
 }
+mod.to.show<-names(mod.in.drivers.tb)[1:7]
+png(paste(picdir, "a2c-in-mod-in-drivers.png", sep=""), width=800,height=600)
+xaxis<-month[1:(nummonth-36)]
+plot(xaxis, a2cInModInDrivers3year[,mod.to.show[1]],
+	type='l', col=1, main="Ratio of authors to committers (in 3-year period) on each drivers/* over time", xlab = "natural month", ylab = "ratio", ylim=c(0, 27))
+for(i in 2:7){lines(xaxis, a2cInModInDrivers3year[,mod.to.show[i]],col=i,lty=1)}
+legend(2009,28,legend=mod.to.show,cex=1,lwd=2,col=rep(1:7),bg="white");
+dev.off();
+
+# how author2committer varied in each module
+mods<-sort(unique(delta$mod))
+mods.tb<-sort(table(delta$mod), decreasing=T)
+row.delta.sel<-c('mod', 'aid', 'cid')
+authorcnt.in.mods.3year <- as.data.frame(
+	matrix(0, nrow=nummonth-36, ncol=length(mods),
+		dimnames=list(month=round(month[1:(nummonth-36)], 3), mod=mods)))
+cmtrcnt.in.mods.3year <- authorcnt.in.mods.3year
+a2cInMods3year<-authorcnt.in.mods.3year
+st<-minmonth
+ed<-st+3
+while (ed < 2015.91){
+	tmpdelta<-delta[delta$m >= st & delta$m < ed, row.delta.sel]
+	tres<-tapply(tmpdelta$aid, tmpdelta$mod, numOfUnique)
+	rowIndex<-as.character(round(st, 3))
+	authorcnt.in.mods.3year[rowIndex, names(tres)]<-tres
+	tres<-tapply(tmpdelta$cid, tmpdelta$mod, numOfUnique)
+	cmtrcnt.in.mods.3year[rowIndex, names(tres)]<-tres
+	a2cInMods3year[rowIndex,]<-authorcnt.in.mods.3year[rowIndex,]/cmtrcnt.in.mods.3year[rowIndex,]
+	st<-st+1/12
+	ed<-st+3
+}
+mod.to.show<-names(mods.tb)[1:7]
+png(paste(picdir, "a2c-in-mods.png", sep=""), width=800,height=600)
+xaxis<-month[1:(nummonth-36)]
+plot(xaxis, a2cInMods3year[,mod.to.show[1]],
+	type='l', col=1, main="Ratio of authors to committers (in 3-year period) on each module over time", xlab = "natural month", ylab = "ratio", ylim=c(0, 27))
+for(i in 2:7){lines(xaxis, a2cInMods3year[,mod.to.show[i]],col=i,lty=1)}
+legend(2009,28,legend=mod.to.show,cex=1,lwd=2,col=rep(1:7),bg="white");
+dev.off();
 
 # how drivers's a2c ratio varied over time. in 3-year window
 authorcnt.in.drivers.3year <- c()
@@ -68,8 +109,8 @@ row.delta.sel<-c("mmod", "aid", "cid")
 while (ed < 2015.91){
 	tmpdelta<-delta[drivers.delta.sel & delta$m >= st & delta$m < ed, row.delta.sel]
 	rowIndex<-as.character(round(st, 3))
-	authorcnt.in.drivers.3year[rowIndex]<-numOfUnique(tmpdelta$ae)
-	cmtrcnt.in.drivers.3year[rowIndex]<-numOfUnique(tmpdelta$ce)
+	authorcnt.in.drivers.3year[rowIndex]<-numOfUnique(tmpdelta$aid)
+	cmtrcnt.in.drivers.3year[rowIndex]<-numOfUnique(tmpdelta$cid)
 	st<-st+1/12
 	ed<-st+3
 }

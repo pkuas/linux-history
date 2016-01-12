@@ -66,3 +66,8 @@ tsel<-which(is.na(delta$aid))
 delta$aid[tsel[1]]<-idmp['jiayingz@google.com']
 delta$aid[tsel[2]]<-idmp['solofo.ramangalahy@bull.net']
 delta$aid[tsel[2]]<-''
+
+# aliases usage
+numofaliasofid <- tapply(names(idmp), idmp, length)
+numofaliasofid.tb <- table(numofaliasofid)
+numofaliasofid.tb / sum(numofaliasofid.tb)
