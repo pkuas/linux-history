@@ -65,7 +65,7 @@ tsel<-which(is.na(delta$aid))
     # [3] "
 delta$aid[tsel[1]]<-idmp['jiayingz@google.com']
 delta$aid[tsel[2]]<-idmp['solofo.ramangalahy@bull.net']
-delta$aid[tsel[2]]<-''
+delta$aid[tsel[3]]<-''
 
 # aliases usage
 numofaliasofid <- tapply(names(idmp), idmp, length)
