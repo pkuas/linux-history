@@ -19,16 +19,28 @@ month <- sort(unique(delta$m))
 minmonth <- min(month)
 maxmonth <- max(month)
 nummonth <- length(month)
-mod.month.tb <- table(delta$mod,delta$m);
 
 # plot number of deltas in each mod each month
 sel.mod <- names(sort(-table(delta$mod))[1:7]);
+mod.month.tb <- table(delta$mod,delta$m);
 xaxis <- as.numeric(names(mod.month.tb[1,]))
 png(paste(picdir,"deltas-in-mod.png",sep="") , width=800,height=600);
 plot(xaxis, mod.month.tb[sel.mod[1],], type='l', col=1, main="Number of deltas on each module each month", xlab = "natural month", ylab = "# of deltas")
 for(i in 2:7){lines(xaxis, mod.month.tb[sel.mod[i],],col=i,lty=1)}
 legend(2006,7500,legend=sel.mod,cex=1,lwd=2,col=rep(1:7),bg="white");
 dev.off();
+
+# plot number of deltas in each drivers/* each month
+drivers.delta.sel<-delta$mod == 'drivers'
+mod.in.drivers.month.tb <- table(delta$mmod[drivers.delta.sel], delta$m[drivers.delta.sel])
+xaxis<-as.numeric(names(mod.in.drivers.month.tb[1,]))
+png(paste(picdir, 'deltas-in-mod-in-drivers.png',sep=''),width=800,height=600)
+mod.to.show<-names(sort(-table(delta$mmod[drivers.delta.sel]))[1:7])
+plot(xaxis, mod.in.drivers.month.tb[mod.to.show[1],], type='l', col=1,main="Number of deltas on each drivers/* each month", xlab="natural month", ylab="# of deltas", ylim=c(0, max(mod.in.drivers.month.tb)+10))
+for(i in 2:7){lines(xaxis, mod.in.drivers.month.tb[mod.to.show[i],],col=i,lty=1)}
+legend(2006,max(mod.in.drivers.month.tb)+10,legend=mod.to.show,cex=1,lwd=2,col=rep(1:7),bg="white");
+dev.off();
+
 
 # count author/committer's domain name (company)
 delta$acompany <- sub(".*@(.*)", "\\1", as.character(delta$ae),perl=TRUE)
