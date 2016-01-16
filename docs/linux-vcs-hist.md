@@ -22,12 +22,5 @@ Torvalds turned over maintenance on 26 July 2005 to Junio Hamano, a major contri
 
 ## Number of Deltas in this Repo
 - before 2005(not included): **89**
-- after 2005(included) to 2015.91: **1304631** (we only consider these deltas)
-- further, in these **1304631** deltas, we only consider **.c** files. We get **859372** deltas, accounting for **65.86%**. BTW, deltas in **.h** files accounts for **22.52%** in **1304631** deltas. 
-
-```
-actually,
-> delta <- x[x$to<2015.963 & x$tt<=131 & x$m<2015.9 & x$m>=2005 & x$ext=="c", ]
-> length(delta[,1])
-[1] 854705
-```
+- after 2005(included) to 2015年11月(2015.917): **1305252** (we only consider these deltas)
+- further, in these **1305252** deltas, we only consider **.c** files. We get **859729** deltas, accounting for **65.87%**. BTW, deltas in **.h** files accounts for **22.52%** in **1305252** deltas. 

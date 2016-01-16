@@ -1,10 +1,3 @@
-# init
-delta$ae<-as.character(delta$ae)
-delta$an<-as.character(delta$an)
-delta$ce<-as.character(delta$ce)
-delta$cn<-as.character(delta$cn)
-numdeltas<-dim(delta)[1]
-
 # dir setting
 ## one sei win 10
 setwd("D:/M8400t-N000/linuxhistory/")
@@ -150,3 +143,12 @@ plot(month, unlist(deltacnt.in.mod.in.drivers.3year[mod.to.show[1]]),
 for(i in 2:7){lines(month, unlist(deltacnt.in.mod.in.drivers.3year[mod.to.show[i]]),col=i,lty=1)}
 legend(2006,65000,legend=mod.to.show,cex=1,lwd=2,col=rep(1:7),bg="white");
 #dev.off();
+
+# analyze organizational structure of developers in drivers
+drivers.delta.sel<-delta$mod == 'drivers'
+mod.in.drivers <- sort(unique(delta$mmod[drivers.delta.sel]))
+mod.in.drivers.tb<-sort(table(delta$mmod[drivers.delta.sel]), decreasing=T)
+numdvprs.modofdrivers.arr<-sort(tapply(delta$aid[drivers.delta.sel], delta$mmod[drivers.delta.sel], numOfUnique), decreasing=T)
+png(paste(picdir, "change-share-in-mods-in-drivers.png", sep=""), width=800,height=600)
+pie(mod.in.drivers.tb, labels=names(mod.in.drivers.tb)[1:10], main='Change share of each sub module in drivers')
+dev.off()

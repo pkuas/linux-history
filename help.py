@@ -91,6 +91,14 @@ mpa.to_csv("./all.aliase.id.lower")
 # 		mpa[cid] = 
 
 # a simple solution using graph
+import pandas as pd
+import numpy as np
+ae_an = pd.read_table("./e.n.full", names=['ae', 'an'], sep=' ').fillna("")
+ae_an.ae = map(str.lower, ae_an.ae)
+ae_an.an = map(str.lower, ae_an.an)
+ansofae = ae_an.an.groupby(ae_an.ae).unique()
+aesofan = ae_an.ae.groupby(ae_an.an).unique()
+
 import networkx as nx
 nodes = np.unique(ae_an.ae)
 nodes = np.concatenate((nodes, np.unique(ae_an.an)))
@@ -98,7 +106,7 @@ nodes = np.unique(nodes)
 nodes = nodes[nodes != ""]
 nds2gid_mp=pd.Series(range(len(nodes)), index=nodes)
 G = nx.Graph()
-G.add_node
+G.add_nodes_from(range(len(nodes)))
 for ae in ansofae.index[ansofae.index!='']:
 	tsel = ansofae[ae]!=""
 	for an in ansofae[ae][tsel]:
@@ -126,4 +134,4 @@ for i in range(len(belong)):
 			print e
 
 mp = pd.Series(nds2gid_mp.index[list(belong[nds2gid_mp])], index=nds2gid_mp.index)
-mp.to_csv("./all.aliase.id.networkx")
+mp.to_csv("./all.aliase.id.networkx.full")

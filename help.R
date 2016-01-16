@@ -48,7 +48,7 @@ tsel<-which(is.na(delta$cid))
 
 ######################
 # I have done this work using Python
-t<-read.csv("/store1/chenqy/linuxhistory/all.aliase.id.networkx", header=F, col.names=c('als', 'id'))
+t<-read.csv("/store1/chenqy/linuxhistory/all.aliase.id.networkx.full", header=F, col.names=c('als', 'id'))
 idmp<-as.character(t[,2])
 names(idmp)<-t[,1]
 
@@ -71,3 +71,12 @@ delta$aid[tsel[3]]<-''
 numofaliasofid <- tapply(names(idmp), idmp, length)
 numofaliasofid.tb <- table(numofaliasofid)
 numofaliasofid.tb / sum(numofaliasofid.tb)
+
+# merge aliases with full dataset
+t<-read.table("./linux.l2", sep=";",comment.char="", quote="",
+    col.names=c("v","an","cn","ae","ce","line","at","ct","f","cmt"), 
+    colClasses= c("NULL", rep("character", 4), rep("NULL", 5)))
+# t<-transform(t, an=tolower(an), ae=tolower(ae), cn=tolower(cn), ce=tolower(ce))
+write.table(data.frame(e=c(t$ae, t$ce), n=c(t$an, t$cn)), file="./e.n.full", 
+    row.names = F, col.names = F)
+
