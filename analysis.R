@@ -90,9 +90,24 @@ legend(10, 0.6,legend=paste(c("author: total","committer: total"),
 	c(sum(authors.numMods.tb), sum(cmtrs.numMods.tb))),
 	cex=1,lwd=2,col=2:3,bg="white"); 
 dev.off()
+## adjusted num of modules
+adjmods.author.arr <- tapply(delta$mod, delta$aid, adjNumOfUnique)
+adjmods.cmtr.arr <- tapply(delta$mod, delta$cid, adjNumOfUnique)
+png("box.dvprs-adjNumMods.png", width=800,height=600);
+boxplot(numMods ~ dvpr, 
+	data=data.frame(numMods=c(adjmods.author.arr, adjmods.cmtr.arr), 
+		dvpr=c(rep('author', length(adjmods.author.arr)), 
+			rep('committer', length(adjmods.cmtr.arr)))),
+	main="Developers' adjusted modules", ylab='# of adjusted modules')
+text(2,c(4.5, 4.3), labels=paste(c("# of authors:","# of committers:"), 
+	c(length(adjmods.author.arr), length(adjmods.cmtr.arr))),
+	cex=1,col=1,bg="white"); 
+dev.off()
+
 
 ## in drivers
 drivers.delta.sel <- delta$mod == 'drivers' & delta$mmod != delta$f
+### non-adjusted
 mods.author.indrivers.arr <- tapply(delta$mmod[drivers.delta.sel], delta$aid[drivers.delta.sel], numOfUnique)
 authors.numMods.indrivers.tb <- table(mods.author.indrivers.arr)
 mods.cmtr.indrivers.arr <- tapply(delta$mmod[drivers.delta.sel], delta$cid[drivers.delta.sel], numOfUnique)
@@ -102,9 +117,24 @@ plot(c(0, as.numeric(names(authors.numMods.indrivers.tb))), c(0, cumsum(authors.
 lines(c(0, as.numeric(names(cmtrs.numMods.indrivers.tb))), c(0, cumsum(cmtrs.numMods.indrivers.tb/sum(cmtrs.numMods.indrivers.tb))), type='b', pch=2, lty=3, col=3);
 legend(50, 0.6,legend=c("author","committer"),cex=1,lwd=2,col=2:3,bg="white"); 
 dev.off()
+### adjusted
+adjmods.author.indrivers.arr <- tapply(delta$mmod[drivers.delta.sel], delta$aid[drivers.delta.sel], adjNumOfUnique)
+adjmods.cmtr.indrivers.arr <- tapply(delta$mmod[drivers.delta.sel], delta$cid[drivers.delta.sel], adjNumOfUnique)
+png("box.dvprs-adjNumMods.indrivers.png", width=800,height=600);
+boxplot(numMods ~ dvpr,
+	data=data.frame(numMods=c(adjmods.author.indrivers.arr, adjmods.cmtr.indrivers.arr), 
+		dvpr=c(rep('author', length(adjmods.author.indrivers.arr)), 
+			rep('committer', length(adjmods.cmtr.indrivers.arr)))),
+	main="Developers' adjusted modules in drivers", ylab='# of adjusted modules')
+axis(2, c(1, seq(2, max(adjmods.author.indrivers.arr) + 1, 2)))
+text(1.5,c(9.5, 9.3), labels=paste(c("# of authors:","# of committers:"), 
+	c(length(adjmods.author.indrivers.arr), length(adjmods.cmtr.indrivers.arr))),
+	cex=1,col=1,bg="white"); 
+dev.off()
 
 ## in drivers/staging
 staging.delta.sel <- delta$mmod == 'drivers/staging' & delta$smod != delta$f
+### not adjusted
 mods.author.instaging.arr <- tapply(delta$smod[staging.delta.sel], delta$aid[staging.delta.sel], numOfUnique)
 authors.numMods.instaging.tb <- table(mods.author.instaging.arr)
 mods.cmtr.instaging.arr <- tapply(delta$smod[staging.delta.sel], delta$cid[staging.delta.sel], numOfUnique)
@@ -114,6 +144,20 @@ plot(c(0, as.numeric(names(authors.numMods.instaging.tb))), c(0, cumsum(authors.
 lines(c(0, as.numeric(names(cmtrs.numMods.instaging.tb))), c(0, cumsum(cmtrs.numMods.instaging.tb/sum(cmtrs.numMods.instaging.tb))), type='b', pch=2, lty=3, col=3);
 abline(h=c(0.8, 0.9, 0.95), lty=2, col='gray')
 legend(50, 0.6,legend=c("author","committer"),cex=1,lwd=2,col=2:3,bg="white"); 
+dev.off()
+### adjusted
+adjmods.author.instaging.arr <- tapply(delta$smod[staging.delta.sel], delta$aid[staging.delta.sel], adjNumOfUnique)
+adjmods.cmtr.instaging.arr <- tapply(delta$smod[staging.delta.sel], delta$cid[staging.delta.sel], adjNumOfUnique)
+png("box.dvprs-adjNumMods.instaging.png", width=800,height=600);
+boxplot(numMods ~ dvpr,
+	data=data.frame(numMods=c(adjmods.author.instaging.arr, adjmods.cmtr.instaging.arr), 
+		dvpr=c(rep('author', length(adjmods.author.instaging.arr)), 
+			rep('committer', length(adjmods.cmtr.instaging.arr)))),
+	main="Developers' adjusted modules in staging", ylab='# of adjusted modules')
+axis(2, c(1, seq(2, max(adjmods.author.instaging.arr) + 1, 2)))
+text(1.5,c(9.5, 8.3), labels=paste(c("# of authors:","# of committers:"), 
+	c(length(adjmods.author.instaging.arr), length(adjmods.cmtr.instaging.arr))),
+	cex=1,col=1,bg="white"); 
 dev.off()
 
 ## 
@@ -134,8 +178,9 @@ chgsOfCmtrs.tb <- sort(chgsOfCmtrs.utb, decreasing=T)
 coreCmtr.chgsOfCmtrs.sel <- cumsum(chgsOfCmtrs.tb)/sum(chgsOfCmtrs.tb) <= 0.8
 coreCmtr.delta.sel <- coreCmtr.chgsOfCmtrs.sel[delta$cid]
 mods.coreCmtr.arr <- tapply(delta$mod[coreCmtr.delta.sel], delta$cid[coreCmtr.delta.sel], numOfUnique)
-coreCmtrs.numMods.tb <- table(mods.coreCmtr.arr)
 ### plot
+#### CFG
+coreCmtrs.numMods.tb <- table(mods.coreCmtr.arr)
 png("CFG.coreDvprs-numMods.png", width=800,height=600);
 plot(c(0, as.numeric(names(coreAuthors.numMods.tb))), 
 	c(0, cumsum(coreAuthors.numMods.tb)/sum(coreAuthors.numMods.tb)),
@@ -149,4 +194,31 @@ legend(10, 0.6, legend=paste(c("author: total","committer: total"),
 	c(sum(coreAuthors.numMods.tb), sum(coreCmtrs.numMods.tb))),
 	cex=1,lwd=2,col=2:3,bg="white"); 
 dev.off()
+#### boxplot
+png("box.coreDvprs-numMods.png", width=800,height=600);
+boxplot(numMods ~ dvpr, 
+	data=data.frame(numMods=c(mods.coreAuthor.arr, mods.coreCmtr.arr), 
+		dvpr=c(rep('author', length(mods.coreAuthor.arr)), 
+			rep('committer', length(mods.coreCmtr.arr)))),
+	main="Core developers' modules", ylab='# of modules')
+dev.off()
 
+
+### core
+adjmods.coreAuthor.arr <- tapply(delta$mod[coreAuthor.delta.sel], delta$aid[coreAuthor.delta.sel], adjNumOfUnique)
+adjmods.coreCmtr.arr <- tapply(delta$mod[coreCmtr.delta.sel], delta$cid[coreCmtr.delta.sel], adjNumOfUnique)
+png("box.coreDvprs-adjNumMods.png", width=800,height=600);
+boxplot(numMods ~ dvpr, 
+	data=data.frame(numMods=c(adjmods.coreAuthor.arr, adjmods.coreCmtr.arr), 
+		dvpr=c(rep('author', length(adjmods.coreAuthor.arr)), 
+			rep('committer', length(adjmods.coreCmtr.arr)))),
+	main="Core developers' adjusted modules", ylab='# of adjusted modules')
+text(2,c(3.5, 3.3), labels=paste(c("# of authors:","# of committers:"), 
+	c(length(adjmods.coreAuthor.arr), length(adjmods.coreCmtr.arr))),
+	cex=1,col=1,bg="white"); 
+dev.off()
+
+# Membership
+mods.author.utb <- table(delta$aid, delta$mod)
+mods.author.uptb <- prop.table(mods.author.utb, 1)
+mods.coreAuthor.uptb <- mods.author.uptb[coreAuthor.chgsofauthor.sel[rownames(mods.author.uptb)], ]

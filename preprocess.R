@@ -8,6 +8,7 @@ spread <- function(x){ length(table(as.character(x))); };
 numOfZero <- function(x) {return(sum(x==0))}
 lennonzero <- function(x){ length(x[x!=0]); };
 numOfUnique<-function(x) {return(length(unique(x)))}
+adjNumOfUnique <- function(x) {return(length(x)/max(table(x)))}
 startdate <- 2005
 enddate <- 2015.917
 
