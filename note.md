@@ -39,6 +39,15 @@ See below
 [3,]  0.03  0.01  0.03  0.01  0.02  0.01
 ```
 
+### 2016-1-15， openthos
+1. 加入时间事件
+2. 难
+- 旧人在，新人很难入
+- 本身对技术能力要求高，难
+
+### 对drivers模块的贡献、提交机制，人员结构进行分析
+### 网络上的资源，再多一些具体的分析
+
 # Core Author/Committer Definition
 如果按照贡献delta数量来定义，即把delta数量从大到小排序，取累计80%delta对应的作者为core Author/Committer，可能会有这样的问题：一个模块（如drivers）集中了大量的delta，那么这种定义方式就会把其他模块的Author/Committer过滤掉。
 
@@ -46,6 +55,7 @@ See below
 
 # structure
 要分析structure，可以分析
+
 - 每个author/committer为几个模块做贡献，如何分布
 - author/committer如何对应起来，每个author的代码由几个committer提交，每个committer提交几个人的代码，这些量是如何分布的
 
@@ -62,3 +72,21 @@ See below
 ### 我们注意到两个问题
 - 只要开发者和某个模块有一次接触，就为这个开发者的模块数加一，这是不合理的。一种修正方法是：对一个开发者而言，确定其贡献最多的模块（根据delta数量,maxdelta），为该开发者模块数加一，对于其他的模块，加上delta数量/maxdelta。
 - 把所有的author或者committer混为一谈，是不合适的。由于贡献多的开发者数量少，其涉及的模块较多，故而当把所有的author放一起画boxplot时，boxplot显示的“正常”数据点是贡献少的开发者，而贡献多得开发者成了outlier。
+
+### Log 2016-1-18
+- 先不急adjust
+- 关于“把所有的author或者committer混为一谈”得到的boxploy：不要忘了目标，不是要得到更好看的图：）
+- （drivers下，）哪些是author不是committer但又想成为committer的人？（要认识到有大量的写了代码但是没有被接受的人。）先不要adjust
+- 从author变为committer的比率，时间：总的，各模块上. touch第二个模块的时间.(big topic:参与轨迹)
+- LOC until given time / tenure till given time
+- New comer, new committer：趋势，实事（如安卓）
+- staging的变化：本身的变化，其子目录的变化，是否从staging移出来得到支持了
+- touch的模块要考虑时间的长短，看一下是否变化
+- 是否有做了很久author但是仍然不是committer（查阅一下成为committer的审核机制）
+- 为什么会有提交数量极少的committer
+- 时间跨度还是以月为宜
+##### 参与体系
+- 人员结构
+- 参与轨迹：
+
+##### 始终一点： 有什么难，为什么难

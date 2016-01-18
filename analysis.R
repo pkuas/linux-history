@@ -237,22 +237,36 @@ getNumVar2EachVar1InPrdofDelta<-function(sel, prd, var1, var2, measure) {
 		function(x) {return(tapply(delta[x, var2], delta[x, var1], measure))}))
 }
 convtArrOfListToDF<-function(arrList) {
-	t <- data.frame(cid=character(0),m=character(0),adjNumAthrs=numeric(0))
+	t <- data.frame(cid=character(0),m=character(0),measure=numeric(0))
 	for (m in names(arrList)){
 		tv <- arrList[[m]]
 		t <- rbind(t, data.frame(cid=names(tv),m=rep(m, length(tv)),
-			adjNumAthrs=tv, row.names=NULL))
+			measure=tv, row.names=NULL))
 	}
 	return(t)
 }
-cmtryear <- data.frame(cid=character(0),m=character(0),adjNumAthrs=numeric(0),mod=character(0))
-cmtryear <- data.frame(cid=character(0),m=character(0),adjNumAthrs=numeric(0),mod=character(0))
-t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'y', 'cid', 'aid', adjNumOfUnique))
-t$mod <- 'drivers'
-cmtryear <- rbind(cmtryear, t)
 
+cmtryear <- data.frame(cid=character(0),m=character(0),numChg=character(0))
+## root module
+### num of changes each year committed
+t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'y', 'cid', 'aid', length))
+t$mod <- 'root'
+colnames(t)[3] <- 'numChgs'
+########### or:
+# t <- as.data.frame(table(delta$cid, delta$y))
+# colnames(t) <- c('cid', 'm', 'numChg')
+# t$mod <- 'root'
+cmtryear <- rbind(cmtryear, t)
+### num of athrs every cmtr committed for, each year 
+t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'y', 'cid', 'aid', numOfUnique))
+colnames(t)[3]<-'numAthrs'
+cmtryear <- merge(cmtryear, t, by=c('cid', 'm'))
+### num of adjusted athrs every cmtr committed for, each year 
 t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(drivers.delta.sel, 'y', 'cid', 'aid', adjNumOfUnique))
-t$mod <- 'drivers'
+colnames(t)[3]<-'adjNumAthrs'
+cmtryear <- merge(cmtryear, t, by=c('cid', 'm'))
+
+
 cmtryear <- rbind(cmtryear, t)
 t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(!drivers.delta.sel, 'y', 'cid', 'aid', adjNumOfUnique))
 t$mod <- 'ndrivers'
