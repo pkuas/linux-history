@@ -240,43 +240,84 @@ convtArrOfListToDF<-function(arrList) {
 	t <- data.frame(cid=character(0),m=character(0),measure=numeric(0))
 	for (m in names(arrList)){
 		tv <- arrList[[m]]
-		t <- rbind(t, data.frame(cid=names(tv),m=rep(m, length(tv)),
+		t <- rbind(t, data.frame(cid=names(tv),m=rep(as.numeric(m), length(tv)),
 			measure=tv, row.names=NULL))
 	}
 	return(t)
 }
 
-cmtryear <- data.frame(cid=character(0),m=character(0),numChg=character(0))
+# monthly committer
+mcmtr <- data.frame(cid=character(0),m=numeric(0),numChg=integer(0))
 ## root module
 ### num of changes each year committed
-t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'y', 'cid', 'aid', length))
+t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'm', 'cid', 'aid', length))
 t$mod <- 'root'
 colnames(t)[3] <- 'numChgs'
 ########### or:
 # t <- as.data.frame(table(delta$cid, delta$y))
 # colnames(t) <- c('cid', 'm', 'numChg')
 # t$mod <- 'root'
-cmtryear <- rbind(cmtryear, t)
-### num of athrs every cmtr committed for, each year 
-t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'y', 'cid', 'aid', numOfUnique))
+mcmtr <- rbind(mcmtr, t)
+### num of athrs every cmtr committed for, each period 
+t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'm', 'cid', 'aid', numOfUnique))
 colnames(t)[3]<-'numAthrs'
-cmtryear <- merge(cmtryear, t, by=c('cid', 'm'))
-### num of adjusted athrs every cmtr committed for, each year 
-t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(drivers.delta.sel, 'y', 'cid', 'aid', adjNumOfUnique))
+mcmtr <- merge(mcmtr, t, by=c('cid', 'm'))
+### num of adjusted athrs every cmtr committed for, each period 
+t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'm', 'cid', 'aid', adjNumOfUnique))
 colnames(t)[3]<-'adjNumAthrs'
-cmtryear <- merge(cmtryear, t, by=c('cid', 'm'))
+mcmtr <- merge(mcmtr, t, by=c('cid', 'm'))
+### num of modules every cmtr committed for, each period
+t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'm', 'cid', 'mod', numOfUnique))
+colnames(t)[3]<-'numMods'
+mcmtr <- merge(mcmtr, t, by=c('cid', 'm'))
+### num of adjusted modules every cmtr committed for, each period
+t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'm', 'cid', 'mod', adjNumOfUnique))
+colnames(t)[3]<-'adjNumMods'
+mcmtr <- merge(mcmtr, t, by=c('cid', 'm'))
+## plot
+png("box.numMods-cmtr.month.png", width=80000,height=60000);
+boxplot(numMods ~ m, data = mcmtr)
+dev.off()
+
+# monthly author
+mathr <- data.frame(aid=character(0), m=numeric(0), numChg=integer(0))
+## root module
+### num of changes each year coded
+t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'm', 'aid', 'aid', length))
+t$mod <- 'root'
+colnames(t)[c(1,3)] <- c('aid','numChgs')
+########### or:
+# t <- as.data.frame(table(delta$cid, delta$y))
+# colnames(t) <- c('cid', 'm', 'numChg')
+# t$mod <- 'root'
+mathr <- rbind(mathr, t)
+### num of cmtrs every athr committed to, each period 
+t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'm', 'aid', 'cid', numOfUnique))
+colnames(t)[c(1,3)]<-c('aid','numCmtrs')
+mathr <- merge(mathr, t, by=c('aid', 'm'))
+### num of adjusted cmtrs every athr committed to, each period 
+t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'm', 'aid', 'cid', adjNumOfUnique))
+colnames(t)[c(1,3)]<-c('aid','adjNumCmtrs')
+mathr <- merge(mathr, t, by=c('aid', 'm'))
+### num of modules every athr coded for, each period
+t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'm', 'aid', 'mod', numOfUnique))
+colnames(t)[c(1,3)]<-c('aid','numMods')
+mathr <- merge(mathr, t, by=c('aid', 'm'))
+### num of adjusted modules every cmtr committed for, each period
+t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'm', 'aid', 'mod', adjNumOfUnique))
+colnames(t)[c(1,3)]<-c('aid','adjNumMods')
+mathr <- merge(mathr, t, by=c('aid', 'm'))
 
 
-cmtryear <- rbind(cmtryear, t)
 t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(!drivers.delta.sel, 'y', 'cid', 'aid', adjNumOfUnique))
 t$mod <- 'ndrivers'
-cmtryear <- rbind(cmtryear, t)
-cmtryear$mod.f<-factor(cmtryear$mod,
+mcmtr <- rbind(mcmtr, t)
+mcmtr$mod.f<-factor(mcmtr$mod,
     levels=c('drivers', 'ndrivers'), labels=c('drivers', 'ndrivers'))
 tmod <- c('ndrivers', 'drivers')[drivers.delta.sel + 1]
 t <- as.data.frame(table(delta$cid, delta$y, tmod))
 colnames(t) <- c('cid', 'm', 'mod', 'numChg')
-cmtryear <- merge(cmtryear, t, by=c('cid', 'm', 'mod'))
+mcmtr <- merge(mcmtr, t, by=c('cid', 'm', 'mod'))
 tdf <- data.frame(cid=character(0),m=character(0),adjNumAthrs=numeric(0),mod=character(0))
 t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(drivers.delta.sel, 'y', 'cid', 'aid', numOfUnique))
 t$mod <- 'drivers'
@@ -285,24 +326,24 @@ t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(!drivers.delta.sel, 'y', 
 t$mod <- 'ndrivers'
 tdf <- rbind(tdf, t)
 colnames(tdf) <- c('cid', 'm', 'numAthrs','mod')
-cmtryear <- merge(cmtryear, tdf, by=c('cid', 'm', 'mod'))
+mcmtr <- merge(mcmtr, tdf, by=c('cid', 'm', 'mod'))
 
 
 png("box.numChg-cmtr.year.png", width=800,height=600);
-boxplot(numChg ~ mod * m, data=cmtryear, col=c("gold", 'darkgreen'))
+boxplot(numChg ~ mod * m, data=mcmtr, col=c("gold", 'darkgreen'))
 title('Boxplot of # of changes for committers each year')
 dev.off()
 
-stats::cor(cmtryear[,c('adjNumAthrs', 'numChg')], method='pearson')
-stats::cor(cmtryear[,c('adjNumAthrs', 'numChg')], method='spearman')
-stats::cor(cmtryear[cmtryear$mod=='drivers',c('adjNumAthrs', 'numChg')], method='pearson')
-stats::cor(cmtryear[cmtryear$mod=='drivers',c('adjNumAthrs', 'numChg')], method='spearman')
-stats::cor(cmtryear[cmtryear$mod!='drivers',c('adjNumAthrs', 'numChg')], method='pearson')
-stats::cor(cmtryear[cmtryear$mod!='drivers',c('adjNumAthrs', 'numChg')], method='spearman')
+stats::cor(mcmtr[,c('adjNumAthrs', 'numChg')], method='pearson')
+stats::cor(mcmtr[,c('adjNumAthrs', 'numChg')], method='spearman')
+stats::cor(mcmtr[mcmtr$mod=='drivers',c('adjNumAthrs', 'numChg')], method='pearson')
+stats::cor(mcmtr[mcmtr$mod=='drivers',c('adjNumAthrs', 'numChg')], method='spearman')
+stats::cor(mcmtr[mcmtr$mod!='drivers',c('adjNumAthrs', 'numChg')], method='pearson')
+stats::cor(mcmtr[mcmtr$mod!='drivers',c('adjNumAthrs', 'numChg')], method='spearman')
 
 
 
-png("box.cmtryear.png", width=800,height=600);
-b<-boxplot(adjNumAthrs ~ mod.f *m, data=cmtryear, ylim=c(0, 8), col=c("gold","darkgreen"))
+png("box.mcmtr.png", width=800,height=600);
+b<-boxplot(adjNumAthrs ~ mod.f *m, data=mcmtr, ylim=c(0, 8), col=c("gold","darkgreen"))
 axis(2, c(1, 8, 2))
 dev.off()

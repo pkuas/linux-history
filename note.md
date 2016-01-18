@@ -53,7 +53,7 @@ See below
 
 还是先搞清楚structure
 
-# structure
+# Structure
 要分析structure，可以分析
 
 - 每个author/committer为几个模块做贡献，如何分布
@@ -85,6 +85,7 @@ See below
 - 是否有做了很久author但是仍然不是committer（查阅一下成为committer的审核机制）
 - 为什么会有提交数量极少的committer
 - 时间跨度还是以月为宜
+
 ##### 参与体系
 - 人员结构
 - 参与轨迹：
