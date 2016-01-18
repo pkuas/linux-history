@@ -246,6 +246,11 @@ convtArrOfListToDF<-function(arrList) {
 	return(t)
 }
 cmtryear <- data.frame(cid=character(0),m=character(0),adjNumAthrs=numeric(0),mod=character(0))
+cmtryear <- data.frame(cid=character(0),m=character(0),adjNumAthrs=numeric(0),mod=character(0))
+t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'y', 'cid', 'aid', adjNumOfUnique))
+t$mod <- 'drivers'
+cmtryear <- rbind(cmtryear, t)
+
 t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(drivers.delta.sel, 'y', 'cid', 'aid', adjNumOfUnique))
 t$mod <- 'drivers'
 cmtryear <- rbind(cmtryear, t)
@@ -267,6 +272,7 @@ t$mod <- 'ndrivers'
 tdf <- rbind(tdf, t)
 colnames(tdf) <- c('cid', 'm', 'numAthrs','mod')
 cmtryear <- merge(cmtryear, tdf, by=c('cid', 'm', 'mod'))
+
 
 png("box.numChg-cmtr.year.png", width=800,height=600);
 boxplot(numChg ~ mod * m, data=cmtryear, col=c("gold", 'darkgreen'))
