@@ -3,12 +3,13 @@ picdir <- "../SyncDirectory/research/linux/pics/"
 wdir <- "/store1/chenqy/linuxhistory/" # on pae
 setwd(wdir)
 picdir <- "./"
-first <- function(x){sort(x)[1];}; 
+first <- function(x){sort(x)[1];};
 spread <- function(x){ length(table(as.character(x))); };
 numOfZero <- function(x) {return(sum(x==0))}
 lennonzero <- function(x){ length(x[x!=0]); };
 numOfUnique<-function(x) {return(length(unique(x)))}
 adjNumOfUnique <- function(x) {return(length(x)/max(table(x)))}
+cosSim<-function(x, y) {return(sum(x*y)/sqrt(sum(x^2))/sqrt(sum(y^2)))}
 startdate <- 2005
 enddate <- 2015.917
 
@@ -18,12 +19,12 @@ x <- read.table("linux.l2", sep=";",comment.char="", quote="",
 	colClasses=c(rep("character", 6), rep("integer", 2), rep('character', 2)));
 
 ## merge aliases with full dataset using Python
-write.table(data.frame(e=c(x$ae, x$ce), n=c(x$an, x$cn)), file="./e.n.full", 
-    row.names = F, col.names = F)
+#/ write.table(data.frame(e=c(x$ae, x$ce), n=c(x$an, x$cn)), file="./e.n.full",
+#/     row.names = F, col.names = F)
 ### merging using python
-t<-read.csv("all.aliase.id.networkx.full", header=F, col.names=c('als', 'id'))
-idmp<-as.character(t[,2])
-names(idmp)<-t[,1]
+#/ t<-read.csv("all.aliase.id.networkx.full", header=F, col.names=c('als', 'id'))
+#/ idmp<-as.character(t[,2])
+#/ names(idmp)<-t[,1]
 x$cid<-idmp[tolower(x$ce)]
 tsel<-which(is.na(x$cid))
 #### see nothing in tsel
@@ -57,6 +58,7 @@ x$del <- as.integer(x$del);
 x$line <- NULL
 
 ## time
+### author
 x$y <- floor(x$at/3600/24/365.25)+1970;
 x$q <- floor(x$at/3600/24/365.25*4)/4+1970;
 x$m <- floor(x$at/3600/24/365.25*12)/12+1970;
@@ -67,8 +69,27 @@ tmax <- tapply(x$ty, x$aid, max, na.rm=T);
 x$to <- tmax[x$aid]
 x$tenure <- x$ty-x$fr;
 x$tt <- ceiling((x$tenure+.000001)*12); # tenure months, .000001 is used to spare, e.g., one delta people
-### round month
+#### round month
 x$m <- round(x$m, digits=3)
+### cmtr
+x$cy <- floor(x$ct/3600/24/365.25)+1970;
+x$cq <- floor(x$ct/3600/24/365.25*4)/4+1970;
+x$cm <- floor(x$ct/3600/24/365.25*12)/12+1970;
+x$cty<-x$ct/3600/24/365.25+1970;
+tmin <- tapply(x$cty, x$cid, min, na.rm=T);
+x$cfr <- tmin[x$cid]
+tmax <- tapply(x$cty, x$cid, max, na.rm=T);
+x$cto <- tmax[x$cid]
+x$ctenure <- x$cty-x$cfr;
+x$ctt <- ceiling((x$ctenure+.000001)*12); # tenure months, .000001 is used to spare, e.g., one delta people
+#### round month
+x$cm <- round(x$cm, digits=3)
+#### author is cmtr?
+t<-rep(NA, length(x$aid))
+names(t)<-x$aid
+t[names(tmin)]<-tmin
+x$a1cmt<-t[x$aid]
+x$afr1cmt<-x$ty-x$a1cmt
 
 ### LTC
 x$contr3y <- (x$to-x$ty>=3) # still contrbuting 3 years later
@@ -76,7 +97,7 @@ x$contr3y[x$ty > (enddate - 3)] <- NA
 
 ## file's extension and modules
 x$ff<-sub(".*/","",x$f,perl=T,useBytes=T);
-x$ext<-tolower(sub(".*\\.","",x$ff,perl=T,useBytes = T)); 
+x$ext<-tolower(sub(".*\\.","",x$ff,perl=T,useBytes = T));
 x$mod <- sub("/.*", "",x$f,perl=T,useBytes=T); # first module
 x$mmod<-sub("^([^/]*/[^/]*)/.*","\\1", x$f, perl=T,useBytes=T); # second module
 x$smod<-sub("^([^/]*/[^/]*/[^/]*)/.*","\\1", x$f, perl=T,useBytes=T); # 3rd module

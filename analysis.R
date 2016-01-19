@@ -347,3 +347,6 @@ png("box.mcmtr.png", width=800,height=600);
 b<-boxplot(adjNumAthrs ~ mod.f *m, data=mcmtr, ylim=c(0, 8), col=c("gold","darkgreen"))
 axis(2, c(1, 8, 2))
 dev.off()
+
+# structrue ana using igraph
+library(igraph)

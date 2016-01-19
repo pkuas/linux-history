@@ -1,0 +1,2 @@
+- [Documentation/SubmittingPatches](https://www.kernel.org/doc/Documentation/SubmittingPatches)
+- [MAINTAINERS]https://www.kernel.org/doc/linux/MAINTAINERS

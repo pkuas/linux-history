@@ -91,3 +91,10 @@ See below
 - 参与轨迹：
 
 ##### 始终一点： 有什么难，为什么难
+
+### 搞清楚贡献体系
+- 组织结构，人员结构
+    + 搞清楚各类角色：maintainer, committer(same as maintainer?), reviewer, author, etc. 
+    + 各类角色的变化：关于maintainer, 看MAINTAINER文件的各个版本；committer和author，看git log的格式化信息，这部分我们已经取出；reviewer，看每个提交的comment信息；Linux Kernel的诸如[Documentation/SubmittingPatches](https://www.kernel.org/doc/Documentation/SubmittingPatches)这些开发者文档中对patch的格式做了要求、说明，在comment信息中，包括的信息有：Signed-off-by, Acked-by, Cc, Reported-by:, Tested-by:, Reviewed-by:, Suggested-by: and Fixes。
+    + 根据这些分析，特别是drivers，分析难处
+    + 特别注意new comer
