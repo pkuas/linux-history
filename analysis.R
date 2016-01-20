@@ -350,3 +350,33 @@ dev.off()
 
 # structrue ana using igraph
 library(igraph)
+
+# contribution trace
+## time of always being an author, or from an author to a committer
+tmAthr2Cmtr.athr.arr <- -tapply(delta$afr1cmt, delta$aid, min)
+tmAlwaysAthr.athr.arr <- 2015.917 - tapply(delta$ty, delta$aid, min)
+tsel <- is.na(tmAthr2Cmtr.athr.arr)
+tmAlwaysAthr.athr.arr[names(tmAthr2Cmtr.athr.arr)[!tsel]] <- NA
+trc = data.frame(aid=names(tmAthr2Cmtr.athr.arr), tp=rep('Become committer', length(tmAthr2Cmtr.athr.arr)), tm=as.vector(tmAthr2Cmtr.athr.arr), stringsAsFactors=F)
+trc$tm[trc$tm <= 0] <- NA
+trc$tp[tsel] <- 'Always author'
+trc$tp <- as.factor(trc$tp)
+trc$tm[tsel] <- as.vector(tmAlwaysAthr.athr.arr)[tsel]
+png('box.tmAthr2Cmtr.AthrAlways-athr.png', width=800,height=600);
+boxplot(tm ~ tp, data = trc, main='Time of always being an author, or from author to committer, in years')
+text(1.5,c(9.5, 8.5), labels=paste(c("# of always:","# of a2committer:"),
+	c(sum(tsel), sum(tmAthr2Cmtr.athr.arr > 0, na.rm=T))),
+	cex=1,col=1,bg="white");
+dev.off()
+## num of changes before being a committer (each month)
+### Prerequisite: previous data frame named 'trc', 'mathr'
+trc$numChgsBef <- tapply(delta$afr1cmt, delta$aid, numOfLessThan0)
+tsel <- is.na(trc$numChgsBef)
+trc$numChgsBef[tsel] <- tapply(delta$v, delta$aid, length)[tsel]
+png('box.numChgsBef-tmAthr2Cmtr.AthrAlways-athr.png', width=800,height=600);
+boxplot(numChgsBef ~ tp, data = trc, main='# of changes of always being an author, or from author to committer')
+text(1.5,c(7000, 6500), labels=paste(c("# of always:","# of a2committer:"),
+	c(sum(tsel), sum(tmAthr2Cmtr.athr.arr > 0, na.rm=T))),
+	cex=1,col=1,bg="white");
+dev.off()
+

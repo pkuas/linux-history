@@ -98,3 +98,20 @@ See below
     + 各类角色的变化：关于maintainer, 看MAINTAINER文件的各个版本；committer和author，看git log的格式化信息，这部分我们已经取出；reviewer，看每个提交的comment信息；Linux Kernel的诸如[Documentation/SubmittingPatches](https://www.kernel.org/doc/Documentation/SubmittingPatches)这些开发者文档中对patch的格式做了要求、说明，在comment信息中，包括的信息有：Signed-off-by, Acked-by, Cc, Reported-by:, Tested-by:, Reviewed-by:, Suggested-by: and Fixes。
     + 根据这些分析，特别是drivers，分析难处
     + 特别注意new comer
+
+### 轨迹
+- 从author变为committer的比率，时间：总的，各模块上. touch第二个模块的时间.(big topic:参与轨迹)
+
+    + 总的
+
+![x](./pics/box.tmAthr2Cmtr.AthrAlways-athr.png)
+![x](./pics/box.numChgsBef-tmAthr2Cmtr.AthrAlways-athr.png)
+
+```
+> quantile(trc$numChgsBef[trc$tp=='Always author'], c(0.7, 0.8, 0.9, 0.95, 0.97, 0.98, 0.99, 1)) # num: 11717
+    70%     80%     90%     95%     97%     98%     99%    100%
+   9.00   19.00   55.00  121.20  211.52  297.00  481.20 8485.00
+> quantile(trc$numChgsBef[trc$tp=='Become committer'], c(0.7, 0.8, 0.9, 0.95, 0.97, 0.98, 0.99, 1)) # num: 483
+    70%     80%     90%     95%     97%     98%     99%    100%
+ 214.00  301.00  509.00  794.25 1136.45 1324.20 1547.40 5832.00
+```
