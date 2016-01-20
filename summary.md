@@ -30,20 +30,9 @@ LinuxFoundation的publication:
 ```
 $ git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 ```
-#### 数据清洗
-```
-$ cd linux
-$ git log --numstat --pretty=format:"STARTOFTHECOMMIT%n%H;%an;%ae;%ad;%cn;%ce;%cd;%s" > log.linux
+#### 数据抽取、清洗
+详见processUnix.sh
 
-$ mv linux/log.linux .
-
-$ perl /home/user/unixhistory/extrgit.perl < log.linux > linux.l1
-
-$ cat linux.l1 |
-while read 
-  do perl -ane 'use Time::ParseDate qw(parsedate); ($rev,$aname,$cname,$alogin,$clogin,$nadd,$atime,$ctime,$f,$cmt)=split(/\;/,$_, -1); $at=parsedate("$atime");$ct=parsedate("$ctime"); print "$rev\;$aname\;$cname\;$alogin\;$clogin\;$nadd\;$at\;$ct\;$f\;$cmt"';
-done > linux.l2 
-```
 #### 开发者多个email、name的识别与合并
 一个开发者可能有多个name、email，这个要先处理一下。
 
@@ -54,7 +43,27 @@ done > linux.l2
 
 
 ## 分析
-一些基本情况见[pics](./pics)目录。
+下面的图片都在[pics](./pics)目录下。
+#### 整体情况
+- 每个月LOC 
+![LOC/month](./pics/loc-month.png)
+- 每个月changes, mods, files
+![x](./pics/changes.files.mods-month.png)
+- 每个月开发者情况
+![x](./pics/dvprs-month.png)
+- 每个月LTC的比例
+![x](./pics/ltcratio-month.png)
+
+#### 各模块上（root级下的目录）
+关于源代码的组织结构，参见[The Linux Kernel: The Source Code](http://www.linux.org/threads/the-linux-kernel-the-source-code.4204/).
+
+- changes数量
+![x](./pics/numDeltas-in-mod.month.png)
+- Authors数量
+![x](./pics/numAthrs-month.mod.png)
+- Committers数量
+![x](./pics/numCmtrs-month.mod.png)
+
 
 ## PS
 - 没有怎么整理的记录，见[note.md](./note.md)。这个文件记录了一些思路，基本只增不删，可读性差些，甚至有一些不正确的地方。

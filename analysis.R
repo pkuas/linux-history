@@ -247,101 +247,172 @@ convtArrOfListToDF<-function(arrList) {
 }
 
 # monthly committer
-mcmtr <- data.frame(cid=character(0),m=numeric(0),numChg=integer(0))
-## root module
+mcmtr <- data.frame(cid=character(0),m=numeric(0),numChg=integer(0),
+    numAthrs=integer(0), adjNumAthrs=numeric(0),
+    numMods=integer(0), adjNumMods=numeric(0))
 ### num of changes each year committed
-t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'm', 'cid', 'aid', length))
-t$mod <- 'root'
-colnames(t)[3] <- 'numChgs'
-########### or:
-# t <- as.data.frame(table(delta$cid, delta$y))
-# colnames(t) <- c('cid', 'm', 'numChg')
-# t$mod <- 'root'
-mcmtr <- rbind(mcmtr, t)
-### num of athrs every cmtr committed for, each period 
-t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'm', 'cid', 'aid', numOfUnique))
-colnames(t)[3]<-'numAthrs'
-mcmtr <- merge(mcmtr, t, by=c('cid', 'm'))
-### num of adjusted athrs every cmtr committed for, each period 
-t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'm', 'cid', 'aid', adjNumOfUnique))
-colnames(t)[3]<-'adjNumAthrs'
-mcmtr <- merge(mcmtr, t, by=c('cid', 'm'))
-### num of modules every cmtr committed for, each period
-t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'm', 'cid', 'mod', numOfUnique))
-colnames(t)[3]<-'numMods'
-mcmtr <- merge(mcmtr, t, by=c('cid', 'm'))
-### num of adjusted modules every cmtr committed for, each period
-t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'm', 'cid', 'mod', adjNumOfUnique))
-colnames(t)[3]<-'adjNumMods'
-mcmtr <- merge(mcmtr, t, by=c('cid', 'm'))
-## plot
-png("box.numMods-cmtr.month.png", width=80000,height=60000);
-boxplot(numMods ~ m, data = mcmtr)
-dev.off()
+modsInRoot <- unique(delta$mod[delta$mod!=delta$f]) # certa and usr will be dropped
+for (mod in modsInRoot) { # cannot be directly run, you should modified before run
+    ## init setting
+    tsel <- delta$mod == mod
+    # for root module, should run the code within this loop, loop not included
+    # tsel <- 1:numofdeltas
+    # mod <- 'root'
+
+    tdf <- data.frame(aid=character(0), m=numeric(0), numChg=integer(0))
+    print(mod)
+
+    t <- tryCatch({
+        convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(tsel, 'm', 'cid', 'aid', length))
+        }, error = function(e) {
+            cat(mod, 'error\n');
+            return(NULL)
+        })
+    if (is.null(t)) next
+    t$mod <- mod
+    colnames(t)[3] <- 'numChgs'
+    ########### or:
+    # t <- as.data.frame(table(delta$cid, delta$y))
+    # colnames(t) <- c('cid', 'm', 'numChg')
+    # t$mod <- 'root'
+    tdf <- rbind(tdf, t)
+    ### num of athrs every cmtr committed for, each period
+    t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(tsel, 'm', 'cid', 'aid', numOfUnique))
+    colnames(t)[3]<-'numAthrs'
+    t$mod <- mod
+    tdf <- merge(tdf, t, by=c('cid', 'mod', 'm'))
+    ### num of adjusted athrs every cmtr committed for, each period
+    t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(tsel, 'm', 'cid', 'aid', adjNumOfUnique))
+    colnames(t)[3]<-'adjNumAthrs'
+    t$mod <- mod
+    tdf <- merge(tdf, t, by=c('cid', 'mod', 'm'))
+    ### num of modules every cmtr committed for, each period
+    t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(tsel, 'm', 'cid', 'mod', numOfUnique))
+    colnames(t)[3]<-'numMods'
+    t$mod <- mod
+    tdf <- merge(tdf, t, by=c('cid', 'mod', 'm'))
+    ### num of adjusted modules every cmtr committed for, each period
+    t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(tsel, 'm', 'cid', 'mod', adjNumOfUnique))
+    colnames(t)[3]<-'adjNumMods'
+    t$mod <- mod
+    tdf <- merge(tdf, t, by=c('cid', 'mod', 'm'))
+
+    mcmtr <- rbind(mcmtr, tdf)
+}
 
 # monthly author
-mathr <- data.frame(aid=character(0), m=numeric(0), numChg=integer(0))
+mathr <- data.frame(aid=character(0), m=numeric(0), numChg=integer(0),
+    numCmtrs=integer(0), adjNumCmtrs=numeric(0),
+    numMods=integer(0), adjNumMods=numeric(0))
+
 ## root module
 ### num of changes each year coded
-t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'm', 'aid', 'aid', length))
-t$mod <- 'root'
-colnames(t)[c(1,3)] <- c('aid','numChgs')
-########### or:
-# t <- as.data.frame(table(delta$cid, delta$y))
-# colnames(t) <- c('cid', 'm', 'numChg')
-# t$mod <- 'root'
-mathr <- rbind(mathr, t)
-### num of cmtrs every athr committed to, each period 
-t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'm', 'aid', 'cid', numOfUnique))
-colnames(t)[c(1,3)]<-c('aid','numCmtrs')
-mathr <- merge(mathr, t, by=c('aid', 'm'))
-### num of adjusted cmtrs every athr committed to, each period 
-t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'm', 'aid', 'cid', adjNumOfUnique))
-colnames(t)[c(1,3)]<-c('aid','adjNumCmtrs')
-mathr <- merge(mathr, t, by=c('aid', 'm'))
-### num of modules every athr coded for, each period
-t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'm', 'aid', 'mod', numOfUnique))
-colnames(t)[c(1,3)]<-c('aid','numMods')
-mathr <- merge(mathr, t, by=c('aid', 'm'))
-### num of adjusted modules every cmtr committed for, each period
-t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(1:numofdeltas, 'm', 'aid', 'mod', adjNumOfUnique))
-colnames(t)[c(1,3)]<-c('aid','adjNumMods')
-mathr <- merge(mathr, t, by=c('aid', 'm'))
+## sub modules
+modsInRoot <- unique(delta$mod[delta$mod!=delta$f])
+#modsInRoot <- modsInRoot # 'certs' and 'usr' only has one change
+for (mod in modsInRoot) { # cannot be directly run, you should modified before run
+    ## init setting
+    tsel <- delta$mod == mod
+    tdf <- data.frame(aid=character(0), m=numeric(0), numChg=integer(0))
+    # for root module
+    # tsel <- 1:numofdeltas
+    # mod <- 'root'
+    print(mod)
+
+    t <- tryCatch({
+        convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(tsel, 'm', 'aid', 'aid', length))
+        }, error = function(e) {
+            cat(mod, 'error\n');
+            return(NULL)
+        })
+    if (is.null(t)) next
+    t$mod <- mod
+    colnames(t)[c(1,3)] <- c('aid','numChgs')
+    ########### or:
+    # t <- as.data.frame(table(delta$cid, delta$y))
+    # colnames(t) <- c('cid', 'm', 'numChg')
+    # t$mod <- 'root'
+    tdf <- rbind(tdf, t)
+    ### num of cmtrs every athr committed to, each period
+    t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(tsel, 'm', 'aid', 'cid', numOfUnique))
+    colnames(t)[c(1,3)]<-c('aid','numCmtrs')
+    t$mod <- mod
+    tdf <- merge(tdf, t, by=c('aid', 'mod', 'm'))
+    ### num of adjusted cmtrs every athr committed to, each period
+    t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(tsel, 'm', 'aid', 'cid', adjNumOfUnique))
+    colnames(t)[c(1,3)]<-c('aid','adjNumCmtrs')
+    t$mod <- mod
+    tdf <- merge(tdf, t, by=c('aid', 'mod', 'm'))
+    ### num of modules every athr coded for, each period
+    t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(tsel, 'm', 'aid', 'mod', numOfUnique))
+    colnames(t)[c(1,3)]<-c('aid','numMods')
+    t$mod <- mod
+    tdf <- merge(tdf, t, by=c('aid', 'mod', 'm'))
+    ### num of adjusted modules every cmtr committed for, each period
+    t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(tsel, 'm', 'aid', 'mod', adjNumOfUnique))
+    colnames(t)[c(1,3)]<-c('aid','adjNumMods')
+    t$mod <- mod
+    tdf <- merge(tdf, t, by=c('aid', 'mod', 'm'))
+
+    mathr <- rbind(mathr, tdf)
+}
+
+## ana
+### num Chgs in each month for each mod
+numChgs.in.month.mod.al <- t2apply(mathr$numChgs, mathr$m,  mathr$mod, sum)
+png('numChgs-month.mod.png', width=800, height=600)
+t <- numChgs.in.month.mod.al
+tcol <- rainbow(length(t))
+names(tcol) <- names(t)
+plot(1, type='n', xlim=c(2005, 2016), ylim=c(0, max(t$drivers)+10),
+    main='# of changes in each month for each module',
+    xlab='natural month', ylab='# of changes')
+tplt <- 1:length(t)
+tplt <- tplt[!(names(t) %in% c('root'))]
+for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='l')
+legend(2005, 7000, legend=c('drivers', 'arch'),cex=1,lwd=1,
+    col=tcol[c('drivers', 'arch')] ,bg="white");
+dev.off();
+
+### num of dvprs in each month for each module
+numAthrs.in.month.mod.al <- t2apply(mathr$aid, mathr$m, mathr$mod, length)
+png('numAthrs-month.mod.png', width=800, height=600)
+t <- numAthrs.in.month.mod.al
+tcol <- rainbow(length(t))
+names(tcol) <- names(t)
+plot(1, type='n', xlim=c(2005, 2016), ylim=c(0, max(t$drivers)+10),
+    main='# of authors in each month for each module',
+    xlab='natural month', ylab='# of authors')
+tplt <- 1:length(t)
+tplt <- tplt[!(names(t) %in% c('root'))]
+for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='l')
+legend(2005, 700, legend=c('drivers', 'arch'),cex=1,lwd=1,
+    col=tcol[c('drivers', 'arch')] ,bg="white");
+dev.off();
 
 
-t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(!drivers.delta.sel, 'y', 'cid', 'aid', adjNumOfUnique))
-t$mod <- 'ndrivers'
-mcmtr <- rbind(mcmtr, t)
-mcmtr$mod.f<-factor(mcmtr$mod,
-    levels=c('drivers', 'ndrivers'), labels=c('drivers', 'ndrivers'))
-tmod <- c('ndrivers', 'drivers')[drivers.delta.sel + 1]
-t <- as.data.frame(table(delta$cid, delta$y, tmod))
-colnames(t) <- c('cid', 'm', 'mod', 'numChg')
-mcmtr <- merge(mcmtr, t, by=c('cid', 'm', 'mod'))
-tdf <- data.frame(cid=character(0),m=character(0),adjNumAthrs=numeric(0),mod=character(0))
-t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(drivers.delta.sel, 'y', 'cid', 'aid', numOfUnique))
-t$mod <- 'drivers'
-tdf <- rbind(tdf, t)
-t <- convtArrOfListToDF(getNumVar2EachVar1InPrdofDelta(!drivers.delta.sel, 'y', 'cid', 'aid', numOfUnique))
-t$mod <- 'ndrivers'
-tdf <- rbind(tdf, t)
-colnames(tdf) <- c('cid', 'm', 'numAthrs','mod')
-mcmtr <- merge(mcmtr, tdf, by=c('cid', 'm', 'mod'))
+numCmtrs.in.month.mod.al <- t2apply(mcmtr$cid, mcmtr$m, mcmtr$mod, length)
+png('numCmtrs-month.mod.png', width=800, height=600)
+t <- numCmtrs.in.month.mod.al
+tcol <- rainbow(length(t))
+names(tcol) <- names(t)
+plot(1, type='n', xlim=c(2005, 2016), ylim=c(0, max(t$drivers)+10),
+    main='# of committers in each month for each module',
+    xlab='natural month', ylab='# of committers')
+tplt <- 1:length(t)
+tplt <- tplt[!(names(t) %in% c('root'))]
+for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='l')
+legend(2005, 120, legend=c('drivers', 'arch', 'fs'),cex=1,lwd=1,
+    col=tcol[c('drivers', 'arch', 'fs')] ,bg="white");
+dev.off();
+
+
 
 
 png("box.numChg-cmtr.year.png", width=800,height=600);
 boxplot(numChg ~ mod * m, data=mcmtr, col=c("gold", 'darkgreen'))
 title('Boxplot of # of changes for committers each year')
 dev.off()
-
-stats::cor(mcmtr[,c('adjNumAthrs', 'numChg')], method='pearson')
-stats::cor(mcmtr[,c('adjNumAthrs', 'numChg')], method='spearman')
-stats::cor(mcmtr[mcmtr$mod=='drivers',c('adjNumAthrs', 'numChg')], method='pearson')
-stats::cor(mcmtr[mcmtr$mod=='drivers',c('adjNumAthrs', 'numChg')], method='spearman')
-stats::cor(mcmtr[mcmtr$mod!='drivers',c('adjNumAthrs', 'numChg')], method='pearson')
-stats::cor(mcmtr[mcmtr$mod!='drivers',c('adjNumAthrs', 'numChg')], method='spearman')
-
-
 
 png("box.mcmtr.png", width=800,height=600);
 b<-boxplot(adjNumAthrs ~ mod.f *m, data=mcmtr, ylim=c(0, 8), col=c("gold","darkgreen"))

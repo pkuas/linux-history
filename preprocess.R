@@ -11,7 +11,7 @@ numOfUnique<-function(x) {return(length(unique(x)))}
 adjNumOfUnique <- function(x) {return(length(x)/max(table(x)))}
 cosSim<-function(x, y) {return(sum(x*y)/sqrt(sum(x^2))/sqrt(sum(y^2)))}
 numOfLessThan0 <- function(x) {return(sum(x < 0))}
-
+t2apply <- function(v, g2, g1, f) {return(tapply(1:length(g1), g1, function(x) {return(tapply(v[x], g2[x], f))}))}
 startdate <- 2005
 enddate <- 2015.917
 
