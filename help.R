@@ -1,3 +1,6 @@
+setwd("/store1/chenqy/linuxhistory/")
+load("./.RData")
+save.image(file = "./.RData")
 # check mapping between email and name
 numOfUnique<-function(x) {return(length(unique(x)))}
 numAnamePerAemail <- tapply(delta$an, delta$ae, numOfUnique)

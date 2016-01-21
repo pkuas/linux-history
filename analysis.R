@@ -362,50 +362,82 @@ for (mod in modsInRoot) { # cannot be directly run, you should modified before r
 numChgs.in.month.mod.al <- t2apply(mathr$numChgs, mathr$m,  mathr$mod, sum)
 png('numChgs-month.mod.png', width=800, height=600)
 t <- numChgs.in.month.mod.al
-tcol <- rainbow(length(t))
+tcol <- rainbow(length(t) + 1)[-1]
 names(tcol) <- names(t)
+tplt <- names(t)[!(names(t) %in% c('root'))]
 plot(1, type='n', xlim=c(2005, 2016), ylim=c(0, max(t$drivers)+10),
     main='# of changes in each month for each module',
     xlab='natural month', ylab='# of changes')
-tplt <- 1:length(t)
-tplt <- tplt[!(names(t) %in% c('root'))]
 for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='l')
 legend(2005, 7000, legend=c('drivers', 'arch'),cex=1,lwd=1,
     col=tcol[c('drivers', 'arch')] ,bg="white");
 dev.off();
 
-### num of dvprs in each month for each module
+### num of athrs in each month for each module
 numAthrs.in.month.mod.al <- t2apply(mathr$aid, mathr$m, mathr$mod, length)
 png('numAthrs-month.mod.png', width=800, height=600)
 t <- numAthrs.in.month.mod.al
-tcol <- rainbow(length(t))
+tcol <- rainbow(length(t) + 1)[-1]
 names(tcol) <- names(t)
+tplt <- names(t)[!(names(t) %in% c('root'))]
 plot(1, type='n', xlim=c(2005, 2016), ylim=c(0, max(t$drivers)+10),
     main='# of authors in each month for each module',
     xlab='natural month', ylab='# of authors')
-tplt <- 1:length(t)
-tplt <- tplt[!(names(t) %in% c('root'))]
 for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='l')
 legend(2005, 700, legend=c('drivers', 'arch'),cex=1,lwd=1,
     col=tcol[c('drivers', 'arch')] ,bg="white");
 dev.off();
 
-
+### num of cmtrs in each month for each module
 numCmtrs.in.month.mod.al <- t2apply(mcmtr$cid, mcmtr$m, mcmtr$mod, length)
 png('numCmtrs-month.mod.png', width=800, height=600)
 t <- numCmtrs.in.month.mod.al
-tcol <- rainbow(length(t))
+tcol <- rainbow(length(t) + 1)[-1]
 names(tcol) <- names(t)
+tplt <- names(t)[!(names(t) %in% c('root'))]
 plot(1, type='n', xlim=c(2005, 2016), ylim=c(0, max(t$drivers)+10),
     main='# of committers in each month for each module',
     xlab='natural month', ylab='# of committers')
-tplt <- 1:length(t)
-tplt <- tplt[!(names(t) %in% c('root'))]
 for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='l')
 legend(2005, 120, legend=c('drivers', 'arch', 'fs'),cex=1,lwd=1,
     col=tcol[c('drivers', 'arch', 'fs')] ,bg="white");
 dev.off();
 
+### num of new comers in each month for each module
+tsel <- delta$tenure==0
+numJoiners.in.month.mod.al <- t2apply(delta$aid[tsel], delta$m[tsel], delta$mod[tsel], numOfUnique) # joiners
+png('numJoiners-month.mod.png', width=800, height=600)
+t <- numJoiners.in.month.mod.al
+tcol <- rainbow(length(t) + 1)[-1]
+names(tcol) <- names(t)
+tplt <- names(t)[!(names(t) %in% c('root'))]
+plot(1, type='n', xlim=c(2005, 2016), ylim=c(0, max(t$drivers)+3),
+    main='# of joiners in each month for each module',
+    xlab='natural month', ylab='# of joiners')
+for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='l')
+legend(2007, 100, legend=c('drivers', 'arch'),cex=1,lwd=1,
+    col=tcol[c('drivers', 'arch')] ,bg="white");
+dev.off();
+
+## deepen into drivers
+tsel <- delta$mod == 'drivers' & delta$mmod != delta$f
+mods.in.drivers <- unique(delta$mmod[tsel])
+tcol <- rainbow(length(mods.in.drivers))
+tcol <- sample(tcol, replace=F)
+names(tcol) <- mods.in.drivers
+### num of changes in each month for each modules of drivers
+numChgs.in.month.mdrivers.al <- t2apply(delta$aid[tsel], delta$m[tsel], delta$mmod[tsel], length)
+png('numChgs-month.mdrivers.png', width=800, height=600)
+t <- numChgs.in.month.mdrivers.al
+tplt <- unique(c(head(names(sort(-unlist(lapply(t, sum)))), n=5),
+	head(names(sort(-unlist(lapply(t, max)))), n=5)))
+plot(1, type='n', xlim=c(2005, 2016), ylim=c(0, max(t[['drivers/gpu']])+3),
+    main='# of changes in each month for each module of drivers',
+    xlab='natural month', ylab='# of changes')
+for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='l')
+legend(2005, 3000, legend=tplt,cex=1,lwd=1,
+    col=tcol[tplt] ,bg="white");
+dev.off();
 
 
 
