@@ -73,165 +73,6 @@ lines(as.numeric(names(delspson.month.arr)), delspson.month.arr, col=2);
 legend(2005, tt,legend=c("LOC added per change per author","LOC deleted per change per author"),cex=1,lwd=2,col=rep(1:2),bg="white");
 dev.off()
 
-# structure analysis
-
-## disconcern time
-mods.author.arr <- tapply(delta$mod, delta$aid, numOfUnique)
-authors.numMods.tb <- table(mods.author.arr)
-mods.cmtr.arr <- tapply(delta$mod, delta$cid, numOfUnique)
-cmtrs.numMods.tb <- table(mods.cmtr.arr)
-png("CFG.dvpr-numMods.png", width=800,height=600);
-plot(c(0, as.numeric(names(authors.numMods.tb))),
-	c(0, cumsum(authors.numMods.tb/sum(authors.numMods.tb))),
-	main = "CFG of developers' modules",xlab="Number of modules",ylab="CF",
-	ylim=c(0,1), pch=2, lty=3, type='b', col=2);
-lines(c(0, as.numeric(names(cmtrs.numMods.tb))), c(0, cumsum(cmtrs.numMods.tb/sum(cmtrs.numMods.tb))),type='b', pch=2, lty=3, col=3);
-legend(10, 0.6,legend=paste(c("author: total","committer: total"),
-	c(sum(authors.numMods.tb), sum(cmtrs.numMods.tb))),
-	cex=1,lwd=2,col=2:3,bg="white");
-dev.off()
-## adjusted num of modules
-adjmods.author.arr <- tapply(delta$mod, delta$aid, adjNumOfUnique)
-adjmods.cmtr.arr <- tapply(delta$mod, delta$cid, adjNumOfUnique)
-png("box.dvprs-adjNumMods.png", width=800,height=600);
-boxplot(numMods ~ dvpr,
-	data=data.frame(numMods=c(adjmods.author.arr, adjmods.cmtr.arr),
-		dvpr=c(rep('author', length(adjmods.author.arr)),
-			rep('committer', length(adjmods.cmtr.arr)))),
-	main="Developers' adjusted modules", ylab='# of adjusted modules')
-text(2,c(4.5, 4.3), labels=paste(c("# of authors:","# of committers:"),
-	c(length(adjmods.author.arr), length(adjmods.cmtr.arr))),
-	cex=1,col=1,bg="white");
-dev.off()
-
-
-## in drivers
-drivers.delta.sel <- delta$mod == 'drivers' & delta$mmod != delta$f
-### non-adjusted
-mods.author.indrivers.arr <- tapply(delta$mmod[drivers.delta.sel], delta$aid[drivers.delta.sel], numOfUnique)
-authors.numMods.indrivers.tb <- table(mods.author.indrivers.arr)
-mods.cmtr.indrivers.arr <- tapply(delta$mmod[drivers.delta.sel], delta$cid[drivers.delta.sel], numOfUnique)
-cmtrs.numMods.indrivers.tb <- table(mods.cmtr.indrivers.arr)
-png("CFG.dvprs-numMods.indrivers.png", width=800,height=600);
-plot(c(0, as.numeric(names(authors.numMods.indrivers.tb))), c(0, cumsum(authors.numMods.indrivers.tb/sum(authors.numMods.indrivers.tb))), ylim=c(0,1),main = "CFG of developers' modules in drivers",type='b', pch=2, lty=3,xlab="Number of modules",ylab="CF", col=2);
-lines(c(0, as.numeric(names(cmtrs.numMods.indrivers.tb))), c(0, cumsum(cmtrs.numMods.indrivers.tb/sum(cmtrs.numMods.indrivers.tb))), type='b', pch=2, lty=3, col=3);
-legend(50, 0.6,legend=c("author","committer"),cex=1,lwd=2,col=2:3,bg="white");
-dev.off()
-### adjusted
-adjmods.author.indrivers.arr <- tapply(delta$mmod[drivers.delta.sel], delta$aid[drivers.delta.sel], adjNumOfUnique)
-adjmods.cmtr.indrivers.arr <- tapply(delta$mmod[drivers.delta.sel], delta$cid[drivers.delta.sel], adjNumOfUnique)
-png("box.dvprs-adjNumMods.indrivers.png", width=800,height=600);
-boxplot(numMods ~ dvpr,
-	data=data.frame(numMods=c(adjmods.author.indrivers.arr, adjmods.cmtr.indrivers.arr),
-		dvpr=c(rep('author', length(adjmods.author.indrivers.arr)),
-			rep('committer', length(adjmods.cmtr.indrivers.arr)))),
-	main="Developers' adjusted modules in drivers", ylab='# of adjusted modules')
-axis(2, c(1, seq(2, max(adjmods.author.indrivers.arr) + 1, 2)))
-text(1.5,c(9.5, 9.3), labels=paste(c("# of authors:","# of committers:"),
-	c(length(adjmods.author.indrivers.arr), length(adjmods.cmtr.indrivers.arr))),
-	cex=1,col=1,bg="white");
-dev.off()
-
-## in drivers/staging
-staging.delta.sel <- delta$mmod == 'drivers/staging' & delta$smod != delta$f
-### not adjusted
-mods.author.instaging.arr <- tapply(delta$smod[staging.delta.sel], delta$aid[staging.delta.sel], numOfUnique)
-authors.numMods.instaging.tb <- table(mods.author.instaging.arr)
-mods.cmtr.instaging.arr <- tapply(delta$smod[staging.delta.sel], delta$cid[staging.delta.sel], numOfUnique)
-cmtrs.numMods.instaging.tb <- table(mods.cmtr.instaging.arr)
-png("CFG.dvprs-numMods.instaging.png", width=800,height=600);
-plot(c(0, as.numeric(names(authors.numMods.instaging.tb))), c(0, cumsum(authors.numMods.instaging.tb/sum(authors.numMods.instaging.tb))), ylim=c(0,1),main = "CFG of developers' modules in staging",type='b', pch=2, lty=3,xlab="Number of modules",ylab="CF", col=2);
-lines(c(0, as.numeric(names(cmtrs.numMods.instaging.tb))), c(0, cumsum(cmtrs.numMods.instaging.tb/sum(cmtrs.numMods.instaging.tb))), type='b', pch=2, lty=3, col=3);
-abline(h=c(0.8, 0.9, 0.95), lty=2, col='gray')
-legend(50, 0.6,legend=c("author","committer"),cex=1,lwd=2,col=2:3,bg="white");
-dev.off()
-### adjusted
-adjmods.author.instaging.arr <- tapply(delta$smod[staging.delta.sel], delta$aid[staging.delta.sel], adjNumOfUnique)
-adjmods.cmtr.instaging.arr <- tapply(delta$smod[staging.delta.sel], delta$cid[staging.delta.sel], adjNumOfUnique)
-png("box.dvprs-adjNumMods.instaging.png", width=800,height=600);
-boxplot(numMods ~ dvpr,
-	data=data.frame(numMods=c(adjmods.author.instaging.arr, adjmods.cmtr.instaging.arr),
-		dvpr=c(rep('author', length(adjmods.author.instaging.arr)),
-			rep('committer', length(adjmods.cmtr.instaging.arr)))),
-	main="Developers' adjusted modules in staging", ylab='# of adjusted modules')
-axis(2, c(1, seq(2, max(adjmods.author.instaging.arr) + 1, 2)))
-text(1.5,c(9.5, 8.3), labels=paste(c("# of authors:","# of committers:"),
-	c(length(adjmods.author.instaging.arr), length(adjmods.cmtr.instaging.arr))),
-	cex=1,col=1,bg="white");
-dev.off()
-
-##
-### It could be this case: core authors/committers touched more modules, so we need
-### core authors
-chgsofauthor.utb <- table(delta$aid)
-chgsofauthor.tb <- sort(chgsofauthor.utb, decreasing=T)
-coreAuthor.chgsofauthor.sel <- cumsum(chgsofauthor.tb)/sum(chgsofauthor.tb) <= 0.8
-coreAuthor.delta.sel <- coreAuthor.chgsofauthor.sel[delta$aid]
-coreAuthor.chgsofauthorUtb.sel <- coreAuthor.chgsofauthor.sel[names(chgsofauthor.utb)]
-coreAuthor.modsAuthorArr.sel <- coreAuthor.chgsofauthor.sel[names(mods.author.arr)]
-
-mods.coreAuthor.arr <- tapply(delta$mod[coreAuthor.delta.sel], delta$aid[coreAuthor.delta.sel], numOfUnique)
-coreAuthors.numMods.tb <- table(mods.coreAuthor.arr)
-### core committers
-chgsOfCmtrs.utb <- table(delta$cid)
-chgsOfCmtrs.tb <- sort(chgsOfCmtrs.utb, decreasing=T)
-coreCmtr.chgsOfCmtrs.sel <- cumsum(chgsOfCmtrs.tb)/sum(chgsOfCmtrs.tb) <= 0.8
-coreCmtr.delta.sel <- coreCmtr.chgsOfCmtrs.sel[delta$cid]
-mods.coreCmtr.arr <- tapply(delta$mod[coreCmtr.delta.sel], delta$cid[coreCmtr.delta.sel], numOfUnique)
-### plot
-#### CFG
-coreCmtrs.numMods.tb <- table(mods.coreCmtr.arr)
-png("CFG.coreDvprs-numMods.png", width=800,height=600);
-plot(c(0, as.numeric(names(coreAuthors.numMods.tb))),
-	c(0, cumsum(coreAuthors.numMods.tb)/sum(coreAuthors.numMods.tb)),
-	main = "CFG of core developers' modules", xlab="Number of modules", ylab="CF",
-	ylim = c(0, 1),	type='b',pch=2, lty=3, col=2)
-lines(c(0, as.numeric(names(coreCmtrs.numMods.tb))),
-	c(0, cumsum(coreCmtrs.numMods.tb)/sum(coreCmtrs.numMods.tb)),
-	type='b',pch=2, lty=3, col=3)
-abline(h=c(0.8, 0.9, 0.95), lty=2, col='gray')
-legend(10, 0.6, legend=paste(c("author: total","committer: total"),
-	c(sum(coreAuthors.numMods.tb), sum(coreCmtrs.numMods.tb))),
-	cex=1,lwd=2,col=2:3,bg="white");
-dev.off()
-#### boxplot
-png("box.coreDvprs-numMods.png", width=800,height=600);
-boxplot(numMods ~ dvpr,
-	data=data.frame(numMods=c(mods.coreAuthor.arr, mods.coreCmtr.arr),
-		dvpr=c(rep('author', length(mods.coreAuthor.arr)),
-			rep('committer', length(mods.coreCmtr.arr)))),
-	main="Core developers' modules", ylab='# of modules')
-dev.off()
-
-
-### core
-adjmods.coreAuthor.arr <- tapply(delta$mod[coreAuthor.delta.sel], delta$aid[coreAuthor.delta.sel], adjNumOfUnique)
-adjmods.coreCmtr.arr <- tapply(delta$mod[coreCmtr.delta.sel], delta$cid[coreCmtr.delta.sel], adjNumOfUnique)
-png("box.coreDvprs-adjNumMods.png", width=800,height=600);
-boxplot(numMods ~ dvpr,
-	data=data.frame(numMods=c(adjmods.coreAuthor.arr, adjmods.coreCmtr.arr),
-		dvpr=c(rep('author', length(adjmods.coreAuthor.arr)),
-			rep('committer', length(adjmods.coreCmtr.arr)))),
-	main="Core developers' adjusted modules", ylab='# of adjusted modules')
-text(2,c(3.5, 3.3), labels=paste(c("# of authors:","# of committers:"),
-	c(length(adjmods.coreAuthor.arr), length(adjmods.coreCmtr.arr))),
-	cex=1,col=1,bg="white");
-dev.off()
-
-# Membership
-mods.author.utb <- table(delta$aid, delta$mod)
-mods.author.uptb <- prop.table(mods.author.utb, 1)
-mods.coreAuthor.uptb <- mods.author.uptb[coreAuthor.chgsofauthor.sel[rownames(mods.author.uptb)], ]
-
-# author-committer mapping
-numAthrs.cmtr.arr <- tapply(delta$aid, delta$cid, numOfUnique)
-adjNumAthrs.cmtr.arr <- tapply(delta$aid, delta$cid, adjNumOfUnique)
-numCmtrs.athr.arr <- tapply(delta$cid, delta$aid, numOfUnique)
-adjNumCmtrs.athr.arr <- tapply(delta$cid, delta$aid, adjNumOfUnique)
-
-numAthrs.cmtr.indrivers.arr <- tapply(delta$aid[drivers.delta.sel], delta$cid[drivers.delta.sel], numOfUnique)
-adjNumAthrs.cmtr.indrivers.arr <- tapply(delta$aid[drivers.delta.sel], delta$cid[drivers.delta.sel], adjNumOfUnique)
-
 getNumVar2EachVar1InPrdofDelta<-function(sel, prd, var1, var2, measure) {
 	return(tapply((1:numofdeltas)[sel], delta[sel, prd],
 		function(x) {return(tapply(delta[x, var2], delta[x, var1], measure))}))
@@ -246,7 +87,8 @@ convtArrOfListToDF<-function(arrList) {
 	return(t)
 }
 
-# monthly committer
+# monthly log: extracted from delta
+## monthly committer
 mcmtr <- data.frame(cid=character(0),m=numeric(0),numChg=integer(0),
     numAthrs=integer(0), adjNumAthrs=numeric(0),
     numMods=integer(0), adjNumMods=numeric(0))
@@ -300,14 +142,12 @@ for (mod in modsInRoot) { # cannot be directly run, you should modified before r
     mcmtr <- rbind(mcmtr, tdf)
 }
 
-# monthly author
+## monthly author
 mathr <- data.frame(aid=character(0), m=numeric(0), numChg=integer(0),
     numCmtrs=integer(0), adjNumCmtrs=numeric(0),
     numMods=integer(0), adjNumMods=numeric(0))
-
-## root module
 ### num of changes each year coded
-## sub modules
+## root module & sub modules
 modsInRoot <- unique(delta$mod[delta$mod!=delta$f])
 #modsInRoot <- modsInRoot # 'certs' and 'usr' only has one change
 for (mod in modsInRoot) { # cannot be directly run, you should modified before run
@@ -357,7 +197,7 @@ for (mod in modsInRoot) { # cannot be directly run, you should modified before r
     mathr <- rbind(mathr, tdf)
 }
 
-## ana
+## monthly ana for each mod of root
 ### num Chgs in each month for each mod
 numChgs.in.month.mod.al <- t2apply(mathr$numChgs, mathr$m,  mathr$mod, sum)
 png('numChgs-month.mod.png', width=800, height=600)
@@ -419,7 +259,7 @@ legend(2007, 100, legend=c('drivers', 'arch'),cex=1,lwd=1,
     col=tcol[c('drivers', 'arch')] ,bg="white");
 dev.off();
 
-## deepen into drivers
+## deepen into drivers, monthly ana for each mod of drivers
 tsel <- delta$mod == 'drivers' & delta$mmod != delta$f
 mods.in.drivers <- unique(delta$mmod[tsel])
 tcol <- rainbow(length(mods.in.drivers))
@@ -438,8 +278,216 @@ for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='l')
 legend(2005, 3000, legend=tplt,cex=1,lwd=1,
     col=tcol[tplt] ,bg="white");
 dev.off();
+sink('numChgs.in.month.mdrivers.al.txt', append=F)
+print(t)
+sink()
+### num of authors in each month for each modules of drivers
+numAthrs.in.month.mdrivers.al <- t2apply(delta$aid[tsel], delta$m[tsel], delta$mmod[tsel], numOfUnique)
+png('numAthrs-month.mdrivers.png', width=800, height=600)
+t <- numAthrs.in.month.mdrivers.al
+tplt <- unique(	head(names(sort(-unlist(lapply(t, max)))), n=8))
+plot(1, type='n', xlim=c(2005, 2016), ylim=c(0, max(t[['drivers/net']])+3),
+    main='# of authors in each month for each module of drivers',
+    xlab='natural month', ylab='# of authors')
+for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='l')
+legend(2005, 176, legend=tplt,cex=1,lwd=1,
+    col=tcol[tplt] ,bg="white");
+dev.off();
+sink('numAthrs.in.month.mdrivers.al.txt', append=F)
+print(t)
+sink()
+### num of cmtrs in each month for each modules of drivers
+numCmtrs.in.month.mdrivers.al <- t2apply(delta$cid[tsel], delta$m[tsel], delta$mmod[tsel], numOfUnique)
+png('numCmtrs-month.mdrivers.png', width=800, height=600)
+t <- numCmtrs.in.month.mdrivers.al
+tplt <- unique(	head(names(sort(-unlist(lapply(t, max)))), n=5))
+plot(1, type='n', xlim=c(2005, 2016), ylim=c(0, max(t[['drivers/gpu']])+2),
+    main='# of committers in each month for each module of drivers',
+    xlab='natural month', ylab='# of committers')
+for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='l')
+legend(2005, 25, legend=tplt,cex=1,lwd=1,
+    col=tcol[tplt] ,bg="white");
+dev.off();
+sink('numCmtrs.in.month.mdrivers.al.txt', append=F)
+print(t)
+sink()
 
+# structure analysis, disconcern time
+## see each author/committer contributed to how many modules of root
+### non-adjusted
+mods.author.arr <- tapply(delta$mod, delta$aid, numOfUnique)
+authors.numMods.tb <- table(mods.author.arr)
+mods.cmtr.arr <- tapply(delta$mod, delta$cid, numOfUnique)
+cmtrs.numMods.tb <- table(mods.cmtr.arr)
+png("CFG.dvpr-numMods.png", width=800,height=600);
+plot(c(0, as.numeric(names(authors.numMods.tb))),
+	c(0, cumsum(authors.numMods.tb/sum(authors.numMods.tb))),
+	main = "CFG of developers' modules",xlab="Number of modules",ylab="CF",
+	ylim=c(0,1), pch=2, lty=3, type='b', col=2);
+lines(c(0, as.numeric(names(cmtrs.numMods.tb))), c(0, cumsum(cmtrs.numMods.tb/sum(cmtrs.numMods.tb))),type='b', pch=2, lty=3, col=3);
+legend(10, 0.6,legend=paste(c("author: total","committer: total"),
+	c(sum(authors.numMods.tb), sum(cmtrs.numMods.tb))),
+	cex=1,lwd=2,col=2:3,bg="white");
+dev.off()
+### adjusted num of modules
+adjmods.author.arr <- tapply(delta$mod, delta$aid, adjNumOfUnique)
+adjmods.cmtr.arr <- tapply(delta$mod, delta$cid, adjNumOfUnique)
+png("box.dvprs-adjNumMods.png", width=800,height=600);
+boxplot(numMods ~ dvpr,
+	data=data.frame(numMods=c(adjmods.author.arr, adjmods.cmtr.arr),
+		dvpr=c(rep('author', length(adjmods.author.arr)),
+			rep('committer', length(adjmods.cmtr.arr)))),
+	main="Developers' adjusted modules", ylab='# of adjusted modules')
+text(2,c(4.5, 4.3), labels=paste(c("# of authors:","# of committers:"),
+	c(length(adjmods.author.arr), length(adjmods.cmtr.arr))),
+	cex=1,col=1,bg="white");
+dev.off()
 
+## see each author/committer contributed to how many modules of drivers
+drivers.delta.sel <- delta$mod == 'drivers' & delta$mmod != delta$f
+### non-adjusted
+mods.author.indrivers.arr <- tapply(delta$mmod[drivers.delta.sel], delta$aid[drivers.delta.sel], numOfUnique)
+authors.numMods.indrivers.tb <- table(mods.author.indrivers.arr)
+mods.cmtr.indrivers.arr <- tapply(delta$mmod[drivers.delta.sel], delta$cid[drivers.delta.sel], numOfUnique)
+cmtrs.numMods.indrivers.tb <- table(mods.cmtr.indrivers.arr)
+png("CFG.dvprs-numMods.indrivers.png", width=800,height=600);
+plot(c(0, as.numeric(names(authors.numMods.indrivers.tb))), c(0, cumsum(authors.numMods.indrivers.tb/sum(authors.numMods.indrivers.tb))), ylim=c(0,1),main = "CFG of developers' modules in drivers",type='b', pch=2, lty=3,xlab="Number of modules",ylab="CF", col=2);
+lines(c(0, as.numeric(names(cmtrs.numMods.indrivers.tb))), c(0, cumsum(cmtrs.numMods.indrivers.tb/sum(cmtrs.numMods.indrivers.tb))), type='b', pch=2, lty=3, col=3);
+legend(50, 0.6,legend=c("author","committer"),cex=1,lwd=2,col=2:3,bg="white");
+dev.off()
+### adjusted
+adjmods.author.indrivers.arr <- tapply(delta$mmod[drivers.delta.sel], delta$aid[drivers.delta.sel], adjNumOfUnique)
+adjmods.cmtr.indrivers.arr <- tapply(delta$mmod[drivers.delta.sel], delta$cid[drivers.delta.sel], adjNumOfUnique)
+png("box.dvprs-adjNumMods.indrivers.png", width=800,height=600);
+boxplot(numMods ~ dvpr,
+	data=data.frame(numMods=c(adjmods.author.indrivers.arr, adjmods.cmtr.indrivers.arr),
+		dvpr=c(rep('author', length(adjmods.author.indrivers.arr)),
+			rep('committer', length(adjmods.cmtr.indrivers.arr)))),
+	main="Developers' adjusted modules in drivers", ylab='# of adjusted modules')
+axis(2, c(1, seq(2, max(adjmods.author.indrivers.arr) + 1, 2)))
+text(1.5,c(9.5, 9.3), labels=paste(c("# of authors:","# of committers:"),
+	c(length(adjmods.author.indrivers.arr), length(adjmods.cmtr.indrivers.arr))),
+	cex=1,col=1,bg="white");
+dev.off()
+
+## see each author/committer contributed to how many modules of drivers/staging
+staging.delta.sel <- delta$mmod == 'drivers/staging' & delta$smod != delta$f
+### not adjusted
+mods.author.instaging.arr <- tapply(delta$smod[staging.delta.sel], delta$aid[staging.delta.sel], numOfUnique)
+authors.numMods.instaging.tb <- table(mods.author.instaging.arr)
+mods.cmtr.instaging.arr <- tapply(delta$smod[staging.delta.sel], delta$cid[staging.delta.sel], numOfUnique)
+cmtrs.numMods.instaging.tb <- table(mods.cmtr.instaging.arr)
+png("CFG.dvprs-numMods.instaging.png", width=800,height=600);
+plot(c(0, as.numeric(names(authors.numMods.instaging.tb))), c(0, cumsum(authors.numMods.instaging.tb/sum(authors.numMods.instaging.tb))), ylim=c(0,1),main = "CFG of developers' modules in staging",type='b', pch=2, lty=3,xlab="Number of modules",ylab="CF", col=2);
+lines(c(0, as.numeric(names(cmtrs.numMods.instaging.tb))), c(0, cumsum(cmtrs.numMods.instaging.tb/sum(cmtrs.numMods.instaging.tb))), type='b', pch=2, lty=3, col=3);
+abline(h=c(0.8, 0.9, 0.95), lty=2, col='gray')
+legend(50, 0.6,legend=c("author","committer"),cex=1,lwd=2,col=2:3,bg="white");
+dev.off()
+### adjusted
+adjmods.author.instaging.arr <- tapply(delta$smod[staging.delta.sel], delta$aid[staging.delta.sel], adjNumOfUnique)
+adjmods.cmtr.instaging.arr <- tapply(delta$smod[staging.delta.sel], delta$cid[staging.delta.sel], adjNumOfUnique)
+png("box.dvprs-adjNumMods.instaging.png", width=800,height=600);
+boxplot(numMods ~ dvpr,
+	data=data.frame(numMods=c(adjmods.author.instaging.arr, adjmods.cmtr.instaging.arr),
+		dvpr=c(rep('author', length(adjmods.author.instaging.arr)),
+			rep('committer', length(adjmods.cmtr.instaging.arr)))),
+	main="Developers' adjusted modules in staging", ylab='# of adjusted modules')
+axis(2, c(1, seq(2, max(adjmods.author.instaging.arr) + 1, 2)))
+text(1.5,c(9.5, 8.3), labels=paste(c("# of authors:","# of committers:"),
+	c(length(adjmods.author.instaging.arr), length(adjmods.cmtr.instaging.arr))),
+	cex=1,col=1,bg="white");
+dev.off()
+
+## see each core author/committer contributed to how many modules of root
+###: It could be this case: core authors/committers touched more modules, so we need
+### non-adjusted
+#### core authors
+chgsofauthor.utb <- table(delta$aid)
+chgsofauthor.tb <- sort(chgsofauthor.utb, decreasing=T)
+coreAuthor.chgsofauthor.sel <- cumsum(chgsofauthor.tb)/sum(chgsofauthor.tb) <= 0.8
+coreAuthor.delta.sel <- coreAuthor.chgsofauthor.sel[delta$aid]
+coreAuthor.chgsofauthorUtb.sel <- coreAuthor.chgsofauthor.sel[names(chgsofauthor.utb)]
+coreAuthor.modsAuthorArr.sel <- coreAuthor.chgsofauthor.sel[names(mods.author.arr)]
+mods.coreAuthor.arr <- tapply(delta$mod[coreAuthor.delta.sel], delta$aid[coreAuthor.delta.sel], numOfUnique)
+coreAuthors.numMods.tb <- table(mods.coreAuthor.arr)
+#### core committers
+chgsOfCmtrs.utb <- table(delta$cid)
+chgsOfCmtrs.tb <- sort(chgsOfCmtrs.utb, decreasing=T)
+coreCmtr.chgsOfCmtrs.sel <- cumsum(chgsOfCmtrs.tb)/sum(chgsOfCmtrs.tb) <= 0.8
+coreCmtr.delta.sel <- coreCmtr.chgsOfCmtrs.sel[delta$cid]
+mods.coreCmtr.arr <- tapply(delta$mod[coreCmtr.delta.sel], delta$cid[coreCmtr.delta.sel], numOfUnique)
+#### plot
+##### CFG
+coreCmtrs.numMods.tb <- table(mods.coreCmtr.arr)
+png("CFG.coreDvprs-numMods.png", width=800,height=600);
+plot(c(0, as.numeric(names(coreAuthors.numMods.tb))),
+	c(0, cumsum(coreAuthors.numMods.tb)/sum(coreAuthors.numMods.tb)),
+	main = "CFG of core developers' modules", xlab="Number of modules", ylab="CF",
+	ylim = c(0, 1),	type='b',pch=2, lty=3, col=2)
+lines(c(0, as.numeric(names(coreCmtrs.numMods.tb))),
+	c(0, cumsum(coreCmtrs.numMods.tb)/sum(coreCmtrs.numMods.tb)),
+	type='b',pch=2, lty=3, col=3)
+abline(h=c(0.8, 0.9, 0.95), lty=2, col='gray')
+legend(10, 0.6, legend=paste(c("author: total","committer: total"),
+	c(sum(coreAuthors.numMods.tb), sum(coreCmtrs.numMods.tb))),
+	cex=1,lwd=2,col=2:3,bg="white");
+dev.off()
+##### boxplot
+png("box.coreDvprs-numMods.png", width=800,height=600);
+boxplot(numMods ~ dvpr,
+	data=data.frame(numMods=c(mods.coreAuthor.arr, mods.coreCmtr.arr),
+		dvpr=c(rep('author', length(mods.coreAuthor.arr)),
+			rep('committer', length(mods.coreCmtr.arr)))),
+	main="Core developers' modules", ylab='# of modules')
+dev.off()
+
+### adjusted core dvprs
+adjmods.coreAuthor.arr <- tapply(delta$mod[coreAuthor.delta.sel], delta$aid[coreAuthor.delta.sel], adjNumOfUnique)
+adjmods.coreCmtr.arr <- tapply(delta$mod[coreCmtr.delta.sel], delta$cid[coreCmtr.delta.sel], adjNumOfUnique)
+png("box.coreDvprs-adjNumMods.png", width=800,height=600);
+boxplot(numMods ~ dvpr,
+	data=data.frame(numMods=c(adjmods.coreAuthor.arr, adjmods.coreCmtr.arr),
+		dvpr=c(rep('author', length(adjmods.coreAuthor.arr)),
+			rep('committer', length(adjmods.coreCmtr.arr)))),
+	main="Core developers' adjusted modules", ylab='# of adjusted modules')
+text(2,c(3.5, 3.3), labels=paste(c("# of authors:","# of committers:"),
+	c(length(adjmods.coreAuthor.arr), length(adjmods.coreCmtr.arr))),
+	cex=1,col=1,bg="white");
+dev.off()
+
+# author-committer mapping
+#: i.e., how many committers each author's code is committed
+#: and how many authors' code is committed by a committer
+## in root: non-adjusted & adjusted
+numAthrs.cmtr.arr <- tapply(delta$aid, delta$cid, numOfUnique)
+adjNumAthrs.cmtr.arr <- tapply(delta$aid, delta$cid, adjNumOfUnique)
+numCmtrs.athr.arr <- tapply(delta$cid, delta$aid, numOfUnique)
+adjNumCmtrs.athr.arr <- tapply(delta$cid, delta$aid, adjNumOfUnique)
+### non-adjusted
+png("box.numPtnrs-dvpr.png", width=800,height=600);
+boxplot(numPtnrs ~ dvpr, 
+	data=data.frame(numPtnrs=c(numCmtrs.athr.arr, numAthrs.cmtr.arr), 
+		dvpr=c(rep('author', length(numCmtrs.athr.arr)), 
+			rep('committer', length(numAthrs.cmtr.arr)))),
+	main="# of partners for each developer", ylab='# of partners')
+text(1.5, c(3000, 2850), labels=paste(c("# of authors:","# of committers:"),
+	c(length(numCmtrs.athr.arr), length(numAthrs.cmtr.arr))),
+	cex=1,col=1,bg="white");
+dev.off()
+### adjusted
+png("box.adjNumPtnrs-dvpr.png", width=800,height=600);
+boxplot(adjNumPtnrs ~ dvpr, 
+	data=data.frame(adjNumPtnrs=c(adjNumCmtrs.athr.arr, adjNumAthrs.cmtr.arr), 
+		dvpr=c(rep('author', length(adjNumCmtrs.athr.arr)), 
+			rep('committer', length(adjNumAthrs.cmtr.arr)))),
+	main="adjusted # of partners for each developer", ylab='adjusted # of partners')
+text(1.5, c(12, 11.4), labels=paste(c("# of authors:","# of committers:"),
+	c(length(adjNumCmtrs.athr.arr), length(adjNumAthrs.cmtr.arr))),
+	cex=1,col=1,bg="white");
+dev.off()
+
+numAthrs.cmtr.indrivers.arr <- tapply(delta$aid[drivers.delta.sel], delta$cid[drivers.delta.sel], numOfUnique)
+adjNumAthrs.cmtr.indrivers.arr <- tapply(delta$aid[drivers.delta.sel], delta$cid[drivers.delta.sel], adjNumOfUnique)
 
 png("box.numChg-cmtr.year.png", width=800,height=600);
 boxplot(numChg ~ mod * m, data=mcmtr, col=c("gold", 'darkgreen'))
@@ -452,7 +500,24 @@ axis(2, c(1, 8, 2))
 dev.off()
 
 # structrue ana using igraph
+mkEdges <- function(fr, to) {
+	nfr <- length(fr); nto <- length(to);
+	if (nfr == 1){ edges<-rep(fr, nto * 2); edges[seq(2, nto * 2, 2)] <- to; return(edges)}
+	else if (nto != 1) return(NULL);
+	edges<-rep(to, nfr * 2); edges[seq(1, nfr * 2, 2)] <- fr; return(edges)
+}
+modsInRoot <- unique(delta$mod[delta$mod!=delta$f]) # certa and usr will be dropped
 library(igraph)
+lnx <- graph.empty() + vertex(name='root', nChgs=length(delta$aid), 
+	nAthrs=numOfUnique(delta$aid), nCmtrs=numOfUnique(delta$cid))
+
+lnx <- add.vertices(lnx, length(modsInRoot), attr=list(name=modsInRoot))
+lnx <- add.edges(lnx, mkEdges('root', modsInRoot))
+modsInDrivers <- unique(delta$mmod[delta$mod=='drivers' & delta$mmod != delta$f])
+lnx <- add.vertices(lnx, length(modsInDrivers), attr=list(name=modsInDrivers))
+lnx <- add.edges(lnx, mkEdges('drivers', modsInDrivers))
+
+
 
 # contribution trace
 ## time of always being an author, or from an author to a committer

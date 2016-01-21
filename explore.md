@@ -34,10 +34,39 @@
 
 - authors数量
 
-每月auhtors最大数量前8的模块。要具体的见[这里](numAthrs.in.month.mdrivers.al.txt)
+每月auhtors最大数量前8的模块。要具体的见[这里](data/numAthrs.in.month.mdrivers.al.txt)
 ![x](./pics/numAthrs-month.mdrivers.png)
 
 - committers数量
 
-每月committers最大数量前5的模块。要具体的见[这里](numCmtrs.in.month.mdrivers.al.txt)
+每月committers最大数量前5的模块。要具体的见[这里](./data/numCmtrs.in.month.mdrivers.al.txt)
 ![x](./pics/numCmtrs-month.mdrivers.png)
+
+## 一个开发者（author/committer）会在几个模块做贡献呢？
+- 在root级别，即整个项目
+![x](pics/CFG.dvpr-numMods.png)
+
+- 在drivers级别
+![x](pics/CFG.dvprs-numMods.indrivers.png)
+
+- 在drivers/staging级别
+![x](pics/CFG.dvprs-numMods.instaging.png)
+
+- 在root级别，去changes数量排序后累计占比80%的author
+![x](pics/CFG.coreDvprs-numMods.png)
+
+>考虑到开发者在各个模块之间的贡献可能差很多，所以调整后再看看。至于调整方法，几个例子，一个开发者向A,B两个模块提交代码，changes分别是100次、10次，则调整的模块数是(100 + 10) / max(100, 10) = 1 + 10 / 100 = 1.1个
+
+- 在root级别，即整个项目
+![开发者相关模块数量](./pics/box.dvprs-adjNumMods.png)
+
+- 在drivers级别
+![x](./pics/box.dvprs-adjNumMods.indrivers.png)
+
+- 在drivers/staging级别
+![x](./pics/box.dvprs-adjNumMods.instaging.png)
+
+
+## 一个author的代码由多少个committer提交，一个committer提交多少人的代码
+![x](./pics/box.numPtnrs-dvpr.png)
+![x](./pics/box.adjNumPtnrs-dvpr.png)
