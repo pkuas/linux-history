@@ -503,20 +503,21 @@ dev.off()
 mkEdges <- function(fr, to) {
 	nfr <- length(fr); nto <- length(to);
 	if (nfr == 1){ edges<-rep(fr, nto * 2); edges[seq(2, nto * 2, 2)] <- to; return(edges)}
+	else if (nto == nfr){edges <- c(); edges[seq(1, nfr * 2, 2)] <- fr; edges[seq(2, nto * 2, 2)] <- to; return(edges);}
 	else if (nto != 1) return(NULL);
 	edges<-rep(to, nfr * 2); edges[seq(1, nfr * 2, 2)] <- fr; return(edges)
 }
-modsInRoot <- unique(delta$mod[delta$mod!=delta$f]) # certa and usr will be dropped
-library(igraph)
-lnx <- graph.empty() + vertex(name='root', nChgs=length(delta$aid), 
-	nAthrs=numOfUnique(delta$aid), nCmtrs=numOfUnique(delta$cid))
 
-lnx <- add.vertices(lnx, length(modsInRoot), attr=list(name=modsInRoot))
-lnx <- add.edges(lnx, mkEdges('root', modsInRoot))
-modsInDrivers <- unique(delta$mmod[delta$mod=='drivers' & delta$mmod != delta$f])
-lnx <- add.vertices(lnx, length(modsInDrivers), attr=list(name=modsInDrivers))
-lnx <- add.edges(lnx, mkEdges('drivers', modsInDrivers))
-
+library('igraph', lib='/home/pkuas/R/x86_64-redhat-linux-gnu-library/3.1/')
+lnx <- graph.empty() + vertex(name='root', tp='mod')
+dirList <- list.dirs('./linux', full.names = FALSE, recursive = TRUE)
+dirList <- dirList[dirList != '']
+dirList <- dirList[substr(dirList, 1, 1) != '.']
+dirFathList <- dirList
+dirFathList[unlist(lapply(strsplit(dirList, '/', fixed=T), length)) == 1] <- 'root'
+dirFathList <- sub("(.*)/.*","\\1",dirFathList,perl=T,useBytes=T);
+lnx <- add.vertices(lnx, length(dirList), attr=list(name=dirList, tp='mod'))
+lnx <- add.edges(lnx, mkEdges(dirFathList, dirList), attr=list(tp='sub'))
 
 
 # contribution trace
