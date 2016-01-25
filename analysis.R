@@ -465,9 +465,9 @@ numCmtrs.athr.arr <- tapply(delta$cid, delta$aid, numOfUnique)
 adjNumCmtrs.athr.arr <- tapply(delta$cid, delta$aid, adjNumOfUnique)
 ### non-adjusted
 png("box.numPtnrs-dvpr.png", width=800,height=600);
-boxplot(numPtnrs ~ dvpr, 
-	data=data.frame(numPtnrs=c(numCmtrs.athr.arr, numAthrs.cmtr.arr), 
-		dvpr=c(rep('author', length(numCmtrs.athr.arr)), 
+boxplot(numPtnrs ~ dvpr,
+	data=data.frame(numPtnrs=c(numCmtrs.athr.arr, numAthrs.cmtr.arr),
+		dvpr=c(rep('author', length(numCmtrs.athr.arr)),
 			rep('committer', length(numAthrs.cmtr.arr)))),
 	main="# of partners for each developer", ylab='# of partners')
 text(1.5, c(3000, 2850), labels=paste(c("# of authors:","# of committers:"),
@@ -476,9 +476,9 @@ text(1.5, c(3000, 2850), labels=paste(c("# of authors:","# of committers:"),
 dev.off()
 ### adjusted
 png("box.adjNumPtnrs-dvpr.png", width=800,height=600);
-boxplot(adjNumPtnrs ~ dvpr, 
-	data=data.frame(adjNumPtnrs=c(adjNumCmtrs.athr.arr, adjNumAthrs.cmtr.arr), 
-		dvpr=c(rep('author', length(adjNumCmtrs.athr.arr)), 
+boxplot(adjNumPtnrs ~ dvpr,
+	data=data.frame(adjNumPtnrs=c(adjNumCmtrs.athr.arr, adjNumAthrs.cmtr.arr),
+		dvpr=c(rep('author', length(adjNumCmtrs.athr.arr)),
 			rep('committer', length(adjNumAthrs.cmtr.arr)))),
 	main="adjusted # of partners for each developer", ylab='adjusted # of partners')
 text(1.5, c(12, 11.4), labels=paste(c("# of authors:","# of committers:"),
@@ -519,7 +519,52 @@ dirFathList <- sub("(.*)/.*","\\1",dirFathList,perl=T,useBytes=T);
 lnx <- add.vertices(lnx, length(dirList), attr=list(name=dirList, tp='mod'))
 lnx <- add.edges(lnx, mkEdges(dirFathList, dirList), attr=list(tp='sub'))
 
-
+#
+modsInRoot <- unique(delta$mod[delta$mod!=delta$f]) # certa and usr will be dropped
+for (mod in modsInRoot) {
+    tsel <- mcmtr$mod == mod
+    png(paste("box.numAthrs-cmtr.", mod, ".month.png", sep=''), width=800,height=600);
+    tryCatch({
+        boxplot(mcmtr$numAthrs[tsel] ~ mcmtr$m[tsel], ylim=c(1, 15),
+            main=paste('Boxplot of # authors per committer committed code for in', mod),
+            xlab='natural month', ylab='# of authors')
+        }, error=function(e){
+            print(e)
+            return(NULL)
+        })
+    dev.off()
+    png(paste("box.adjNumAthrs-cmtr.", mod, ".month.png", sep=''), width=800,height=600);
+    tryCatch({
+        boxplot(mcmtr$adjNumAthrs[tsel] ~ mcmtr$m[tsel], ylim=c(1, 4),
+            main=paste('Boxplot of adjusted # authors per committer committed code for in', mod),
+            xlab='natural month', ylab='adjusted # of authors')
+        }, error=function(e){
+            print(e)
+            return(NULL)
+        })
+    dev.off()
+}
+tsel <- !mcmtr$mod %in% c('root', 'arch','drivers')
+png(paste("box.numAthrs-cmtr.n-a-d.month.png", sep=''), width=800,height=600);
+tryCatch({
+    boxplot(mcmtr$numAthrs[tsel] ~ mcmtr$m[tsel], ylim=c(1, 15),
+        main=paste('Boxplot of # authors per committer committed code for in ELSE'),
+        xlab='natural month', ylab='# of authors')
+    }, error=function(e){
+        print(e)
+        return(NULL)
+    })
+dev.off()
+png(paste("box.adjNumAthrs-cmtr.n-a-d.month.png", sep=''), width=800,height=600);
+tryCatch({
+    boxplot(mcmtr$adjNumAthrs[tsel] ~ mcmtr$m[tsel], ylim=c(1, 4),
+        main=paste('Boxplot of adjusted # authors per committer committed code for in ELSE'),
+        xlab='natural month', ylab='adjusted # of authors')
+    }, error=function(e){
+        print(e)
+        return(NULL)
+    })
+dev.off()
 # contribution trace
 ## time of always being an author, or from an author to a committer
 tmAthr2Cmtr.athr.arr <- -tapply(delta$afr1cmt, delta$aid, min)

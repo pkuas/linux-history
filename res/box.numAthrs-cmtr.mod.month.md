@@ -1,0 +1,23 @@
+## Number of authors per committer committed code for in each module
+![x](../pics/box.numAthrs-cmtr.arch.month.png)
+![x](../pics/box.numAthrs-cmtr.block.month.png)
+![x](../pics/box.numAthrs-cmtr.crypto.month.png)
+![x](../pics/box.numAthrs-cmtr.Documentation.month.png)
+![x](../pics/box.numAthrs-cmtr.drivers.month.png)
+![x](../pics/box.numAthrs-cmtr.firmware.month.png)
+![x](../pics/box.numAthrs-cmtr.fs.month.png)
+![x](../pics/box.numAthrs-cmtr.init.month.png)
+![x](../pics/box.numAthrs-cmtr.ipc.month.png)
+![x](../pics/box.numAthrs-cmtr.kernel.month.png)
+![x](../pics/box.numAthrs-cmtr.lib.month.png)
+![x](../pics/box.numAthrs-cmtr.mm.month.png)
+![x](../pics/box.numAthrs-cmtr.net.month.png)
+![x](../pics/box.numAthrs-cmtr.samples.month.png)
+![x](../pics/box.numAthrs-cmtr.scripts.month.png)
+![x](../pics/box.numAthrs-cmtr.security.month.png)
+![x](../pics/box.numAthrs-cmtr.sound.month.png)
+![x](../pics/box.numAthrs-cmtr.tools.month.png)
+![x](../pics/box.numAthrs-cmtr.virt.month.png)
+
+'ELSE' 表示除了arch,drivers以外的模块。把这些模块放在一起的原因是，这些模块的committer数量较少，画出的box图很难看。
+![x](../pics/box.numAthrs-cmtr.n-a-d.month.png)
