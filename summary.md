@@ -43,7 +43,8 @@ $ git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 
 
 ## 分析
-首先进行一些探索性的分析，详见[这里](explore.md)。
+- 首先进行一些探索性的分析，详见[这里](explore.md)。
+- 各模块中，每个committer为多少auhtor提交代码，如何分布，各模块有何差异,见[这里](./res/box.numAthrs-cmtr.mod.month.md)。作调整，见[这里](box.adjNumAthrs-cmtr.mod.month.md)。
 
 ## PS
 - 没有怎么整理的记录，见[note.md](./note.md)。这个文件记录了一些思路，基本只增不删，可读性差些，甚至有一些不正确的地方。

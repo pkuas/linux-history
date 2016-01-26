@@ -81,8 +81,16 @@ convtArrOfListToDF<-function(arrList) {
 	t <- data.frame(cid=character(0),m=character(0),measure=numeric(0))
 	for (m in names(arrList)){
 		tv <- arrList[[m]]
-		t <- rbind(t, data.frame(cid=names(tv),m=rep(as.numeric(m), length(tv)),
-			measure=tv, row.names=NULL))
+		t <- tryCatch({
+            rbind(t, data.frame(cid=names(tv),m=rep(as.numeric(m), length(tv)),
+			 measure=tv, row.names=NULL))
+            }, error=function(e){
+                rbind(t, data.frame(cid=names(tv),m=rep(m, length(tv)),
+             measure=tv, row.names=NULL))
+            }, warning=function(w){
+                rbind(t, data.frame(cid=names(tv),m=rep(m, length(tv)),
+             measure=tv, row.names=NULL))
+            })
 	}
 	return(t)
 }
@@ -259,6 +267,23 @@ legend(2007, 100, legend=c('drivers', 'arch'),cex=1,lwd=1,
     col=tcol[c('drivers', 'arch')] ,bg="white");
 dev.off();
 
+### num of new committers in each month for each module
+tsel <- delta$ctenure == 0
+numNewCmtrs.in.month.mod.al <- t2apply(delta$cid[tsel], delta$m[tsel], delta$mod[tsel], numOfUnique)
+png('numNewCmtrs-month.mod.png', width=800, height=600)
+t <- numNewCmtrs.in.month.mod.al
+tcol <- rainbow(length(t) )
+names(tcol) <- names(t)
+tplt <- names(t)[!(names(t) %in% c('root'))]
+plot(1, type='n', xlim=c(2005, 2016), ylim=c(0, max(t$drivers)),
+    main='# of new committers in each month for each module',
+    xlab='natural month', ylab='# of new committers')
+for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='l')
+legend(2007, 6, legend=c('drivers', 'arch', 'fs', 'net'),cex=1,lwd=1,
+    col=tcol[c('drivers', 'arch', 'fs', 'net')] ,bg="white");
+dev.off();
+
+
 ## deepen into drivers, monthly ana for each mod of drivers
 tsel <- delta$mod == 'drivers' & delta$mmod != delta$f
 mods.in.drivers <- unique(delta$mmod[tsel])
@@ -311,6 +336,91 @@ dev.off();
 sink('numCmtrs.in.month.mdrivers.al.txt', append=F)
 print(t)
 sink()
+
+# yearly ana of modules in root
+modsel <- delta$mod != delta$f
+joinersel <- delta$tenure == 0
+ncmtrsel <- delta$ctenure == 0
+## num of changes
+numChgs.mod.year.ar <- t2apply(delta$aid[modsel], delta$y[modsel], delta$mod[modsel], length)
+png('numChgs-year.mod.png', width=800, height=600)
+t <- numChgs.mod.year.ar
+tcol <- rainbow(length(t) )
+names(tcol) <- names(t)
+tplt <- names(t)[!(names(t) %in% c('root'))]
+tplt <- c('drivers', 'arch', 'fs', 'kernel', 'mm')
+plot(1, type='n', xlim=c(2005, 2016), ylim=c(0, max(t$drivers)),
+    main='# of changes in each year for each module',
+    xlab='natural year', ylab='# of changes')
+for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='b')
+legend(2006, 60000, legend=tplt,cex=1,lwd=1,
+    col=tcol[tplt] ,bg="white");
+dev.off();
+## num of authors
+numAthrs.mod.year.ar <- t2apply(delta$aid[modsel], delta$y[modsel], delta$mod[modsel], numOfUnique)
+png('numAthrs-year.mod.png', width=800, height=600)
+t <- numAthrs.mod.year.ar
+tcol <- rainbow(length(t) )
+names(tcol) <- names(t)
+tplt <- names(t)[!(names(t) %in% c('root'))]
+tplt <- c('drivers', 'arch', 'fs', 'net', 'kernel', 'mm')
+plot(1, type='n', xlim=c(2005, 2016), ylim=c(0, max(t$drivers)),
+    main='# of authors in each year for each module',
+    xlab='natural year', ylab='# of authors')
+for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='b')
+legend(2006, max(t$drivers), legend=tplt,cex=1,lwd=1,
+    col=tcol[tplt] ,bg="white");
+dev.off();
+
+## num of cmtrs
+numCmtrs.mod.year.ar <- t2apply(delta$cid[modsel], delta$y[modsel], delta$mod[modsel], numOfUnique)
+png('numCmtrs-year.mod.png', width=800, height=600)
+t <- numCmtrs.mod.year.ar
+tcol <- rainbow(length(t) )
+names(tcol) <- names(t)
+tplt <- names(t)[!(names(t) %in% c('root'))]
+tplt <- c('drivers', 'arch', 'fs', 'net', 'kernel', 'mm')
+plot(1, type='n', xlim=c(2005, 2016), ylim=c(0, max(t$drivers)),
+    main='# of committers in each year for each module',
+    xlab='natural year', ylab='# of committers')
+for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='b')
+legend(2006, max(t$drivers), legend=tplt,cex=1,lwd=1,
+    col=tcol[tplt] ,bg="white");
+dev.off();
+
+## num of new comers
+tsel <- modsel & joinersel
+numJoiners.mod.year.ar <- t2apply(delta$aid[tsel], delta$y[tsel], delta$mod[tsel], numOfUnique)
+png('numJoiners-year.mod.png', width=800, height=600)
+t <- numJoiners.mod.year.ar
+tcol <- rainbow(length(t) )
+names(tcol) <- names(t)
+tplt <- names(t)[!(names(t) %in% c('root'))]
+tplt <- c('drivers', 'arch', 'fs', 'net', 'kernel', 'mm')
+plot(1, type='n', xlim=c(2005, 2016), ylim=c(0, max(t$drivers)),
+    main='# of new comers in each year for each module',
+    xlab='natural year', ylab='# of new comers')
+for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='b')
+legend(2006, max(t$drivers), legend=tplt,cex=1,lwd=1,
+    col=tcol[tplt] ,bg="white");
+dev.off();
+
+## num of new cmtrs
+tsel <- modsel & ncmtrsel
+numNewCmtrs.mod.year.ar <- t2apply(delta$cid[tsel], delta$y[tsel], delta$mod[tsel], numOfUnique)
+png('numNewCmtrs-year.mod.png', width=800, height=600)
+t <- numNewCmtrs.mod.year.ar
+tcol <- rainbow(length(t) )
+names(tcol) <- names(t)
+tplt <- names(t)[!(names(t) %in% c('root'))]
+tplt <- c('drivers', 'arch', 'fs', 'net', 'kernel', 'mm')
+plot(1, type='n', xlim=c(2005, 2016), ylim=c(0, max(t$drivers)),
+    main='# of new committers in each year for each module',
+    xlab='natural year', ylab='# of new committers')
+for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='b')
+legend(2006, max(t$drivers), legend=tplt,cex=1,lwd=1,
+    col=tcol[tplt] ,bg="white");
+dev.off();
 
 # structure analysis, disconcern time
 ## see each author/committer contributed to how many modules of root
@@ -566,7 +676,8 @@ tryCatch({
     })
 dev.off()
 # contribution trace
-## time of always being an author, or from an author to a committer
+## root
+### time of always being an author, or from an author to a committer
 tmAthr2Cmtr.athr.arr <- -tapply(delta$afr1cmt, delta$aid, min)
 tmAlwaysAthr.athr.arr <- 2015.917 - tapply(delta$ty, delta$aid, min)
 tsel <- is.na(tmAthr2Cmtr.athr.arr)
@@ -582,8 +693,8 @@ text(1.5,c(9.5, 8.5), labels=paste(c("# of always:","# of a2committer:"),
 	c(sum(tsel), sum(tmAthr2Cmtr.athr.arr > 0, na.rm=T))),
 	cex=1,col=1,bg="white");
 dev.off()
-## num of changes before being a committer (each month)
-### Prerequisite: previous data frame named 'trc', 'mathr'
+### num of changes before being a committer (each month)
+#### Prerequisite: previous data frame named 'trc', 'mathr'
 trc$numChgsBef <- tapply(delta$afr1cmt, delta$aid, numOfLessThan0)
 tsel <- is.na(trc$numChgsBef)
 trc$numChgsBef[tsel] <- tapply(delta$v, delta$aid, length)[tsel]
@@ -593,4 +704,27 @@ text(1.5,c(7000, 6500), labels=paste(c("# of always:","# of a2committer:"),
 	c(sum(tsel), sum(tmAthr2Cmtr.athr.arr > 0, na.rm=T))),
 	cex=1,col=1,bg="white");
 dev.off()
+## in modules of root
+### time of always being an author, or from an author to a committer
+tsel <- delta$mod != delta$f
+tmAthr2Cmtr.athr.mod.ar <- t2apply(delta$afr1cmt[tsel], delta$aid[tsel], delta$mod[tsel], min)
+t<-convtArrOfListToDF(tmAthr2Cmtr.athr.mod.ar)
+colnames(t) <- c('cid', 'mod', 'tmAthr2Cmtr')
+t$tmAthr2Cmtr[t$tmAthr2Cmtr >= 0] <- NA
+t$tmAthr2Cmtr <- -t$tmAthr2Cmtr
+boxplot(tmAthr2Cmtr ~ mod, data=t, las=2)
 
+## second module touched
+get2ndModIdx<-function(idx) { # idx is in delta
+	todr <- order(delta$ty[idx])
+	mods<- delta$mod[idx[todr]]
+	return(idx[todr][which(c('#$', mods) != c(mods, NA))[1:2]])
+}
+getFst2ModAndDTime <- function(idx) {
+	if(is.na(idx[2])) return(data.frame(mod1=character(0), mod2=character(0), 
+		dtime = numeric(0))
+	return(data.frame(mod1=delta$mod[idx[1]], mod2=delta$mod[idx[2]], 
+		dtime = delta$ty[idx[2]] - delta$ty[idx[1]]))
+}
+fst2ModIdx <- tapply(1:nrow(delta), delta$aid, get2ndModIdx)
+transMod <- Reduce(rbind, lapply(fst2ModIdx, getFst2ModAndDTime))

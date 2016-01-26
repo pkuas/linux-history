@@ -23,6 +23,21 @@
 ![x](./pics/numCmtrs-month.mod.png)
 - Joiners数量（new comers）
 ![x](./pics/numJoiners-month.mod.png)
+- New comitters
+![x](./pics/numNewCmtrs-month.mod.png )
+
+由于new committer的数量少，按年份来：
+
+- changes数量
+![x](./pics/numChgs-year.mod.png)
+- Authors数量
+![x](./pics/numAthrs-year.mod.png)
+- Committers数量
+![x](./pics/numCmtrs-year.mod.png)
+- Joiners数量（new comers）
+![x](./pics/numJoiners-year.mod.png)
+- New comitters
+![x](./pics/numNewCmtrs-year.mod.png)
 
 #### 在drivers模块往下看一层
 关于drivers目录，参见[这篇文章](http://www.linux.org/threads/the-linux-kernel-drivers.4205/)，或直接点[这里](./docs/drivers-mod.md).
