@@ -370,7 +370,7 @@ png('numChgsIncR-year.mod.png', width=800, height=600)
 t <- numChgs.mod.year.ar
 tplt <- c('drivers', 'arch', 'fs', 'kernel', 'mm')
 t <- lapply(t[tplt], getIncRate)
-plot(1, type='n', xlim=c(2005, 2016), 
+plot(1, type='n', xlim=c(2005, 2016),
 	ylim=c(min(unlist(lapply(t, min))), max(unlist(lapply(t, max)))),
     main='Increase rate of changes in each year for each module',
     xlab='natural year', ylab='Increase rate(%)')
@@ -399,7 +399,7 @@ png('numAthrsIncR-year.mod.png', width=800, height=600)
 t <- numAthrs.mod.year.ar
 tplt <- c('drivers', 'arch', 'fs', 'kernel', 'mm')
 t <- lapply(t[tplt], getIncRate)
-plot(1, type='n', xlim=c(2005, 2016), 
+plot(1, type='n', xlim=c(2005, 2016),
 	ylim=c(min(unlist(lapply(t, min))), max(unlist(lapply(t, max)))),
     main='Increase rate of authors in each year for each module',
     xlab='natural year', ylab='Increase rate(%)')
@@ -428,7 +428,7 @@ png('numCmtrsIncR-year.mod.png', width=800, height=600)
 t <- numCmtrs.mod.year.ar
 tplt <- c('drivers', 'arch', 'fs', 'kernel', 'mm')
 t <- lapply(t[tplt], getIncRate)
-plot(1, type='n', xlim=c(2005, 2016), 
+plot(1, type='n', xlim=c(2005, 2016),
 	ylim=c(min(unlist(lapply(t, min))), max(unlist(lapply(t, max)))),
     main='Increase rate of committers in each year for each module',
     xlab='natural year', ylab='Increase rate(%)')
@@ -458,7 +458,7 @@ png('numJoinersIncR-year.mod.png', width=800, height=600)
 t <- numJoiners.mod.year.ar
 tplt <- c('drivers', 'arch', 'fs', 'kernel', 'mm')
 t <- lapply(t[tplt], getIncRate)
-plot(1, type='n', xlim=c(2005, 2016), 
+plot(1, type='n', xlim=c(2005, 2016),
 	ylim=c(min(unlist(lapply(t, min))), max(unlist(lapply(t, max)))),
     main='Increase rate of new comers in each year for each module',
     xlab='natural year', ylab='Increase rate(%)')
@@ -488,7 +488,7 @@ png('numCmtrsIncR-year.mod.png', width=800, height=600)
 t <- numNewCmtrs.mod.year.ar
 tplt <- c('drivers', 'arch', 'fs', 'kernel', 'mm')
 t <- lapply(t[tplt], getIncRate)
-plot(1, type='n', xlim=c(2005, 2016), 
+plot(1, type='n', xlim=c(2005, 2016),
 	ylim=c(min(unlist(lapply(t, min))), max(unlist(lapply(t, max)))),
     main='Increase rate of new comers in each year for each module',
     xlab='natural year', ylab='Increase rate(%)')
@@ -789,3 +789,55 @@ t$tmAthr2Cmtr[t$tmAthr2Cmtr >= 0] <- NA
 t$tmAthr2Cmtr <- -t$tmAthr2Cmtr
 boxplot(tmAthr2Cmtr ~ mod, data=t, las=2)
 
+# trace
+## explore how modules touched in each revision
+tsel <- delta$mod != delta$f
+t <- tapply(delta$mod[tsel], delta$v[tsel], unique)
+t <- lapply(t, sort)
+tt <- lapply(t, length)
+vsnModCnt <- c()
+vsnModCnt['#$#$'] <- 0
+res <- lapply(t, function(x) {
+	pt <- Reduce(paste, x);
+	if (is.na(vsnModCnt[pt])) {vsnModCnt[pt] <<- 1;}
+	else {vsnModCnt[pt] <<- vsnModCnt[pt] + 1;}
+	})
+vsnModCnt <- sort(vsnModCnt, decreasing=T)
+sink('mod-coocurr.txt', append=F)
+print(vsnModCnt)
+sink()
+
+
+getModTrcIdx<-function(idx, tp='ty') { # idx is in delta
+	return(idx[order(delta[idx, tp])])
+}
+tsel <- delta$mod != delta$f
+athrTrc <- tapply((1:nrow(delta))[tsel], delta$aid[tsel], getModTrcIdx, tp='ty')
+cmtrTrc <- tapply((1:nrow(delta))[tsel], delta$cid[tsel], getModTrcIdx, tp='cty')
+getMainMod <- function(idx){
+    t <- tapply(idx, delta$mod[idx], function(x) {return(sum(delta$add[x], delta$del[x]))})
+    return(names(t)[which.max(t)])
+}
+tsel <- delta$mod != delta$f
+mainModOfRev <- tapply((1:nrow(delta))[tsel], delta$v[tsel], getMainMod)
+delta$mainMod <- substr(mainModOfRev[delta$v], 1, 2)
+zipTrc <- function(trc) {
+    m <- delta$mainMod[trc]
+    return(trc[which(c('#$', m) != c(m, NA))])
+}
+athrTrcZip <- lapply(athrTrc, zipTrc)
+cmtrTrcZip <- lapply(cmtrTrc, zipTrc)
+athrTrcTree <- list()
+res <- lapply(athrTrcZip, function(idx){
+    pathes <- Reduce(paste, delta$mainMod[idx], accumulate=T)
+    nidx <- length(idx)
+    dtimes <- c(0, delta$ty[idx][-1] - delta$ty[idx][-nidx])
+    if (is.null(athrTrcTree[[pathes[1]]])) {athrTrcTree[[pathes[1]]] <<- 1;}
+        else {athrTrcTree[[pathes[1]]] <<- athrTrcTree[[pathes[1]]] + 1}
+    if (nidx == 1) return(NULL);
+    for (i in 2:min(nidx, 5)){
+        if (is.null(athrTrcTree[[pathes[i]]])) {athrTrcTree[[pathes[i]]] <<- c(dtimes[i]);}
+        else {athrTrcTree[[pathes[i]]] <<- c(athrTrcTree[[pathes[i]]], dtimes[i])}
+    }
+    })
+athrTrcTree <- athrTrcTree[which(unlist(lapply(athrTrcTree, length)) >= 50)]
