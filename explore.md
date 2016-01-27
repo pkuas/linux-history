@@ -39,6 +39,17 @@
 - New comitters
 ![x](./pics/numNewCmtrs-year.mod.png)
 
+年增长率
+
+- changes数量
+![x](./pics/numAthrsIncR-year.mod.png)
+- Authors数量
+![x](./pics/numChgsIncR-year.mod.png)
+- Committers数量
+![x](./pics/numCmtrsIncR-year.mod.png)
+- Joiners数量（new comers）
+![x](./pics/numJoinersIncR-year.mod.png)
+
 #### 在drivers模块往下看一层
 关于drivers目录，参见[这篇文章](http://www.linux.org/threads/the-linux-kernel-drivers.4205/)，或直接点[这里](./docs/drivers-mod.md).
 

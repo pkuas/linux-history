@@ -44,7 +44,7 @@ $ git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 
 ## 分析
 - 首先进行一些探索性的分析，详见[这里](explore.md)。
-- 各模块中，每个committer为多少auhtor提交代码，如何分布，各模块有何差异,见[这里](./res/box.numAthrs-cmtr.mod.month.md)。作调整，见[这里](box.adjNumAthrs-cmtr.mod.month.md)。
+- 各模块中，每个committer为多少auhtor提交代码，如何分布，各模块有何差异,见[这里](./res/box.numAthrs-cmtr.mod.month.md)。作调整，见[这里](./res/box.adjNumAthrs-cmtr.mod.month.md)。
 - 在每个模块中，committer成为这个模块的committer之前在多少个模块做过author/committer，见[这里](./res/numA-C.ModsBefCmtr-cmtr.mod.md)
 
 ## PS

@@ -338,6 +338,15 @@ print(t)
 sink()
 
 # yearly ana of modules in root
+getIncRate <- function(x){
+	tname <- 2005:2015
+	t <- rep(0, length(tname))
+	names(t) <- tname
+	t[names(x)] <- x
+	nx <- length(t)
+	return((t[-1] - t[-nx]) / t[-nx] * 100)
+}
+
 modsel <- delta$mod != delta$f
 joinersel <- delta$tenure == 0
 ncmtrsel <- delta$ctenure == 0
@@ -356,6 +365,20 @@ for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='b')
 legend(2006, 60000, legend=tplt,cex=1,lwd=1,
     col=tcol[tplt] ,bg="white");
 dev.off();
+### increase rate
+png('numChgsIncR-year.mod.png', width=800, height=600)
+t <- numChgs.mod.year.ar
+tplt <- c('drivers', 'arch', 'fs', 'kernel', 'mm')
+t <- lapply(t[tplt], getIncRate)
+plot(1, type='n', xlim=c(2005, 2016), 
+	ylim=c(min(unlist(lapply(t, min))), max(unlist(lapply(t, max)))),
+    main='Increase rate of changes in each year for each module',
+    xlab='natural year', ylab='Increase rate(%)')
+for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='b')
+legend(2012, max(unlist(lapply(t, max))), legend=tplt,cex=1,lwd=1,
+    col=tcol[tplt] ,bg="white");
+dev.off();
+
 ## num of authors
 numAthrs.mod.year.ar <- t2apply(delta$aid[modsel], delta$y[modsel], delta$mod[modsel], numOfUnique)
 png('numAthrs-year.mod.png', width=800, height=600)
@@ -369,6 +392,19 @@ plot(1, type='n', xlim=c(2005, 2016), ylim=c(0, max(t$drivers)),
     xlab='natural year', ylab='# of authors')
 for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='b')
 legend(2006, max(t$drivers), legend=tplt,cex=1,lwd=1,
+    col=tcol[tplt] ,bg="white");
+dev.off();
+### increase rate
+png('numAthrsIncR-year.mod.png', width=800, height=600)
+t <- numAthrs.mod.year.ar
+tplt <- c('drivers', 'arch', 'fs', 'kernel', 'mm')
+t <- lapply(t[tplt], getIncRate)
+plot(1, type='n', xlim=c(2005, 2016), 
+	ylim=c(min(unlist(lapply(t, min))), max(unlist(lapply(t, max)))),
+    main='Increase rate of authors in each year for each module',
+    xlab='natural year', ylab='Increase rate(%)')
+for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='b')
+legend(2012, max(unlist(lapply(t, max))), legend=tplt,cex=1,lwd=1,
     col=tcol[tplt] ,bg="white");
 dev.off();
 
@@ -385,6 +421,19 @@ plot(1, type='n', xlim=c(2005, 2016), ylim=c(0, max(t$drivers)),
     xlab='natural year', ylab='# of committers')
 for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='b')
 legend(2006, max(t$drivers), legend=tplt,cex=1,lwd=1,
+    col=tcol[tplt] ,bg="white");
+dev.off();
+### increase rate
+png('numCmtrsIncR-year.mod.png', width=800, height=600)
+t <- numCmtrs.mod.year.ar
+tplt <- c('drivers', 'arch', 'fs', 'kernel', 'mm')
+t <- lapply(t[tplt], getIncRate)
+plot(1, type='n', xlim=c(2005, 2016), 
+	ylim=c(min(unlist(lapply(t, min))), max(unlist(lapply(t, max)))),
+    main='Increase rate of committers in each year for each module',
+    xlab='natural year', ylab='Increase rate(%)')
+for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='b')
+legend(2012, max(unlist(lapply(t, max))), legend=tplt,cex=1,lwd=1,
     col=tcol[tplt] ,bg="white");
 dev.off();
 
@@ -404,6 +453,19 @@ for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='b')
 legend(2006, max(t$drivers), legend=tplt,cex=1,lwd=1,
     col=tcol[tplt] ,bg="white");
 dev.off();
+### increase rate
+png('numJoinersIncR-year.mod.png', width=800, height=600)
+t <- numJoiners.mod.year.ar
+tplt <- c('drivers', 'arch', 'fs', 'kernel', 'mm')
+t <- lapply(t[tplt], getIncRate)
+plot(1, type='n', xlim=c(2005, 2016), 
+	ylim=c(min(unlist(lapply(t, min))), max(unlist(lapply(t, max)))),
+    main='Increase rate of new comers in each year for each module',
+    xlab='natural year', ylab='Increase rate(%)')
+for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='b')
+legend(2014, max(unlist(lapply(t, max))), legend=tplt,cex=1,lwd=1,
+    col=tcol[tplt] ,bg="white");
+dev.off();
 
 ## num of new cmtrs
 tsel <- modsel & ncmtrsel
@@ -419,6 +481,19 @@ plot(1, type='n', xlim=c(2005, 2016), ylim=c(0, max(t$drivers)),
     xlab='natural year', ylab='# of new committers')
 for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='b')
 legend(2006, max(t$drivers), legend=tplt,cex=1,lwd=1,
+    col=tcol[tplt] ,bg="white");
+dev.off();
+### increase rate
+png('numCmtrsIncR-year.mod.png', width=800, height=600)
+t <- numNewCmtrs.mod.year.ar
+tplt <- c('drivers', 'arch', 'fs', 'kernel', 'mm')
+t <- lapply(t[tplt], getIncRate)
+plot(1, type='n', xlim=c(2005, 2016), 
+	ylim=c(min(unlist(lapply(t, min))), max(unlist(lapply(t, max)))),
+    main='Increase rate of new comers in each year for each module',
+    xlab='natural year', ylab='Increase rate(%)')
+for (i in tplt) lines(as.numeric(names(t[[i]])), t[[i]], col=tcol[i], type='b')
+legend(2014, max(unlist(lapply(t, max))), legend=tplt,cex=1,lwd=1,
     col=tcol[tplt] ,bg="white");
 dev.off();
 
