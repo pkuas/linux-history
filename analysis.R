@@ -714,17 +714,3 @@ t$tmAthr2Cmtr[t$tmAthr2Cmtr >= 0] <- NA
 t$tmAthr2Cmtr <- -t$tmAthr2Cmtr
 boxplot(tmAthr2Cmtr ~ mod, data=t, las=2)
 
-## second module touched
-get2ndModIdx<-function(idx) { # idx is in delta
-	todr <- order(delta$ty[idx])
-	mods<- delta$mod[idx[todr]]
-	return(idx[todr][which(c('#$', mods) != c(mods, NA))[1:2]])
-}
-getFst2ModAndDTime <- function(idx) {
-	if(is.na(idx[2])) return(data.frame(mod1=character(0), mod2=character(0), 
-		dtime = numeric(0))
-	return(data.frame(mod1=delta$mod[idx[1]], mod2=delta$mod[idx[2]], 
-		dtime = delta$ty[idx[2]] - delta$ty[idx[1]]))
-}
-fst2ModIdx <- tapply(1:nrow(delta), delta$aid, get2ndModIdx)
-transMod <- Reduce(rbind, lapply(fst2ModIdx, getFst2ModAndDTime))
