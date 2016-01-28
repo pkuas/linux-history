@@ -867,7 +867,8 @@ sink()
 
 ## 3-year period for author
 athrTrcTree3year <- list()
-res <- lapply(athrTrcZip, function(idx) {
+res <- lapply(athrTrcZip, function(idx, tmrange = 3) {
+    idx <- idx[delta$ty[idx] - delta$ty[idx[1]] <= tmrange]
 	pathes <- Reduce(paste, delta$mainMod[idx], accumulate=T)
 	nidx <- length(idx)
 	dtimes <- c(0, delta$ty[idx][-1] - delta$ty[idx][-nidx])
@@ -876,9 +877,7 @@ res <- lapply(athrTrcZip, function(idx) {
     }
 	maxst <- delta$m[idx[1]]
 	st <- maxst - 3
-	ed <- st + 3
 	while (st <= maxst) {
-		# if (st < 2005 | ed > 2012.917)
 		mth <- as.character(round(st, 3))
 		#cat(round(maxst, 10), st, ed, mth, nidx, pathes, '\n')
 		if (nidx > 0) {
@@ -892,7 +891,6 @@ res <- lapply(athrTrcZip, function(idx) {
 			}
 		}
 	    st <- st + 1/12
-	    ed <- st + 3
 	}
 	})
 
@@ -901,6 +899,11 @@ for (tp in names(athrTrcTree3year)) {
 	athrTrcTree3year[[tp]] <- athrTrcTree3year[[tp]][sort(names(athrTrcTree3year[[tp]]))]
 }
 athrTrcTree3year <- athrTrcTree3year[sort(names(athrTrcTree3year))]
+
+t <- convtArrOfListToDF(athrTrcTree3year[['ar dr']], usename=F)
+colnames(t) <- c('m', 'dt')
+t <- t[t$m >=2005 & t$m <= 2009.918, ]
+boxplot(dt ~ m, data=t, ylim=c(0,1.5))
 
 ## all years for committer
 cmtrTrcTree <- list()
@@ -926,18 +929,17 @@ sink()
 
 ## 3-year period for committer
 cmtrTrcTree3year <- list()
-res <- lapply(cmtrTrcZip, function(idx) {
+res <- lapply(cmtrTrcZip, function(idx, tmrange = 3) {
+    idx <- idx[delta$ty[idx] - delta$ty[idx[1]] <= tmrange]
 	pathes <- Reduce(paste, delta$mainMod[idx], accumulate=T)
 	nidx <- length(idx)
+    dtimes <- c(0, delta$cty[idx][-1] - delta$cty[idx][-nidx])
     for (i in 1:min(nidx, 5)) {
         if (is.null(cmtrTrcTree3year[[pathes[i]]])) {cmtrTrcTree3year[[pathes[i]]] <<- list()}
     }
-	dtimes <- c(0, delta$cty[idx][-1] - delta$cty[idx][-nidx])
 	maxst <- delta$cm[idx[1]]
 	st <- maxst - 3
-	ed <- st + 3
 	while (st <= maxst) {
-		# if (st < 2005 | ed > 2012.917)
 		mth <- as.character(round(st, 3))
 		#cat(round(maxst, 10), st, ed, mth, nidx, pathes, '\n')
 		if (nidx > 0) {
