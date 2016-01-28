@@ -122,3 +122,10 @@ See below
 - 可以尝试一下codeface
 
 相关论文： From Developer Networks to Verified Communities: A Fine-Grained Approach
+
+
+
+## trace 分析
+关于author、committer的贡献模块转变，查看这里：[author](./res/athrTrcTreeSmry.md), [committer](./res/cmtrTrcTreeSmry.md)
+
+在这个转变分析中，还没有区分那些“一次贡献者”、只在一个模块贡献的“持久贡献者”。

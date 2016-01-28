@@ -852,24 +852,43 @@ sink()
 ## 3-year period for author
 athrTrcTree3year <- list()
 res <- lapply(athrTrcZip, function(idx) {
-	st <- delta$m[idx[1]] - 0.001
-	mth <- as.character(delta$m[idx[1]])
-	tsel <- delta$ty[idx] >= st & delta$ty[idx] < st + 3
-	idx <- idx[tsel]
 	pathes <- Reduce(paste, delta$mainMod[idx], accumulate=T)
 	nidx <- length(idx)
-    dtimes <- c(0, delta$ty[idx][-1] - delta$ty[idx][-nidx])
-    for (i in 1:min(nidx, 5)) {
-    	if (is.null(athrTrcTree3year[[pathes[i]]])) {athrTrcTree3year[[pathes[i]]] <<- list()}
-    }
-    if (is.null(athrTrcTree3year[[pathes[1]]][[mth]])) {athrTrcTree3year[[pathes[1]]][[mth]] <<- 1}
-    else {athrTrcTree3year[[pathes[1]]][[mth]] <<- athrTrcTree3year[[pathes[1]]][[mth]] + 1}
-    if (nidx == 1) return(NULL);
-    for (i in 2:min(nidx, 5)) {
-    	if (is.null(athrTrcTree3year[[pathes[i]]][[mth]])) {athrTrcTree3year[[pathes[i]]][[mth]] <<- c(dtimes[i])}
-    	else {athrTrcTree3year[[pathes[i]]][[mth]] <<- c(athrTrcTree3year[[pathes[i]]][[mth]], dtimes[i])}
-    }
+	dtimes <- c(0, delta$ty[idx][-1] - delta$ty[idx][-nidx])
+	maxst <- delta$m[idx[1]]
+	st <- maxst - 3
+	ed <- st + 3
+	idxback <- idx
+	while (st <= maxst) {
+		# if (st < 2005 | ed > 2012.917) 
+		mth <- as.character(round(st, 3))	
+		tsel <- delta$ty[idxback] >= st & delta$ty[idxback] < ed
+		idx <- idxback[tsel]
+		nidx <- length(idx)
+		#cat(round(maxst, 10), st, ed, mth, nidx, pathes, '\n')
+		if (nidx > 0) {
+			for (i in 1:min(nidx, 5)) {
+			    if (is.null(athrTrcTree3year[[pathes[i]]])) {athrTrcTree3year[[pathes[i]]] <<- list()}
+			}
+			if (is.null(athrTrcTree3year[[pathes[1]]][[mth]])) {athrTrcTree3year[[pathes[1]]][[mth]] <<- 1}
+		    else {athrTrcTree3year[[pathes[1]]][[mth]] <<- athrTrcTree3year[[pathes[1]]][[mth]] + 1}
+		    if (nidx > 1) {
+			    for (i in 2:min(nidx, 5)) {
+			    	if (is.null(athrTrcTree3year[[pathes[i]]][[mth]])) {athrTrcTree3year[[pathes[i]]][[mth]] <<- c(dtimes[i])}
+			    	else {athrTrcTree3year[[pathes[i]]][[mth]] <<- c(athrTrcTree3year[[pathes[i]]][[mth]], dtimes[i])}
+			    }
+			}
+		}
+	    st <- st + 1/12
+	    ed <- st + 3
+	}
 	})
+
+### order
+for (tp in names(athrTrcTree3year)) {
+	athrTrcTree3year[[tp]] <- athrTrcTree3year[[tp]][sort(names(athrTrcTree3year[[tp]]))]
+}
+athrTrcTree3year <- athrTrcTree3year[sort(names(athrTrcTree3year))]
 
 ## all years for committer
 cmtrTrcTree <- list()
@@ -896,21 +915,38 @@ sink()
 ## 3-year period for committer
 cmtrTrcTree3year <- list()
 res <- lapply(cmtrTrcZip, function(idx) {
-	st <- delta$m[idx[1]] - 0.001
-	mth <- as.character(delta$m[idx[1]])
-	tsel <- delta$cty[idx] >= st & delta$cty[idx] < st + 3
-	idx <- idx[tsel]
 	pathes <- Reduce(paste, delta$mainMod[idx], accumulate=T)
 	nidx <- length(idx)
-    dtimes <- c(0, delta$cty[idx][-1] - delta$cty[idx][-nidx])
-    for (i in 1:min(nidx, 5)) {
-    	if (is.null(cmtrTrcTree3year[[pathes[i]]])) {cmtrTrcTree3year[[pathes[i]]] <<- list()}
-    }
-    if (is.null(cmtrTrcTree3year[[pathes[1]]][[mth]])) {cmtrTrcTree3year[[pathes[1]]][[mth]] <<- 1}
-    else {cmtrTrcTree3year[[pathes[1]]][[mth]] <<- cmtrTrcTree3year[[pathes[1]]][[mth]] + 1}
-    if (nidx == 1) return(NULL);
-    for (i in 2:min(nidx, 5)) {
-    	if (is.null(cmtrTrcTree3year[[pathes[i]]][[mth]])) {cmtrTrcTree3year[[pathes[i]]][[mth]] <<- c(dtimes[i])}
-    	else {cmtrTrcTree3year[[pathes[i]]][[mth]] <<- c(cmtrTrcTree3year[[pathes[i]]][[mth]], dtimes[i])}
-    }
+	dtimes <- c(0, delta$cty[idx][-1] - delta$cty[idx][-nidx])
+	maxst <- delta$cm[idx[1]]
+	st <- maxst - 3
+	ed <- st + 3
+	idxback <- idx
+	while (st <= maxst) {
+		# if (st < 2005 | ed > 2012.917) 
+		mth <- as.character(round(st, 3))	
+		tsel <- delta$cty[idxback] >= st & delta$cty[idxback] < ed
+		idx <- idxback[tsel]
+		nidx <- length(idx)
+		#cat(round(maxst, 10), st, ed, mth, nidx, pathes, '\n')
+		if (nidx > 0) {
+			for (i in 1:min(nidx, 5)) {
+			    if (is.null(cmtrTrcTree3year[[pathes[i]]])) {cmtrTrcTree3year[[pathes[i]]] <<- list()}
+			}
+			if (is.null(cmtrTrcTree3year[[pathes[1]]][[mth]])) {cmtrTrcTree3year[[pathes[1]]][[mth]] <<- 1}
+		    else {cmtrTrcTree3year[[pathes[1]]][[mth]] <<- cmtrTrcTree3year[[pathes[1]]][[mth]] + 1}
+		    if (nidx > 1) {
+			    for (i in 2:min(nidx, 5)) {
+			    	if (is.null(cmtrTrcTree3year[[pathes[i]]][[mth]])) {cmtrTrcTree3year[[pathes[i]]][[mth]] <<- c(dtimes[i])}
+			    	else {cmtrTrcTree3year[[pathes[i]]][[mth]] <<- c(cmtrTrcTree3year[[pathes[i]]][[mth]], dtimes[i])}
+			    }
+			}
+		}
+	    st <- st + 1/12
+	    ed <- st + 3
+	}
 	})
+for (tp in names(cmtrTrcTree3year)) {
+	cmtrTrcTree3year[[tp]] <- cmtrTrcTree3year[[tp]][sort(names(cmtrTrcTree3year[[tp]]))]
+}
+cmtrTrcTree3year <- cmtrTrcTree3year[sort(names(cmtrTrcTree3year))]
