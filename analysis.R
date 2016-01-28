@@ -77,21 +77,37 @@ getNumVar2EachVar1InPrdofDelta<-function(sel, prd, var1, var2, measure) {
 	return(tapply((1:numofdeltas)[sel], delta[sel, prd],
 		function(x) {return(tapply(delta[x, var2], delta[x, var1], measure))}))
 }
-convtArrOfListToDF<-function(arrList) {
-	t <- data.frame(cid=character(0),m=character(0),measure=numeric(0))
-	for (m in names(arrList)){
-		tv <- arrList[[m]]
-		t <- tryCatch({
-            rbind(t, data.frame(cid=names(tv),m=rep(as.numeric(m), length(tv)),
-			 measure=tv, row.names=NULL))
-            }, error=function(e){
-                rbind(t, data.frame(cid=names(tv),m=rep(m, length(tv)),
-             measure=tv, row.names=NULL))
-            }, warning=function(w){
-                rbind(t, data.frame(cid=names(tv),m=rep(m, length(tv)),
-             measure=tv, row.names=NULL))
-            })
-	}
+convtArrOfListToDF<-function(arrList, usename=TRUE) {
+    if (usename) {
+        t <- data.frame(cid=character(0),m=character(0),measure=numeric(0))
+        for (m in names(arrList)){
+    		tv <- arrList[[m]]
+    		t <- tryCatch({
+                rbind(t, data.frame(cid=names(tv),m=rep(as.numeric(m), length(tv)),
+    			 measure=tv, row.names=NULL))
+                }, error=function(e){
+                    rbind(t, data.frame(cid=names(tv),m=rep(m, length(tv)),
+                 measure=tv, row.names=NULL))
+                }, warning=function(w){
+                    rbind(t, data.frame(cid=names(tv),m=rep(m, length(tv)),
+                 measure=tv, row.names=NULL))
+                })
+    	}
+    }
+    else {
+        t <- data.frame(m=character(0),measure=numeric(0))
+        for (m in names(arrList)){
+            tv <- arrList[[m]]
+            t <- tryCatch({
+                rbind(t, data.frame(m=rep(as.numeric(m), length(tv)), measure=tv, row.names=NULL))
+                }, error=function(e){
+                    rbind(t, data.frame(m=rep(m, length(tv)), measure=tv, row.names=NULL))
+                }, warning=function(w){
+                    rbind(t, data.frame(m=rep(m, length(tv)), measure=tv, row.names=NULL))
+                })
+        }
+    }
+
 	return(t)
 }
 
@@ -855,21 +871,17 @@ res <- lapply(athrTrcZip, function(idx) {
 	pathes <- Reduce(paste, delta$mainMod[idx], accumulate=T)
 	nidx <- length(idx)
 	dtimes <- c(0, delta$ty[idx][-1] - delta$ty[idx][-nidx])
+    for (i in 1:min(nidx, 5)) {
+        if (is.null(athrTrcTree3year[[pathes[i]]])) {athrTrcTree3year[[pathes[i]]] <<- list()}
+    }
 	maxst <- delta$m[idx[1]]
 	st <- maxst - 3
 	ed <- st + 3
-	idxback <- idx
 	while (st <= maxst) {
-		# if (st < 2005 | ed > 2012.917) 
-		mth <- as.character(round(st, 3))	
-		tsel <- delta$ty[idxback] >= st & delta$ty[idxback] < ed
-		idx <- idxback[tsel]
-		nidx <- length(idx)
+		# if (st < 2005 | ed > 2012.917)
+		mth <- as.character(round(st, 3))
 		#cat(round(maxst, 10), st, ed, mth, nidx, pathes, '\n')
 		if (nidx > 0) {
-			for (i in 1:min(nidx, 5)) {
-			    if (is.null(athrTrcTree3year[[pathes[i]]])) {athrTrcTree3year[[pathes[i]]] <<- list()}
-			}
 			if (is.null(athrTrcTree3year[[pathes[1]]][[mth]])) {athrTrcTree3year[[pathes[1]]][[mth]] <<- 1}
 		    else {athrTrcTree3year[[pathes[1]]][[mth]] <<- athrTrcTree3year[[pathes[1]]][[mth]] + 1}
 		    if (nidx > 1) {
@@ -917,22 +929,18 @@ cmtrTrcTree3year <- list()
 res <- lapply(cmtrTrcZip, function(idx) {
 	pathes <- Reduce(paste, delta$mainMod[idx], accumulate=T)
 	nidx <- length(idx)
+    for (i in 1:min(nidx, 5)) {
+        if (is.null(cmtrTrcTree3year[[pathes[i]]])) {cmtrTrcTree3year[[pathes[i]]] <<- list()}
+    }
 	dtimes <- c(0, delta$cty[idx][-1] - delta$cty[idx][-nidx])
 	maxst <- delta$cm[idx[1]]
 	st <- maxst - 3
 	ed <- st + 3
-	idxback <- idx
 	while (st <= maxst) {
-		# if (st < 2005 | ed > 2012.917) 
-		mth <- as.character(round(st, 3))	
-		tsel <- delta$cty[idxback] >= st & delta$cty[idxback] < ed
-		idx <- idxback[tsel]
-		nidx <- length(idx)
+		# if (st < 2005 | ed > 2012.917)
+		mth <- as.character(round(st, 3))
 		#cat(round(maxst, 10), st, ed, mth, nidx, pathes, '\n')
 		if (nidx > 0) {
-			for (i in 1:min(nidx, 5)) {
-			    if (is.null(cmtrTrcTree3year[[pathes[i]]])) {cmtrTrcTree3year[[pathes[i]]] <<- list()}
-			}
 			if (is.null(cmtrTrcTree3year[[pathes[1]]][[mth]])) {cmtrTrcTree3year[[pathes[1]]][[mth]] <<- 1}
 		    else {cmtrTrcTree3year[[pathes[1]]][[mth]] <<- cmtrTrcTree3year[[pathes[1]]][[mth]] + 1}
 		    if (nidx > 1) {
