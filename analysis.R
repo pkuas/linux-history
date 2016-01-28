@@ -840,4 +840,31 @@ res <- lapply(athrTrcZip, function(idx){
         else {athrTrcTree[[pathes[i]]] <<- c(athrTrcTree[[pathes[i]]], dtimes[i])}
     }
     })
-athrTrcTree <- athrTrcTree[which(unlist(lapply(athrTrcTree, length)) >= 50)]
+#athrTrcTree <- athrTrcTree[which(unlist(lapply(athrTrcTree, length)) >= 20)]
+athrTrcTree <- athrTrcTree[sort(names(athrTrcTree))]
+athrTrcTreeSmry <- lapply(athrTrcTree, mySummary)
+athrTrcTreeSmry <- athrTrcTreeSmry[which(unlist(lapply(athrTrcTree, length)) >= 20)]
+sink('athrTrcTreeSmry.md', append=F)
+print(athrTrcTreeSmry)
+sink()
+
+cmtrTrcTree <- list()
+res <- lapply(cmtrTrcZip, function(idx){
+    pathes <- Reduce(paste, delta$mainMod[idx], accumulate=T)
+    nidx <- length(idx)
+    dtimes <- c(0, delta$cty[idx][-1] - delta$cty[idx][-nidx])
+    if (is.null(cmtrTrcTree[[pathes[1]]])) {cmtrTrcTree[[pathes[1]]] <<- 1;}
+        else {cmtrTrcTree[[pathes[1]]] <<- cmtrTrcTree[[pathes[1]]] + 1}
+    if (nidx == 1) return(NULL);
+    for (i in 2:min(nidx, 5)){
+        if (is.null(cmtrTrcTree[[pathes[i]]])) {cmtrTrcTree[[pathes[i]]] <<- c(dtimes[i]);}
+        else {cmtrTrcTree[[pathes[i]]] <<- c(cmtrTrcTree[[pathes[i]]], dtimes[i])}
+    }
+    })
+#cmtrTrcTree <- cmtrTrcTree[which(unlist(lapply(cmtrTrcTree, length)) >= 50)]
+cmtrTrcTree <- cmtrTrcTree[sort(names(cmtrTrcTree))]
+cmtrTrcTreeSmry <- lapply(cmtrTrcTree, mySummary)
+cmtrTrcTreeSmry <- cmtrTrcTreeSmry[which(unlist(lapply(cmtrTrcTree, length)) >= 5)]
+sink('cmtrTrcTreeSmry.md', append=F)
+print(cmtrTrcTreeSmry)
+sink()
