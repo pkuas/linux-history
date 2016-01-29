@@ -962,31 +962,35 @@ for (tp in names(cmtrTrcTree3year)) {
 cmtrTrcTree3year <- cmtrTrcTree3year[sort(names(cmtrTrcTree3year))]
 
 ## combine author trace and committer trace
+smodsCared <- c('dr', 'ar', 'ne', 'ke', 'mm', 'fs', 'so')
 zipAcTrcTillCmtr <- function(tpmodz) {
-    namesofisa <- c('ar', 'dr')
-    isa <- rep(FALSE, 2)
-    names(isa) <- namesofisa
-    isc <- rep(FALSE, length(smodsInRoot)) # mark if one dvpr has become one module's cmtr
-    names(isc) <- smodsInRoot
+    isa <- rep(FALSE, length(smodsCared)) # mark if one dvpr has become one module's athr
+    names(isa) <- smodsCared
+    isc <- isa
     n <- length(tpmodz)
     tsel <- rep(TRUE, n)
     tp <- substr(tpmodz, 1, 1)
     mod <- substr(tpmodz, 3, 4)
     for (i in 1:n) {
-        if (isc[mod[i]]) {
+        if (!mod[i] %in% smodsCared) {
+            tsel[i] <- FALSE;
+        } else if (isc[mod[i]]) {
             tsel[i] <- FALSE;
         } else if (tp[i] == 'c') {
             isc[mod[i]] <- TRUE;
-        } else if (mod[i] %in% namesofisa & sum(!isa) == 0) {
+        } else if (isa[mod[i]]) {
             tsel[i] <- FALSE
         } else {
             isa[mod[i]] <- TRUE
         }
     }
-    return(tpmodz[tsel])
+    return(which(tsel))
 }
-
+## sequentail unique zip
 acTrcTree <- list()
+## one occurence zip, unitl as a cmtr
+acTrcTree1zipc <- list()
+
 for (cmtr in names(cmtrTrc)) {
     t <- data.frame(tp=rep('c', length(cmtrTrc[[cmtr]])), idx=cmtrTrc[[cmtr]])
     t <- rbind(t, data.frame(tp=rep('a', length(athrTrc[[cmtr]])), idx=athrTrc[[cmtr]]))
@@ -1000,16 +1004,66 @@ for (cmtr in names(cmtrTrc)) {
     tm <- delta$ty[tz$idx]
     tsel <- substr(tpmodz, 1, 1) == 'c'
     tm[tsel] <- delta$cty[tz$idx[tsel]]
-    dtimes <- c(0, tm[-1] - tm[-nidx])
+    # dtimes <- c(0, tm[-1] - tm[-nidx])
     acTrcTree[[cmtr]] <- list(tpmodz=tpmodz, tm=tm)
-    # if (is.null(acTrcTree[[pathes[1]]])) {acTrcTree[[pathes[1]]] <<- 1;}
-    #     else {acTrcTree[[pathes[1]]] <<- acTrcTree[[pathes[1]]] + 1}
-    # if (nidx == 1) return(NULL);
-    # for (i in 2:min(nidx, 20)){
-    #     if (is.null(acTrcTree[[pathes[i]]])) {acTrcTree[[pathes[i]]] <<- c(dtimes[i]);}
-    #     else {acTrcTree[[pathes[i]]] <<- c(acTrcTree[[pathes[i]]], dtimes[i])}
-    # }
+    tsel <- zipAcTrcTillCmtr(tpmodz)
+    tpmodz <- tpmodz[tsel]
+    tm <- tm[tsel]
+    acTrcTree1zipc[[cmtr]] <- list(tpmodz=tpmodz, tm=tm)
 }
+#### first module as an athr
+tc <- rep(0, length(smodsCared))
+names(tc) <- smodsCared
+for (cmtr in names(acTrcTree1zipc)){
+    t <- acTrcTree1zipc[[cmtr]][['tpmodz']][1]
+    tm <- substr(t, 3, 4)
+    if (substr(t, 1, 1) == 'a') tc[tm] <- tc[tm] + 1
+}
+
+#### ac trc pattern
+acp <- list()
+for (cmtr in names(acTrcTree1zipc)){
+    tpmodz <- acTrcTree1zipc[[cmtr]][['tpmodz']]
+    tm <- acTrcTree1zipc[[cmtr]][['tm']]
+    nidx <- length(tm)
+    dtimes <- c(0, tm[-1] - tm[-nidx])
+    p <- Reduce(paste, tpmodz, accumulate=T)
+    if (is.null(acp[[p[1]]])) {acp[[p[1]]] <- 1}
+    else {acp[[p[1]]] <- acp[[p[1]]] + 1}
+    if (nidx == 1) next
+    for (i in 2:nidx) {
+        if (is.null(acp[[p[i]]])) {acp[[p[i]]] <-  c(dtimes[i])}
+        else {acp[[p[i]]] <- c(acp[[p[i]]], dtimes[i]) }
+    }
+}
+acp <- acp[sort(names(acp))]
+smry <- lapply(acp, mySummary)
+t <- smry[which(unlist(lapply(acp, length)) >= 5)]
+#### how dvpr become cmtr of mm, ke
+####: where they start; how many mods they contributed to before they become cmtr of mm, ke
+tmm<- rep(0, length(smodsCared))
+names(tmm) <- smodsCared
+tke <- tmm
+modsbefmm <- modsbefke <- c()
+t1 <- t2 <- c() # how long since they contributed
+for (cmtr in names(acTrcTree1zipc)){
+    tpmodz <- acTrcTree1zipc[[cmtr]][['tpmodz']]
+    tm <- acTrcTree1zipc[[cmtr]][['tm']]
+    tp <- substr(tpmodz, 1, 1)
+    mods <- substr(tpmodz, 3, 4)
+    idx <- match(c('c-mm', 'c-ke'), tpmodz)
+    if (!is.na(idx[1])) {
+        tmm[mods[1]] <- tmm[mods[1]] + 1
+        t1 <- c(t1, tm[idx[1]] - tm[1])
+        if (idx[1] > 1) modsbefmm <- c(modsbefmm, unique(mods[1:(idx[1] - 1)]))
+    }
+    if (!is.na(idx[2])) {
+        tke[mods[1]] <- tke[mods[1]] + 1
+        t2 <- c(t2, tm[idx[2]] - tm[1])
+        if (idx[2] > 1) modsbefke <- c(modsbefke, unique(mods[1:(idx[2] - 1)]))
+    }
+}
+
 
 # module's correlation
 ## from author's perspective, in a given period
