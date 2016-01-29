@@ -12,6 +12,33 @@
  0.9940358  0.7952286  1.7892644  0.1988072  0.1988072  0.5964215
 ```
 
+#### num of cmtrs in each mod
+```
+> t <- sort(tapply(delta$cid, delta$mod, numOfUnique), decreasing=T)
+> t
+      drivers          arch            fs        kernel           net
+          374           303           164           130           111
+          lib            mm         sound       scripts      security
+           94            89            83            57            51
+         init         tools         block Documentation          virt
+           47            46            40            35            28
+       crypto           ipc       samples           usr      firmware
+           25            23            17             4             3
+        certs  
+            1 
+> round(t / max(t), 4)
+      drivers          arch            fs        kernel           net
+       1.0000        0.8102        0.4385        0.3476        0.2968
+          lib            mm         sound       scripts      security
+       0.2513        0.2380        0.2219        0.1524        0.1364
+         init         tools         block Documentation          virt
+       0.1257        0.1230        0.1070        0.0936        0.0749
+       crypto           ipc       samples           usr      firmware
+       0.0668        0.0615        0.0455        0.0107        0.0080
+        certs
+       0.0027  
+>
+```
 在多长时间后，committer会做模块的转变，单位为年。
 
 > cmtrTrcTreeSmry <- cmtrTrcTreeSmry[which(unlist(lapply(cmtrTrcTree, length)) >= 5)]
