@@ -98,7 +98,7 @@ ae_an.ae = map(str.lower, ae_an.ae)
 ae_an.an = map(str.lower, ae_an.an)
 ansofae = ae_an.an.groupby(ae_an.ae).unique()
 aesofan = ae_an.ae.groupby(ae_an.an).unique()
-
+import re
 import networkx as nx
 nodes = np.unique(ae_an.ae)
 nodes = np.concatenate((nodes, np.unique(ae_an.an)))
@@ -135,3 +135,27 @@ for i in range(len(belong)):
 
 mp = pd.Series(nds2gid_mp.index[list(belong[nds2gid_mp])], index=nds2gid_mp.index)
 mp.to_csv("./all.aliase.id.networkx.full")
+
+# get each dvpr's email domain names, dvpr is identified by gid
+def get_email_domain(em):
+	dm = re.search("@[\w.-]+", em)
+	return None if dm == None else dm.group()
+
+visited = pd.Series([None]*len(belong))
+domains = dict()
+for i in range(len(visited)):
+	if visited[i] == None:
+		t = list(np.where(belong==belong[i])[0])
+		dms = map(get_email_domain, nds2gid_mp.index[t])
+		domains[mp[i]] = list(set([dm for dm in dms if dm != None]))
+		visited[t] = True
+
+ids = []
+dms = []
+for k in domains.keys():
+	ids.extend([k] * len(domains[k]))
+	dms.extend(domains[k])
+
+dms_of_id = pd.Series(ids, index=dms)
+dms_of_id.to_csv("./id.dm.full")
+

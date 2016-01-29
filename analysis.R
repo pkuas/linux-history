@@ -960,3 +960,24 @@ for (tp in names(cmtrTrcTree3year)) {
 	cmtrTrcTree3year[[tp]] <- cmtrTrcTree3year[[tp]][sort(names(cmtrTrcTree3year[[tp]]))]
 }
 cmtrTrcTree3year <- cmtrTrcTree3year[sort(names(cmtrTrcTree3year))]
+
+# module's correlation
+## from author's perspective, in a given period
+##: In a given period, for each author, he coded for mod A and mod B, with x chgs and y chgs
+##: respectively. then correlation beteewn mod A and mod B should increase min(x, y).
+smodsInRoot <- sort(smodsInRoot)
+modCor <- matrix(0, nrow=length(smodsInRoot), ncol=length(smodsInRoot),
+	dimnames=list(smodsInRoot, smodsInRoot))
+tmod <- substr(delta$mod, 1, 2)
+tsel <- delta$m >= 2012 & delta$m < 2012 + 1/12
+res <- tapply((1:nrow(delta))[tsel], delta$aid[tsel], function(idx) {
+	chgs <- tapply(idx, tmod[idx], function(x) {return(sum(delta$add[x], delta$del[x]))})
+	#chgs <- chgs[sort(names(chgs))]
+	nms <- names(chgs)
+	num <- length(nms)
+	for (i in 1:num){
+		for (j in i:num) {modCor[nms[j], nms[i]] <<- modCor[nms[i], nms[j]] <<- modCor[nms[i], nms[j]] + min(chgs[i], chgs[j])}
+	}
+	})
+
+modCor

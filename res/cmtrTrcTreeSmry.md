@@ -12,6 +12,8 @@
  0.9940358  0.7952286  1.7892644  0.1988072  0.1988072  0.5964215
 ```
 
+在多长时间后，committer会做模块的转变，单位为年。
+
 > cmtrTrcTreeSmry <- cmtrTrcTreeSmry[which(unlist(lapply(cmtrTrcTree, length)) >= 5)]
 
 ```

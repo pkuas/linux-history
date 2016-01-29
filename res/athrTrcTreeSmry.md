@@ -17,6 +17,8 @@
  0.008187996  0.016375993
 ```
 
+在多长时间后，author会做模块的转变，单位为年。
+
 > athrTrcTreeSmry <- athrTrcTreeSmry[which(unlist(lapply(athrTrcTree, length)) >= 20)]
 
 ```
