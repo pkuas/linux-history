@@ -961,6 +961,56 @@ for (tp in names(cmtrTrcTree3year)) {
 }
 cmtrTrcTree3year <- cmtrTrcTree3year[sort(names(cmtrTrcTree3year))]
 
+## combine author trace and committer trace
+zipAcTrcTillCmtr <- function(tpmodz) {
+    namesofisa <- c('ar', 'dr')
+    isa <- rep(FALSE, 2)
+    names(isa) <- namesofisa
+    isc <- rep(FALSE, length(smodsInRoot)) # mark if one dvpr has become one module's cmtr
+    names(isc) <- smodsInRoot
+    n <- length(tpmodz)
+    tsel <- rep(TRUE, n)
+    tp <- substr(tpmodz, 1, 1)
+    mod <- substr(tpmodz, 3, 4)
+    for (i in 1:n) {
+        if (isc[mod[i]]) {
+            tsel[i] <- FALSE;
+        } else if (tp[i] == 'c') {
+            isc[mod[i]] <- TRUE;
+        } else if (mod[i] %in% namesofisa & sum(!isa) == 0) {
+            tsel[i] <- FALSE
+        } else {
+            isa[mod[i]] <- TRUE
+        }
+    }
+    return(tpmodz[tsel])
+}
+
+acTrcTree <- list()
+for (cmtr in names(cmtrTrc)) {
+    t <- data.frame(tp=rep('c', length(cmtrTrc[[cmtr]])), idx=cmtrTrc[[cmtr]])
+    t <- rbind(t, data.frame(tp=rep('a', length(athrTrc[[cmtr]])), idx=athrTrc[[cmtr]]))
+    t <- t[order(c(delta$cty[cmtrTrc[[cmtr]]], delta$ty[athrTrc[[cmtr]]])), ]
+    tpmod <- paste(t$tp, delta$mainMod[t$idx], sep='-')
+    tsel <- which(c('#$', tpmod) != c(tpmod, NA))
+    tz <- t[tsel, ]
+    tpmodz <- tpmod[tsel]
+    nidx <- length(tsel)
+    pathes <- Reduce(paste, tpmodz, accumulate=T)
+    tm <- delta$ty[tz$idx]
+    tsel <- substr(tpmodz, 1, 1) == 'c'
+    tm[tsel] <- delta$cty[tz$idx[tsel]]
+    dtimes <- c(0, tm[-1] - tm[-nidx])
+    acTrcTree[[cmtr]] <- list(tpmodz=tpmodz, tm=tm)
+    # if (is.null(acTrcTree[[pathes[1]]])) {acTrcTree[[pathes[1]]] <<- 1;}
+    #     else {acTrcTree[[pathes[1]]] <<- acTrcTree[[pathes[1]]] + 1}
+    # if (nidx == 1) return(NULL);
+    # for (i in 2:min(nidx, 20)){
+    #     if (is.null(acTrcTree[[pathes[i]]])) {acTrcTree[[pathes[i]]] <<- c(dtimes[i]);}
+    #     else {acTrcTree[[pathes[i]]] <<- c(acTrcTree[[pathes[i]]], dtimes[i])}
+    # }
+}
+
 # module's correlation
 ## from author's perspective, in a given period
 ##: In a given period, for each author, he coded for mod A and mod B, with x chgs and y chgs
@@ -982,37 +1032,37 @@ res <- tapply((1:nrow(delta))[tsel], delta$aid[tsel], function(idx) {
 
 modCor
 
-# 
+#
 library('entropy')
 enSummary <- function(x) { # x is vector of counts
-	sm <- summary(x); 
+	sm <- summary(x);
 	t <- as.vector(sm)
 	names(t) <- names(sm)
 	t['En'] <- entropy(x, method='ML', unit='log2')
-	t['Num'] <- length(x); 
+	t['Num'] <- length(x);
 	return(t)
 }
 ## in modules of root
 tsel <- delta$mod != delta$f
-### in modules of root, author's contribution summary 
+### in modules of root, author's contribution summary
 t <- tapply(delta$aid[tsel], delta$mod[tsel], function(x) return(enSummary(as.vector(table(x)))))
-asmrmod <- matrix(unlist(t),byrow=T, ncol=8, 
+asmrmod <- matrix(unlist(t),byrow=T, ncol=8,
 	dimnames=list(names(t), c('min', 'q1', 'med', 'mean', 'q3', 'max', 'en', 'num')))
 asmrmod <- asmrmod[order(-asmrmod[,'en']), ]
-## in modules of root, cmtr's contribution summary 
+## in modules of root, cmtr's contribution summary
 t <- tapply(delta$cid[tsel], delta$mod[tsel], function(x) return(enSummary(as.vector(table(x)))))
-csmrmod <- matrix(unlist(t),byrow=T, ncol=8, 
+csmrmod <- matrix(unlist(t),byrow=T, ncol=8,
 	dimnames=list(names(t), c('min', 'q1', 'med', 'mean', 'q3', 'max', 'en', 'num')))
 csmrmod <- csmrmod[order(-csmrmod[,'en']), ]
 ## in modules of drivers
-tsel <- delta$mod == 'drivers' & delta$mmod != delta$f 
+tsel <- delta$mod == 'drivers' & delta$mmod != delta$f
 t <- tapply(delta$aid[tsel], delta$mmod[tsel], function(x) return(enSummary(as.vector(table(x)))))
-asmrmoddr <- matrix(unlist(t),byrow=T, ncol=8, 
+asmrmoddr <- matrix(unlist(t),byrow=T, ncol=8,
 	dimnames=list(names(t), c('min', 'q1', 'med', 'mean', 'q3', 'max', 'en', 'num')))
 asmrmoddr <- asmrmoddr[order(-asmrmoddr[,'en']), ]
-## in modules of root, cmtr's contribution summary 
+## in modules of root, cmtr's contribution summary
 t <- tapply(delta$cid[tsel], delta$mmod[tsel], function(x) return(enSummary(as.vector(table(x)))))
-csmrmoddr <- matrix(unlist(t),byrow=T, ncol=8, 
+csmrmoddr <- matrix(unlist(t),byrow=T, ncol=8,
 	dimnames=list(names(t), c('min', 'q1', 'med', 'mean', 'q3', 'max', 'en', 'num')))
 csmrmoddr <- csmrmoddr[order(-csmrmoddr[,'en']), ]
 
