@@ -26,7 +26,8 @@ lg <- read.table("linux.l2", sep=";",comment.char="", quote="",
 #/     row.names = F, col.names = F)
 ### merging using python
 ### read each dvpr's email domains.
-dmsid<-read.csv("id.dm.full", header=F, col.names=c('dm', 'id')) 
+dmsid<-read.csv("id.dm.full", header=F, col.names=c('dm', 'id'), colClasses=c(rep("character", 2))) 
+id2dms <- tapply(dmsid$dm, dmsid$id, function(x) return(x))
 t<-read.csv("all.aliase.id.networkx.full", header=F, col.names=c('als', 'id'))
 idmp<-as.character(t[,2])
 names(idmp)<-t[,1]

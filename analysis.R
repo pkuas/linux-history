@@ -981,3 +981,61 @@ res <- tapply((1:nrow(delta))[tsel], delta$aid[tsel], function(idx) {
 	})
 
 modCor
+
+# 
+library('entropy')
+enSummary <- function(x) { # x is vector of counts
+	sm <- summary(x); 
+	t <- as.vector(sm)
+	names(t) <- names(sm)
+	t['En'] <- entropy(x, method='ML', unit='log2')
+	t['Num'] <- length(x); 
+	return(t)
+}
+## in modules of root
+tsel <- delta$mod != delta$f
+### in modules of root, author's contribution summary 
+t <- tapply(delta$aid[tsel], delta$mod[tsel], function(x) return(enSummary(as.vector(table(x)))))
+asmrmod <- matrix(unlist(t),byrow=T, ncol=8, 
+	dimnames=list(names(t), c('min', 'q1', 'med', 'mean', 'q3', 'max', 'en', 'num')))
+asmrmod <- asmrmod[order(-asmrmod[,'en']), ]
+## in modules of root, cmtr's contribution summary 
+t <- tapply(delta$cid[tsel], delta$mod[tsel], function(x) return(enSummary(as.vector(table(x)))))
+csmrmod <- matrix(unlist(t),byrow=T, ncol=8, 
+	dimnames=list(names(t), c('min', 'q1', 'med', 'mean', 'q3', 'max', 'en', 'num')))
+csmrmod <- csmrmod[order(-csmrmod[,'en']), ]
+## in modules of drivers
+tsel <- delta$mod == 'drivers' & delta$mmod != delta$f 
+t <- tapply(delta$aid[tsel], delta$mmod[tsel], function(x) return(enSummary(as.vector(table(x)))))
+asmrmoddr <- matrix(unlist(t),byrow=T, ncol=8, 
+	dimnames=list(names(t), c('min', 'q1', 'med', 'mean', 'q3', 'max', 'en', 'num')))
+asmrmoddr <- asmrmoddr[order(-asmrmoddr[,'en']), ]
+## in modules of root, cmtr's contribution summary 
+t <- tapply(delta$cid[tsel], delta$mmod[tsel], function(x) return(enSummary(as.vector(table(x)))))
+csmrmoddr <- matrix(unlist(t),byrow=T, ncol=8, 
+	dimnames=list(names(t), c('min', 'q1', 'med', 'mean', 'q3', 'max', 'en', 'num')))
+csmrmoddr <- csmrmoddr[order(-csmrmoddr[,'en']), ]
+
+
+t<-sort(tapply(dmsid$dm, dmsid$id, length), decreasing=T)
+head(t)
+dmsid[dmsid$id=='dave miller',]
+t<-sort(tapply(dmsid$id, dmsid$dm, length), decreasing=T)
+head(t)
+tsel = delta$mmod=='drivers/virtio' & delta$m >= 2012 & delta$m <= 2013
+numOfUnique(delta$cid[tsel])
+numOfUnique(delta$aid[tsel])
+# head(sort(table(unlist(id2dms[ delta$cid[tsel] ])),decreasing=T), n=10)
+# head(sort(table(unlist(id2dms[ delta$aid[tsel] ])),decreasing=T), n=10)
+# head(sort(table(delta$ccompany[tsel]),decreasing=T), n=10)
+### committers' domain
+tc <- sort(table(delta$ccompany[tsel]), decreasing=T)
+res <- tapply(delta$acompany[tsel], delta$cid[tsel], function(x){return(sort(table(x), decreasing=T))})
+lapply(res, head, n=10)
+
+tg <- tapply(delta$aid[tsel], delta$cid[tsel], numOfUnique)
+tg
+dmsid[dmsid$id=='axboe@carl', ]
+names(idmp)[idmp=='axboe@carl']
+head(delta[delta$cid=='axboe@carl', c('cty', 'ce')], n=10)
+

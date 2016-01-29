@@ -36,10 +36,10 @@ dev.off();
 
 
 # count author/committer's domain name (company)
-delta$acompany <- sub(".*@(.*)", "\\1", as.character(delta$ae),perl=TRUE)
+delta$acompany <- sub(".*(@.*)", "\\1", as.character(tolower(delta$ae)),perl=TRUE)
 acompany.tb <- sort(table(delta$acompany), decreasing = T)
 mod.acompany.tb<- table(delta$mod, delta$acompany)
-delta$ccompany <- sub(".*@(.*)", "\\1", as.character(delta$ce), perl=T)
+delta$ccompany <- sub(".*(@.*)", "\\1", as.character(tolower(delta$ce)), perl=T)
 ccompany.tb <- sort(table(delta$ccompany), decreasing = T)
 
 # how author2committer varied in each sub module of drivers
