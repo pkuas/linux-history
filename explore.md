@@ -21,6 +21,8 @@
 ![x](./pics/numAthrs-month.mod.png)
 - Committers数量
 ![x](./pics/numCmtrs-month.mod.png)
+- Author to committer 比率
+![x](./pics/a2c-in-mods.png)
 - Joiners数量（new comers）
 ![x](./pics/numJoiners-month.mod.png)
 - New comitters
