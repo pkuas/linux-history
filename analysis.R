@@ -1075,7 +1075,6 @@ tsel <- delta$md2 %in% smodsCared
 t <- round(delta$m[tsel], 3)
 athrmtrc <- t2apply((1:nrow(delta))[tsel], t, delta$aid[tsel], getTop80Mod) # athr's monthly trace
 athrmchgs <- t2apply(delta$aid[tsel], t, delta$aid[tsel], length)
-trc <- list()
 res <- lapply(athrmtrc, function(x) {
     mth <- as.numeric(names(x))
     y <- floor(mth[1])
