@@ -8,6 +8,7 @@ cd /store1/chenqy/linuxhistory
 ssh pae
 ssh bear
 cd /store1/chenqy/linuxhistory
+R
 
 open pae
 ssh lion

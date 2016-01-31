@@ -1064,6 +1064,18 @@ for (cmtr in names(acTrcTree1zipc)){
     }
 }
 
+## new method of trace ana
+getTop80Mod <-function(idx,xmod='md2') {
+    t <- sort(tapply(idx, delta[idx, xmod], function(x) {return(sum(delta$add[x], delta$del[x]))}), decreasing=T)
+    cs <- cumsum(t) / sum(t)
+    tsel <- c(TRUE, (cs < 0.8)[-length(cs)])
+    return(Reduce(paste, names(t)[tsel]))
+}
+tsel <- delta$md2 %in% smodsCared
+t <- round(delta$m[tsel], 3)
+athrmtrc <- t2apply((1:nrow(delta))[tsel], t, delta$aid[tsel], getTop80Mod)
+athrmchgs <- t2apply(delta$aid[tsel], t, delta$aid[tsel], length)
+
 
 # module's correlation
 ## from author's perspective, in a given period

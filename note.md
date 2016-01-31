@@ -129,3 +129,8 @@ See below
 关于author、committer的贡献模块转变，查看这里：[author](./res/athrTrcTreeSmry.md), [committer](./res/cmtrTrcTreeSmry.md)
 
 在这个转变分析中，还没有区分那些“一次贡献者”、只在一个模块贡献的“持久贡献者”。
+
+### 简化方法
+- 一个revision可能有多个mod（实际上这样的revision是少数），可以先把增减行数最多的mod确定为main mod
+- 加入时间因素：考虑一段时间内开始贡献的dvpr
+- 
