@@ -1064,7 +1064,10 @@ for (cmtr in names(acTrcTree1zipc)){
     }
 }
 
-## new method of trace ana
+## new method of trace ana: modules accounting for 80% of changes
+which.zip <- function(trc) {
+    return(which(c('#$', trc) != c(trc, NA)))
+}
 getTop80Mod <-function(idx,xmod='md2') {
     t <- sort(tapply(idx, delta[idx, xmod], function(x) {return(sum(delta$add[x], delta$del[x]))}), decreasing=T)
     cs <- cumsum(t) / sum(t)
@@ -1078,7 +1081,8 @@ athrmchgs <- t2apply(delta$aid[tsel], t, delta$aid[tsel], length)
 res <- lapply(athrmtrc, function(x) {
     mth <- as.numeric(names(x))
     y <- floor(mth[1])
-    tsel <- c('#$', x) != c(x, '#$')
+    twh <- which(c('#$', x) != c(x, '#$'))
+
 
     })
 
