@@ -1065,6 +1065,7 @@ for (cmtr in names(acTrcTree1zipc)){
 }
 
 ## new method of trace ana: modules accounting for 80% of changes
+dashpaste <- function(x, y) paste(x, y, sep='-')
 which.zip <- function(trc) {
     return(which(c('#$', trc) != c(trc, NA)))
 }
@@ -1072,19 +1073,29 @@ getTop80Mod <-function(idx,xmod='md2') {
     t <- sort(tapply(idx, delta[idx, xmod], function(x) {return(sum(delta$add[x], delta$del[x]))}), decreasing=T)
     cs <- cumsum(t) / sum(t)
     tsel <- c(TRUE, (cs < 0.8)[-length(cs)])
-    return(Reduce(paste, names(t)[tsel]))
+    return(Reduce(dashpaste, names(t)[tsel]))
 }
 tsel <- delta$md2 %in% smodsCared
 t <- round(delta$m[tsel], 3)
 athrmtrc <- t2apply((1:nrow(delta))[tsel], t, delta$aid[tsel], getTop80Mod) # athr's monthly trace
 athrmchgs <- t2apply(delta$aid[tsel], t, delta$aid[tsel], length)
+athrmtrcTree <- list()
 res <- lapply(athrmtrc, function(x) {
     mth <- as.numeric(names(x))
     y <- floor(mth[1])
-    twh <- which(c('#$', x) != c(x, '#$'))
-
+    twh <- which(c('#$', x) != c(x, NA))
+    pathes <- Reduce(paste, x[twh], accumulate=T)
+    nidx <- length(twh)
+    dtimes <- c(mth[twh][1], mth[twh][-1] - mth[twh][-nidx])
+    #for (i in 1:min(nidx, 5)){
+    for (i in 1:nidx){
+        if (is.null(athrmtrcTree[[pathes[i]]])) {athrmtrcTree[[pathes[i]]] <<- c(dtimes[i]);}
+        else {athrmtrcTree[[pathes[i]]] <<- c(athrmtrcTree[[pathes[i]]], dtimes[i])}
+    }
 
     })
+
+athrmtrcTree <- athrmtrcTree[sort(names(athrmtrcTree))]
 
 # module's correlation
 ## from author's perspective, in a given period
