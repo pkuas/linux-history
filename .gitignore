@@ -12,3 +12,5 @@ screenlog*
 *.ign
 *.ignore
 .nfs*
+*.zip
+*.rar
