@@ -143,3 +143,15 @@ See below
     + 稳定成熟的（子）模块，是否很难贡献（直觉如此）
     + 新兴（子）模块
     + 开发者集中地drivers，是否被公司‘控制’？
+
+# product structure
+## how the organization of contribution team and culture are affected by product structure in Linux kernel?
+1. what is product stucture?
+2. what is organization of contribution team and culture?
+3. introduction中到模块的过渡不好。
+4. 关于linux kernel的commit机制，如何成为committer需要进一步了解和阐述。这是因为，ratio的含义还应该结合具体的环境。
+5. volunteers. commercial participation
+6. 
+> it is of interest to understand if
+the contribution practice of different modules of Linux kernel differs from each other, and how they evolve over time
+adapting to different business environments
