@@ -146,8 +146,13 @@ See below
 
 # product structure
 ## how the organization of contribution team and culture are affected by product structure in Linux kernel?
-1. what is product stucture?
-2. what is organization of contribution team and culture?
+- what is product stucture?
+arch和drivers，从文件层次来看，都是loose的，arch的ratio为何低，和mm差不多。
+
+- what is organization of contribution team and culture?
+用3年时间窗口不合理，我猜想老师原来用3年是用来平滑的，但是当把他解释为团队规模时，就不合理了。对于drivers来说，以月为时间单元，得到的ratio值为6左右，以三年为时间单元，就是20+。
+
+
 3. introduction中到模块的过渡不好。
 4. 关于linux kernel的commit机制，如何成为committer需要进一步了解和阐述。这是因为，ratio的含义还应该结合具体的环境。
 5. volunteers. commercial participation

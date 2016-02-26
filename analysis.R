@@ -1175,3 +1175,25 @@ dmsid[dmsid$id=='axboe@carl', ]
 names(idmp)[idmp=='axboe@carl']
 head(delta[delta$cid=='axboe@carl', c('cty', 'ce')], n=10)
 
+
+
+tsel
+library('igraph', lib='/home/pkuas/R/x86_64-redhat-linux-gnu-library/3.1/')
+g <- graph.empty()
+t1 <- paste('a', delta$aid[tsel], sep='-')
+t2 <- paste('c', delta$cid[tsel], sep='-')
+t <- c(unique(t1), unique(t2))
+g <- add.vertices(g, length(t), attr=list(name=t))
+g <- add.edges(g, mkEdges(t1, t2), attr=list(chgs=delta$add[tsel] + delta$del[tsel]))
+
+
+tsel <- delta$md2 %in% smodsCared
+a <- t2apply(delta$aid[tsel], delta$mod[tsel], delta$m[tsel], numOfUnique)
+c <- t2apply(delta$cid[tsel], delta$mod[tsel], delta$m[tsel], numOfUnique)
+t <- a[[1]] / c[[1]]
+plot(as.numeric(names(t)), t, col=1, type='l', ylim=c(0, 10))
+for (i in 2:length(a)) {
+    t <- a[[i]] / c[[i]]
+    lines(as.numeric(names(t)), t, col=i, type='l')
+     #t <- a[[i]] / c[[i]]; plot(as.numeric(names(t)), t, col=i, type='l', ylim=c(0, 10))
+}
