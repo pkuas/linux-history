@@ -1176,16 +1176,27 @@ names(idmp)[idmp=='axboe@carl']
 head(delta[delta$cid=='axboe@carl', c('cty', 'ce')], n=10)
 
 
-
-tsel
+# team organization
 library('igraph', lib='/home/pkuas/R/x86_64-redhat-linux-gnu-library/3.1/')
-g <- graph.empty()
-t1 <- paste('a', delta$aid[tsel], sep='-')
-t2 <- paste('c', delta$cid[tsel], sep='-')
-t <- c(unique(t1), unique(t2))
-g <- add.vertices(g, length(t), attr=list(name=t))
-g <- add.edges(g, mkEdges(t1, t2), attr=list(chgs=delta$add[tsel] + delta$del[tsel]))
-
+tm <- 2010
+tsel <- delta$m >= tm & delta$m <= tm + 3 & delta$mod == 'mm'
+g <- graph.empty(directed = F)
+t1 <- paste('c', delta$cid[tsel], sep='-')
+t2 <- paste('a', delta$aid[tsel], sep='-')
+t3 <- table(paste(t1, t2, sep='%'))
+x <- sort(table(t1), decreasing=T)
+y <- sort(table(t2), decreasing=T)
+t <- c(names(x), names(y))
+col <- c(rep('green', length(x)), rep('red', length(y)))
+g <- add.vertices(g, length(t), attr=list(name=t, color = col))
+g <- add.edges(g, unlist(lapply(strsplit(names(t3), '%', ), function(x) if(!is.na(x)) return(x))))
+t <- rep(NA, length(x))
+tsel <- c(TRUE, cumsum(x[-length(x)]) / sum(x) <= 0.8)
+t[which(tsel)] <- substring(names(x[tsel]), 3)
+t <- c(t, rep(NA, length(y)))
+z <- sqrt(c(x, y))
+plot(g, vertex.label=t, vertex.size=z/max(z)*15, edge.width=t3/max(t3)*20)
+tm <- tm + 1
 
 tsel <- delta$md2 %in% smodsCared
 a <- t2apply(delta$aid[tsel], delta$mod[tsel], delta$m[tsel], numOfUnique)
@@ -1197,3 +1208,11 @@ for (i in 2:length(a)) {
     lines(as.numeric(names(t)), t, col=i, type='l')
      #t <- a[[i]] / c[[i]]; plot(as.numeric(names(t)), t, col=i, type='l', ylim=c(0, 10))
 }
+
+tsel <- delta$md2 %in% smodsCared
+t <- lapply(t2apply(delta$f[tsel], delta$aid[tsel], delta$mod[tsel], numOfUnique), mySummary)
+
+# code ownership
+tsel <- delta$md2 %in% smodsCared
+t <- lapply(t2apply(delta$aid[tsel], delta$f[tsel], delta$mod[tsel], numOfUnique), mySummary)
+
