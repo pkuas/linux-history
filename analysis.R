@@ -1216,3 +1216,38 @@ t <- lapply(t2apply(delta$f[tsel], delta$aid[tsel], delta$mod[tsel], numOfUnique
 tsel <- delta$md2 %in% smodsCared
 t <- lapply(t2apply(delta$aid[tsel], delta$f[tsel], delta$mod[tsel], numOfUnique), mySummary)
 
+# core ratio of a2c
+mods <- c('drivers', 'arch', 'net', 'sound', 'fs', 'kernel', 'mm')
+rt <- list() # ratio
+nc <- list() # num of cmtrs
+for (i in 1:length(mods)) {
+	mod <- mods[i]
+	st <- 2005
+	ed <- st + 3
+	x <- c()
+	y <- c()
+	while(ed <= 2015.917) {
+		tsel <- delta$mod == mod & delta$m >= st & delta$m <= ed
+		t1 <- sort(table(delta$cid[tsel]), decreasing=T)
+		t2 <- sort(table(delta$aid[tsel]), decreasing=T)
+		t1 <- sum(c(TRUE, cumsum(t1[-length(t1)]) / sum(t1) <= 0.8))
+		t2 <- sum(c(TRUE, cumsum(t2[-length(t2)]) / sum(t2) <= 0.8))
+		m <- as.character(st)
+		x[m] <- t2 / t1
+		y[m] <- t1
+		st <- st + 1/12
+		ed <- st + 3
+	}
+	rt[[mod]] <- x
+	nc[[mod]] <- y
+}
+x<-'mm'
+t <- rt[[x]]
+plot(as.numeric(names(t)), t, col='red', ylim=c(0, max(t)), type='l')
+nc[[x]]
+
+# if (mod=='drivers'){
+# 	plot(as.numeric(names(x)), x, col=i, ylim=c(0, max(x)), type='l')
+# } else {
+# 	lines(as.numeric(names(x)), x, col=i)
+# }
