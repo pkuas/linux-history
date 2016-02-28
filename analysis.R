@@ -1182,7 +1182,7 @@ library('igraph', lib='/home/pkuas/R/x86_64-redhat-linux-gnu-library/3.1/')
 mod <- 'kernel'
 tm <- 2005
 window <- 0.5
-while (tm < 2016) {
+#while (tm < 2016) {
 	tsel <- delta$m >= tm & delta$m <= tm + window & delta$mod == mod
 	g <- graph.empty(directed = F)
 	t1 <- paste('c', delta$cid[tsel], sep='-')
@@ -1205,12 +1205,13 @@ while (tm < 2016) {
 	ne <- length(e)
 	col[e[seq(1, ne, 2)] == e[seq(2, ne, 2)]] <- 'blue'
 	nm <- paste(mod, ' of ', tm, '~', tm + window, sep='')
-	png(paste('a2c/', nm, '.png', sep=''), width=800, height=600)
+	#png(paste('a2c/', nm, '.png', sep=''), width=800, height=600)
 	plot(g, vertex.label=t, vertex.size=z/max(z)*15, edge.width=t3/max(t3)*20, edge.color=col,
 		main=nm)
-	dev.off()
+	#dev.off()
 	tm <- tm + 0.5
-}
+#}
+
 ## file/committer graph
 mod <- 'kernel'
 tm <- 2005
@@ -1256,31 +1257,82 @@ t <- lapply(t2apply(delta$f[tsel], delta$aid[tsel], delta$mod[tsel], numOfUnique
 tsel <- delta$md2 %in% smodsCared
 t <- lapply(t2apply(delta$aid[tsel], delta$f[tsel], delta$mod[tsel], numOfUnique), mySummary)
 
-# core ratio of a2c
+# core ratio of a2c & ratio ; team's freshing rate
 mods <- c('drivers', 'arch', 'net', 'sound', 'fs', 'kernel', 'mm')
 rt <- list() # ratio
 nc <- list() # num of cmtrs
+crt <- list() # core ratio
+cnc <- list() # num of core cmtrs
+ert <- list() # entropy ratio
+enc <- list() # entropy
+
 for (i in 1:length(mods)) {
 	mod <- mods[i]
 	st <- 2005
 	ed <- st + 3
-	x <- c()
-	y <- c()
+	x <- y <- c()
+    cx <- cy <- c()
+    ex <- ey <- c()
 	while(ed <= 2015.917) {
-		tsel <- delta$mod == mod & delta$m >= st & delta$m <= ed
+		tsel <- delta$mod == mod & delta$m >= st & delta$m < ed
+        m <- as.character(st)
 		t1 <- sort(table(delta$cid[tsel]), decreasing=T)
 		t2 <- sort(table(delta$aid[tsel]), decreasing=T)
+        y[m] <- length(t1)
+        x[m] <- length(t2) / y[m]
+        ey[m] <- 2 ** entropy(t1, method='ML', unit='log2')
+        ex[m] <- 2 ** entropy(t2, method='ML', unit='log2') / ey[m]
 		t1 <- sum(c(TRUE, cumsum(t1[-length(t1)]) / sum(t1) <= 0.8))
 		t2 <- sum(c(TRUE, cumsum(t2[-length(t2)]) / sum(t2) <= 0.8))
-		m <- as.character(st)
-		x[m] <- t2 / t1
-		y[m] <- t1
+		cx[m] <- t2 / t1
+		cy[m] <- t1
 		st <- st + 1/12
 		ed <- st + 3
 	}
 	rt[[mod]] <- x
 	nc[[mod]] <- y
+    crt[[mod]] <- cx
+    cnc[[mod]] <- cy
+    ert[[mod]] <- ex
+    enc[[mod]] <- ey
+
 }
+col <- 1:length(mods)
+#png('a2c-mod')
+plot(1, type='n', xlim=c(2005, 2013), ylim=c(0, max(rt$drivers)),
+    main='Ratio of # authors to # committers (in 3-year period)',
+    xlab='natural month', ylab='ratio')
+for (i in 1:length(col)) lines(as.numeric(names(rt[[i]])), rt[[i]], col=col[i], type='l')
+legend(2005, 30, legend=mods,cex=1,lwd=1,
+    col=col ,bg="white");
+
+plot(1, type='n', xlim=c(2005, 2013), ylim=c(0, 40),
+    main='Ratio of # core authors to # core committers (in 3-year period)',
+    xlab='natural month', ylab='ratio')
+for (i in 1:length(col)) lines(as.numeric(names(crt[[i]])), crt[[i]], col=col[i], type='l')
+legend(2005, 40, legend=mods,cex=1,lwd=1,
+    col=col ,bg="white");
+
+plot(1, type='n', xlim=c(2005, 2013), ylim=c(0, 40),
+    main='Ratio of # core authors to # core committers (in 3-year period)',
+    xlab='natural month', ylab='ratio')
+for (i in 1:length(col)) lines(as.numeric(names(ert[[i]])), ert[[i]], col=col[i], type='l')
+legend(2005, 40, legend=mods,cex=1,lwd=1,
+    col=col ,bg="white");
+
+# team's freshing rate
+mods <- c('drivers', 'arch', 'net', 'sound', 'fs', 'kernel', 'mm')
+for (i in 1:length(mods)) {
+    mod <- mods[i]
+    st <- 2005
+    ed <- st + 3
+    while (ed < 2015.917) {
+        tsel <- delta$m >= st & delta$m < ed & delta$m == mod
+
+    }
+
+}
+
 x<-'mm'
 t <- rt[[x]]
 plot(as.numeric(names(t)), t, col='red', ylim=c(0, max(t)), type='l')

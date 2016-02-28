@@ -147,7 +147,9 @@ See below
 # product structure
 ## how the organization of contribution team and culture are affected by product structure in Linux kernel?
 - what is product stucture?
-arch和drivers，从文件层次来看，都是loose的，arch的ratio为何低，和mm差不多。
+    + 从目录层次来看。（arch和drivers，从文件层次来看，都是loose的，arch的ratio为何低，和mm差不多。）
+    + 从各个目录的形成来看，drivers是各个硬件驱动代码的合集，mm则不然。（这个由文字叙述，需要相关资料的支持）
+    + 从函数调用关系来看。
 
 - what is organization of contribution team and culture?
 用3年时间窗口不合理，我猜想老师原来用3年是用来平滑的，但是当把他解释为团队规模时，就不合理了。对于drivers来说，以月为时间单元，得到的ratio值为6左右，以三年为时间单元，就是20+。
@@ -161,8 +163,15 @@ arch和drivers，从文件层次来看，都是loose的，arch的ratio为何低�
 the contribution practice of different modules of Linux kernel differs from each other, and how they evolve over time
 adapting to different business environments
 
+# product structure
+- 从目录层次来看。（arch和drivers，从文件层次来看，都是loose的，arch的ratio为何低，和mm差不多。）
+- 从各个目录的形成来看，drivers是各个硬件驱动代码的合集，mm则不然。（这个由文字叙述，需要相关资料的支持）
+- 从函数调用关系来看。
+- 
+
 # team organization
 怎样描述team organization呢？
+而且，当我们讨论不同模块
 
 - 用a2c ratio可能不合理。例如，2010~2010.5年的mm，author和committer的对应情况如下：
 ![x](./pics/a2c/mm-2010-05.png)
@@ -198,6 +207,14 @@ An interesting (if approximate) view of kernel development can be had by looking
 118674
 ```
 
-- 规模和流动性
-- 以版本发布时间为分隔，分析模块结构变化对团队结构的影响
-- 模块结构的变化，团队结构的变化，时间偏移
+- 总结以上，从author和committer的对应关系来看。可以定义几种量度：
+    + #cmtr, #athr, #ratio
+    + #core cmtr,#core athr, #core ratio(定义这个量度，原因在与下面，就是发现了在cmtr中二八情况很明显。)
+    + # entropy cmtr, # entropy athr, # entropy ratio（可以处理这样的问题：79%，80%，，，，这个问题core ratio不合理）
+
+- 从一个author的（一段时间内的）co-change的文件网络来看。
+- 
+## 规模和流动性
+## 以版本发布时间为分隔，分析模块结构变化对团队结构的影响
+## 模块结构的变化，团队结构的变化，时间偏移
+## code ownership
