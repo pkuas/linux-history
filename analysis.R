@@ -1178,25 +1178,65 @@ head(delta[delta$cid=='axboe@carl', c('cty', 'ce')], n=10)
 
 # team organization
 library('igraph', lib='/home/pkuas/R/x86_64-redhat-linux-gnu-library/3.1/')
-tm <- 2010
-tsel <- delta$m >= tm & delta$m <= tm + 3 & delta$mod == 'mm'
-g <- graph.empty(directed = F)
-t1 <- paste('c', delta$cid[tsel], sep='-')
-t2 <- paste('a', delta$aid[tsel], sep='-')
-t3 <- table(paste(t1, t2, sep='%'))
-x <- sort(table(t1), decreasing=T)
-y <- sort(table(t2), decreasing=T)
-t <- c(names(x), names(y))
-col <- c(rep('green', length(x)), rep('red', length(y)))
-g <- add.vertices(g, length(t), attr=list(name=t, color = col))
-g <- add.edges(g, unlist(lapply(strsplit(names(t3), '%', ), function(x) if(!is.na(x)) return(x))))
-t <- rep(NA, length(x))
-tsel <- c(TRUE, cumsum(x[-length(x)]) / sum(x) <= 0.8)
-t[which(tsel)] <- substring(names(x[tsel]), 3)
-t <- c(t, rep(NA, length(y)))
-z <- sqrt(c(x, y))
-plot(g, vertex.label=t, vertex.size=z/max(z)*15, edge.width=t3/max(t3)*20)
-tm <- tm + 1
+## author/committer graph
+mod <- 'kernel'
+tm <- 2005
+window <- 0.5
+while (tm < 2016) {
+	tsel <- delta$m >= tm & delta$m <= tm + window & delta$mod == mod
+	g <- graph.empty(directed = F)
+	t1 <- paste('c', delta$cid[tsel], sep='-')
+	t2 <- paste('a', delta$aid[tsel], sep='-')
+	t3 <- table(paste(t1, t2, sep='%'))
+	x <- sort(table(t1), decreasing=T)
+	y <- sort(table(t2), decreasing=T)
+	t <- c(names(x), names(y))
+	col <- c(rep('green', length(x)), rep('red', length(y)))
+	g <- add.vertices(g, length(t), attr=list(name=t, color = col))
+	e <- unlist(lapply(strsplit(names(t3), '%', ), function(x) if(!is.na(x)) return(x)))
+	g <- add.edges(g, e)
+	t <- rep(NA, length(x))
+	tsel <- c(TRUE, cumsum(x[-length(x)]) / sum(x) <= 0.8)
+	t[which(tsel)] <- substring(names(x[tsel]), 3)
+	t <- c(t, rep(NA, length(y)))
+	z <- sqrt(c(x, y))
+	col <- rep('yellow', length(e) / 2)
+	e <- substring(e, 3)
+	ne <- length(e)
+	col[e[seq(1, ne, 2)] == e[seq(2, ne, 2)]] <- 'blue'
+	nm <- paste(mod, ' of ', tm, '~', tm + window, sep='')
+	png(paste('a2c/', nm, '.png', sep=''), width=800, height=600)
+	plot(g, vertex.label=t, vertex.size=z/max(z)*15, edge.width=t3/max(t3)*20, edge.color=col,
+		main=nm)
+	dev.off()
+	tm <- tm + 0.5
+}
+## file/committer graph
+mod <- 'kernel'
+tm <- 2005
+window <- 0.5
+while (tm < 2016) {
+	tsel <- delta$m >= tm & delta$m <= tm + window & delta$mod == mod
+	matrx <- table(delta$cid[tsel], delta$f[tsel])
+	g <- graph.empty(directed = F)
+	cid <- sort(table(delta$cid[tsel]), decreasing=T)
+	f <- sort(table(delta$f[tsel]), decreasing=T)
+	nm <- c(names(cid), names(f))
+	col <- c(rep('green', length(cid)), rep('red', length(f)))
+	g <- add.vertices(g, length(nm), attr=list(name=nm, color=col))
+	edges <- c()
+	rnm <- rownames(matrx)
+	cnm <- colnames(matrx)
+	for (i in 1:ncol(matrx)){
+		edges <- c(edges, mkEdges(rnm[matrx[,i] != 0], cnm[i]))
+	}
+	g <- add.edges(g, edges)
+	t1 <- sqrt(c(cid, f))
+	t2 <- matrx[matrx!=0]
+	plot(g, vertex.size=t1/max(t1)*15, vertex.label=c(rnm, rep(NA, ncol(matrx))), edge.width=t2/max(t2)*20)
+	tm <- tm + 0.5
+}
+
 
 tsel <- delta$md2 %in% smodsCared
 a <- t2apply(delta$aid[tsel], delta$mod[tsel], delta$m[tsel], numOfUnique)

@@ -160,3 +160,44 @@ arch和drivers，从文件层次来看，都是loose的，arch的ratio为何低�
 > it is of interest to understand if
 the contribution practice of different modules of Linux kernel differs from each other, and how they evolve over time
 adapting to different business environments
+
+# team organization
+怎样描述team organization呢？
+
+- 用a2c ratio可能不合理。例如，2010~2010.5年的mm，author和committer的对应情况如下：
+![x](./pics/a2c/mm-2010-05.png)
+
+要用a2c，首先要理解'commit'到底是意味着什么。
+
+> 
+From: lf_pub_whowriteslinux2015.pdf
+<br/>
+Who is Reviewing the Work
+Patches do not normally pass directly into the mainline kernel; instead, they pass through one of over 100 subsystem trees. Each subsystem tree is dedicated to a specific part of the kernel (examples might be SCSI drivers, x86 architecture code, or networking) and is under the control of a specific maintainer. 
+<br/>
+When a subsystem maintainer accepts a patch into a subsystem tree, he or she will attach a “Signed-off-by” line to it. This line is a statement that the patch can be legally incorporated into the kernel; the sequence of signoff lines can be used to establish the path by which each change got into the kernel.
+<br/>
+An interesting (if approximate) view of kernel development can be had by looking at signoff lines, and, in particular, at signoff lines added by developers who are not the original authors of the patches in question. These additional signoffs are usually an indication of review by a subsystem maintainer. Analysis of signoff lines gives a picture of who admits code into the kernel–who the gatekeepers are.
+
+```
+[pkuas@bear linux]$ git log --no-merges -n 10000 | grep 'Signed-off-by' | wc -l
+20244
+[pkuas@bear linux]$ git log --no-merges -n 100000 | grep 'Signed-off-by' | wc -l
+197072
+[pkuas@bear linux]$ git log --no-merges -n 10000 | grep 'Signed-off-by' | wc -l
+20244
+[pkuas@bear linux]$ git log --no-merges -n 20000 | grep 'Signed-off-by' | wc -l
+39907
+[pkuas@bear linux]$ git log --no-merges -n 30000 | grep 'Signed-off-by' | wc -l
+59516
+[pkuas@bear linux]$ git log --no-merges -n 40000 | grep 'Signed-off-by' | wc -l
+78647
+[pkuas@bear linux]$ git log --no-merges -n 50000 | grep 'Signed-off-by' | wc -l
+98679
+[pkuas@bear linux]$ git log --no-merges -n 60000 | grep 'Signed-off-by' | wc -l
+118674
+```
+
+- 规模和流动性
+- 以版本发布时间为分隔，分析模块结构变化对团队结构的影响
+- 模块结构的变化，团队结构的变化，时间偏移
