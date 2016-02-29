@@ -1,5 +1,5 @@
 ## 要研究的问题
-> 当前，关于向Linux kernel做贡献，我们听到了一些声音：向Linux kernel做贡献很难。我们要研究的问题就是，到底有什么难，为什么难。当然，这只是研究的引子，以后不必执着于此，毕竟，为芝麻丢西瓜，是划不来的。
+> 当前，关于向Linux kernel做贡献，我们听到了一些声音：向Linux kernel做贡献很难。我们要研究的问题就是，到底有什么难，为什么难。当然，这只是研究的引子，以后不必执着于此，毕竟，心里老想着芝麻，就不容易看见西瓜了，这是划不来的。
 
 ## 一些相关的背景
 我们要研究的问题是非常实际的，对背景事实不加以了解、脱离实际，那是不会带来有价值的东西，也会有遭人耻笑的风险。
@@ -47,6 +47,12 @@ $ git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 - 各模块中，每个committer为多少auhtor提交代码，如何分布，各模块有何差异,见[这里](./res/box.numAthrs-cmtr.mod.month.md)。作调整，见[这里](./res/box.adjNumAthrs-cmtr.mod.month.md)。
 - 在每个模块中，committer成为这个模块的committer之前在多少个模块做过author/committer，见[这里](./res/numA-C.ModsBefCmtr-cmtr.mod.md)
 - 关于author、committer的贡献模块变化，查看这里：[author](./res/athrTrcTreeSmry.md), [committer](./res/cmtrTrcTreeSmry.md)
+
+## Pre
+#### Out-dated
+- [2016-1-30](./pre/2016-1-30.md)
+#### Available
+- 
 
 ## How does module structure shape team organization?
 待续。
