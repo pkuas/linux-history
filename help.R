@@ -1,6 +1,11 @@
 setwd("/store1/chenqy/linuxhistory/")
 load("./.RData")
 save.image(file = "./.RData")
+
+load("/store1/chenqy/linuxhistory/.RData")
+library("entropy", lib.loc="~/R/x86_64-redhat-linux-gnu-library/3.1")
+library("igraph", lib.loc="~/R/x86_64-redhat-linux-gnu-library/3.1")
+
 # check mapping between email and name
 numOfUnique<-function(x) {return(length(unique(x)))}
 numAnamePerAemail <- tapply(delta$an, delta$ae, numOfUnique)

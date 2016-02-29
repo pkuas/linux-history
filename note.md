@@ -213,12 +213,23 @@ An interesting (if approximate) view of kernel development can be had by looking
 ```
 
 - 总结以上，从author和committer的对应关系来看。可以定义几种量度：
-    + #cmtr, #athr, #ratio
-    + #core cmtr,#core athr, #core ratio(定义这个量度，原因在与下面，就是发现了在cmtr中二八情况很明显。)
-    + # entropy cmtr, # entropy athr, # entropy ratio（可以处理这样的问题：79%，80%，，，，这个问题core ratio不合理）
-
+    + \#cmtr, #athr, #ratio
+    + \#core cmtr,#core athr, #core ratio(定义这个量度，原因在与下面，就是发现了在cmtr中二八情况很明显。)
+    + \# entropy cmtr, # entropy athr, # entropy ratio（可以处理这样的问题：79%，80%，，，，这个问题core ratio不合理）
 - 从一个author的（一段时间内的）co-change的文件网络来看。
-- 
+
+
+关于如何理解团队组织，我们目前有一些感觉了：首先，我们的确可以根据athr和cmtr的数量比率来衡量某些东西，但也有要注意的地方。单纯地使用ratio，可以揭示些东西，但也掩盖了一些东西，原因是ratio对二八原则没有很好的处理。为此，我们可以引入entropy ratio，来揭示核心团队的情况。
+![x](./pics/a2c/ratio-in-mod.png)
+![x](./pics/a2c/eratio-in-mod.png)
+
+?
+
+- 为何drivers和arch的ratio差这么多，即便目录机构挺相似的
+- ratio的收敛情况分析
+
+关于模块结构对团队的影响，我们目前有一些感觉了：单纯地根据ratio
+
 ## 规模和流动性
 ## 以版本发布时间为分隔，分析模块结构变化对团队结构的影响
 ## 模块结构的变化，团队结构的变化，时间偏移

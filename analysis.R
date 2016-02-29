@@ -1175,6 +1175,10 @@ dmsid[dmsid$id=='axboe@carl', ]
 names(idmp)[idmp=='axboe@carl']
 head(delta[delta$cid=='axboe@carl', c('cty', 'ce')], n=10)
 
+# module structure
+## before we use directory architecture as modules, we'd better analyze these dirs' similarity.
+##: we can use cosine similarity.
+
 
 # team organization
 library('igraph', lib='/home/pkuas/R/x86_64-redhat-linux-gnu-library/3.1/')
@@ -1299,26 +1303,30 @@ for (i in 1:length(mods)) {
 }
 col <- 1:length(mods)
 #png('a2c-mod')
+png('./ratio-in-mod.png', width=800, height=600)
 plot(1, type='n', xlim=c(2005, 2013), ylim=c(0, max(rt$drivers)),
     main='Ratio of # authors to # committers (in 3-year period)',
-    xlab='natural month', ylab='ratio')
+    xlab='Natural month', ylab='Ratio')
 for (i in 1:length(col)) lines(as.numeric(names(rt[[i]])), rt[[i]], col=col[i], type='l')
-legend(2005, 30, legend=mods,cex=1,lwd=1,
+legend(2010, 27, legend=mods,cex=1,lwd=1,
     col=col ,bg="white");
+dev.off()
 
 plot(1, type='n', xlim=c(2005, 2013), ylim=c(0, 40),
     main='Ratio of # core authors to # core committers (in 3-year period)',
     xlab='natural month', ylab='ratio')
 for (i in 1:length(col)) lines(as.numeric(names(crt[[i]])), crt[[i]], col=col[i], type='l')
-legend(2005, 40, legend=mods,cex=1,lwd=1,
+legend(2009, 40, legend=mods,cex=1,lwd=1,
     col=col ,bg="white");
 
-plot(1, type='n', xlim=c(2005, 2013), ylim=c(0, 40),
-    main='Ratio of # core authors to # core committers (in 3-year period)',
-    xlab='natural month', ylab='ratio')
+png('./eratio-in-mod.png', width=800, height=600)
+plot(1, type='n', xlim=c(2005, 2013), ylim=c(0, 35),
+    main='Ratio of adjusted # authors to adjusted # committers (in 3-year period)',
+    xlab='Natural month', ylab='Ratio')
 for (i in 1:length(col)) lines(as.numeric(names(ert[[i]])), ert[[i]], col=col[i], type='l')
-legend(2005, 40, legend=mods,cex=1,lwd=1,
+legend(2009, 35, legend=mods,cex=1,lwd=1,
     col=col ,bg="white");
+dev.off()
 
 # team's freshing rate
 mods <- c('drivers', 'arch', 'net', 'sound', 'fs', 'kernel', 'mm')
