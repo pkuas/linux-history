@@ -55,4 +55,4 @@ $ git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 - 
 
 ## How does module structure shape team organization?
-待续。
+New topic, 待续。
