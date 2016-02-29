@@ -1,4 +1,9 @@
-﻿# 为什么drivers的author to committer的比率要比其他模块都高很多
+﻿# 这个文件没有细心整理，有不少错误，慎看！
+<br/>
+<br/>
+<br/>
+<br/>
+# 为什么drivers的author to committer的比率要比其他模块都高很多
 drivers的author to committer的比率要比其他模块都高很多。从趋势来看，大部分模块的作者/提交者比率在减小。
 ![x](./pics/author2committer-in-mod.png)
 
