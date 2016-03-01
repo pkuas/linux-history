@@ -1213,6 +1213,9 @@ window <- 0.5
 	plot(g, vertex.label=t, vertex.size=z/max(z)*15, edge.width=t3/max(t3)*20, edge.color=col,
 		main=nm)
 	#dev.off()
+	f <- function(x) return(exp(entropy(x)))
+	round(c(f(x), f(y), f(y) / f(x), tm), 2)
+	round(c(length(x), length(y), length(y) / length(x), sum(x)), 2)
 	tm <- tm + 0.5
 #}
 
@@ -1261,85 +1264,7 @@ t <- lapply(t2apply(delta$f[tsel], delta$aid[tsel], delta$mod[tsel], numOfUnique
 tsel <- delta$md2 %in% smodsCared
 t <- lapply(t2apply(delta$aid[tsel], delta$f[tsel], delta$mod[tsel], numOfUnique), mySummary)
 
-# core ratio of a2c & ratio ; team's freshing rate
-mods <- c('drivers', 'arch', 'net', 'sound', 'fs', 'kernel', 'mm')
-rt <- list() # ratio
-nc <- list() # num of cmtrs
-crt <- list() # core ratio
-cnc <- list() # num of core cmtrs
-ert <- list() # entropy ratio
-enc <- list() # entropy
 
-for (i in 1:length(mods)) {
-	mod <- mods[i]
-	st <- 2005
-	ed <- st + 3
-	x <- y <- c()
-    cx <- cy <- c()
-    ex <- ey <- c()
-	while(ed <= 2015.917) {
-		tsel <- delta$mod == mod & delta$m >= st & delta$m < ed
-        m <- as.character(st)
-		t1 <- sort(table(delta$cid[tsel]), decreasing=T)
-		t2 <- sort(table(delta$aid[tsel]), decreasing=T)
-        y[m] <- length(t1)
-        x[m] <- length(t2) / y[m]
-        ey[m] <- 2 ** entropy(t1, method='ML', unit='log2')
-        ex[m] <- 2 ** entropy(t2, method='ML', unit='log2') / ey[m]
-		t1 <- sum(c(TRUE, cumsum(t1[-length(t1)]) / sum(t1) <= 0.8))
-		t2 <- sum(c(TRUE, cumsum(t2[-length(t2)]) / sum(t2) <= 0.8))
-		cx[m] <- t2 / t1
-		cy[m] <- t1
-		st <- st + 1/12
-		ed <- st + 3
-	}
-	rt[[mod]] <- x
-	nc[[mod]] <- y
-    crt[[mod]] <- cx
-    cnc[[mod]] <- cy
-    ert[[mod]] <- ex
-    enc[[mod]] <- ey
-
-}
-col <- 1:length(mods)
-#png('a2c-mod')
-png('./ratio-in-mod.png', width=800, height=600)
-plot(1, type='n', xlim=c(2005, 2013), ylim=c(0, max(rt$drivers)),
-    main='Ratio of # authors to # committers (in 3-year period)',
-    xlab='Natural month', ylab='Ratio')
-for (i in 1:length(col)) lines(as.numeric(names(rt[[i]])), rt[[i]], col=col[i], type='l')
-legend(2010, 27, legend=mods,cex=1,lwd=1,
-    col=col ,bg="white");
-dev.off()
-
-plot(1, type='n', xlim=c(2005, 2013), ylim=c(0, 40),
-    main='Ratio of # core authors to # core committers (in 3-year period)',
-    xlab='natural month', ylab='ratio')
-for (i in 1:length(col)) lines(as.numeric(names(crt[[i]])), crt[[i]], col=col[i], type='l')
-legend(2009, 40, legend=mods,cex=1,lwd=1,
-    col=col ,bg="white");
-
-png('./eratio-in-mod.png', width=800, height=600)
-plot(1, type='n', xlim=c(2005, 2013), ylim=c(0, 35),
-    main='Ratio of adjusted # authors to adjusted # committers (in 3-year period)',
-    xlab='Natural month', ylab='Ratio')
-for (i in 1:length(col)) lines(as.numeric(names(ert[[i]])), ert[[i]], col=col[i], type='l')
-legend(2009, 35, legend=mods,cex=1,lwd=1,
-    col=col ,bg="white");
-dev.off()
-
-# team's freshing rate
-mods <- c('drivers', 'arch', 'net', 'sound', 'fs', 'kernel', 'mm')
-for (i in 1:length(mods)) {
-    mod <- mods[i]
-    st <- 2005
-    ed <- st + 3
-    while (ed < 2015.917) {
-        tsel <- delta$m >= st & delta$m < ed & delta$m == mod
-
-    }
-
-}
 
 x<-'mm'
 t <- rt[[x]]
@@ -1351,3 +1276,42 @@ nc[[x]]
 # } else {
 # 	lines(as.numeric(names(x)), x, col=i)
 # }
+
+
+# cmt ana
+mods <- c('drivers', 'arch', 'net', 'sound', 'fs', 'kernel', 'mm')
+fixrt <- list()
+fixcnt <- list()
+revcnt <- list()
+for ( i in 1:length(mods)) {
+	sel <- delta$mod == mods[i] & (c('$%#$', delta$v[-numofdeltas]) != delta$v)
+	sum(tsel)
+	x <- y <- c()
+	st <- 2005
+	ed <- st + 1
+	while (ed < 2015.917) {
+		m <- as.character(st)
+		tsel <- sel & delta$m >= st & delta$m < ed
+		x[m] <- length(grep('fix', delta$cmt[tsel], ignore.case = T))
+		y[m] <- sum(tsel)
+		st <- st + 1/12
+		ed <- st + 1
+	}	
+	fixcnt[[mods[i]]] <- x
+	revcnt[[mods[i]]] <- y
+	fixrt[[mods[i]]] <- x / y
+}
+
+col <- 1:length(mods)
+plot(1, type='n', xlim=c(2005, 2015), ylim=c(0, 0.35),
+    main='fix rt',
+    xlab='Natural y', ylab='Ratio')
+for (i in 1:length(col)) lines(as.numeric(names(fixrt[[i]])), fixrt[[i]], col=col[i], type='l')
+legend(2006, 0.15, legend=mods,cex=1,lwd=1,
+    col=col ,bg="white");
+
+	#plot(as.numeric(names(r)), r, type='b', ylim=c(0, max(r)))
+
+plot(as.numeric(names(y)), y, type='l', ylim=c(0, max(y)));
+#lines(as.numeric(names(x)), x * 4.8, col=2, type='l');
+lines(as.numeric(names(x)), (y - x) * 1.2, col=3, type='l')

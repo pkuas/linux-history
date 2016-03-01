@@ -224,9 +224,13 @@ An interesting (if approximate) view of kernel development can be had by looking
 ![x](./pics/a2c/eratio-in-mod.png)
 
 ?
+- ratio的收敛情况分析
+drivers、net、sound一类似乎收敛
+kernel、arch、fs一类收敛
+- 起始状态为何如此诡异
+起始时，团队不稳定，流入流出不稳定
 
 - 为何drivers和arch的ratio差这么多，即便目录机构挺相似的
-- ratio的收敛情况分析
 
 关于模块结构对团队的影响，我们目前有一些感觉了：单纯地根据ratio
 
