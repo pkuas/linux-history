@@ -238,3 +238,37 @@ kernel、arch、fs一类收敛
 ## 以版本发布时间为分隔，分析模块结构变化对团队结构的影响
 ## 模块结构的变化，团队结构的变化，时间偏移
 ## code ownership
+
+# Narrow 2
+>how does module structure affect contribution organization?
+
+- 假设：以下两个因素对ratio值有影响。
+    + module structures
+    + contributor features
+
+- 展示我们观察的结果：不同module呈现了不同的ratio
+- 根据假设解释我们观察的结果。
+
+## module structure
+不同的模块有不同的特征，由于这些不同的特征可能会对ratio值得差异产生了影响。而这些模块具有不同特征的论据包括：
+- directory structure
+- 耦合度。（本来应该用调用关系来衡量耦合度，问一下：能否用code ownership来衡量呢？#owner each file衡量的是团队相关的东西，数值大意味着该文件由多人协作开发，在一个module中，整体的数值大，推出该模块的耦合度高。这样合不合理呢？)(PS: 和Z的计算结果差好多？)可以用ownership来验证耦合度的不同。
+![x](./pics/ownership-mod.png) 
+![x](./pics/coupling-mod.png)
+
+## contributor features
+不同的
+- contributor type
+猜想：drivers的dvpr多来自公司。在drivers中，很多athr的chgs数量很少，即#athr的水分太多，
+
+- objective of contribution
+
+
+
+
+
+
+
+
+
+

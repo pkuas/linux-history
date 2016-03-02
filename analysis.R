@@ -1261,10 +1261,20 @@ tsel <- delta$md2 %in% smodsCared
 t <- lapply(t2apply(delta$f[tsel], delta$aid[tsel], delta$mod[tsel], numOfUnique), mySummary)
 
 # code ownership
-tsel <- delta$md2 %in% smodsCared
-t <- lapply(t2apply(delta$aid[tsel], delta$f[tsel], delta$mod[tsel], numOfUnique), mySummary)
+tsel <- delta$md2 %in% smodsCared & delta$y >= 2010
+t <- t2apply(delta$aid[tsel], delta$f[tsel], delta$mod[tsel], numOfUnique)
+boxplot(t, main='File ownership on each module', ylim=c(0, 50))
 
+lapply(t, mySummary)
 
+mods <- c('drivers', 'arch', 'net', 'sound', 'fs', 'kernel', 'mm')
+for (i in 1:length(mods)) {
+	mod <- mods[i]
+	tsel <- delta$mod == mod
+	t <- t2apply(delta$aid[tsel], delta$f[tsel], delta$y[tsel], numOfUnique)
+	boxplot(t, main=paste('File ownership on', mod), ylim=c(0, 10))
+
+}
 
 x<-'mm'
 t <- rt[[x]]

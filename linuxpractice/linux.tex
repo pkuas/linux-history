@@ -101,6 +101,8 @@ and may be able to adjust to changing environment but with a delay.
 \section{Introduction}
 %If I tell you to think of an open-source project, the first word that probably comes to mind is Linux. 
 
+% 
+
 Linux kernel has been a legend in the Free/Libre and Open Source Software (FLOSS) world.
 Linux kernel based distributions (operating systems) established a commercial success
 that many other FLOSS projects would like to pursue.
@@ -259,7 +261,7 @@ We followed the following rules to obtain the final changes for this study.
 1), we only look at c files.
 2), we consider the first level modules retrieved from the file path 
 as the module structure used in linux kernel. Overall we obtained 22 modules.
-The top seven modules include drivers, arch, fs, net, mm, kernel, sound.
+The top seven modules, in terms of number of changes, include drivers, arch, fs, net, mm, kernel, sound.
 3), We consider a developer's joining time as the time they author their first commit.
 
 \begin{table*}
@@ -276,6 +278,8 @@ author & author time & committer & commit time & changed file & module\\ \hline
 
 \section{Metrics}
 %We measure three aspects of Linux kernel community to observe the evolution of its contribution practice.
+\paragraph{Module structure}
+% use entropy to measure modulization in a 3-year window
 
 \paragraph{Ratio of authors to committers}
 We focus on one particular factor that tries to measure the team relationship between
@@ -284,21 +288,15 @@ write the code that gets into the mainline repository. Code committers are
 people who have the privilege to write the repository. A committer may be
 responsible for a specific module (functionality), so responsible for committing
 whoever's code on that module. 
-
-Code authors in this study are people who
-write the code that gets into the mainline repository. Code committers are
-people who have the privilege to write the repository. A committer may be
-responsible for a specific module (functionality), so responsible for committing
-whoever's code on that module. 
-Naturally, the ratio
-of number of authors over number of committers may represent the load of a committer,
-or the difficulty (easiness) of the module, or, how hard it is for the author to 
+%? subtle consideration: ratio of #A to #C --> load of cmtr ?
+Naturally, the ratio of number of authors over number of committers may represent the load of a committer, or the difficulty (easiness) of the module, or, how hard it is for the author to 
 get her code in. And the change of the ratio on the same module may represent
 the change of project landscape (e.g., new features may attract more authors but
 committers may keep at the same level as before), or the maturity of the module (e.g.,
 a mature module may reduce committers). 
 
 \paragraph{Code ownership}
+%? define ownership: different from 'subsequent #athr of one file'
 Ownership is a key aspect of large-scale software development,
  a valid proxy for expertise. Strong ownership, i.e., 
  a single key developer responsible for a particular component in a system (whether
