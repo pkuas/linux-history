@@ -53,15 +53,16 @@ for (i in 1:length(mods)) {
 col <- 1:length(mods)
 #png('a2c-mod')
 png('./ratio-in-mod.png', width=800, height=600)
+pdf('./a2c-in-mod.pdf', width=8,height=6, onefile=FALSE, paper = "special")
 plot(1, type='n', xlim=c(2005, 2013), ylim=c(0, max(trt$drivers)),
-    main='Ratio of # authors to # committers (in 3-year period)',
-    xlab='Natural month', ylab='Ratio')
-for (i in 1:length(col)) lines(as.numeric(names(trt[[i]])), trt[[i]], col=col[i], type='l')
-legend(2010, 27, legend=mods,cex=1,lwd=1,
+    main='Ratio of # authors to # committers (in 3-year period) over time',
+    xlab='Moving from Jan 2005 by month', ylab='Ratio')
+for (i in 1:length(col)) lines(as.numeric(names(trt[[i]])), trt[[i]], col=col[i], type='l', lwd=2, lty=i)
+legend(2010, 28, legend=mods,cex=1,lwd=1,lty=1:length(col), 
     col=col ,bg="white");
-for (i in 1:length(col)) lines(as.numeric(names(rt[[i]])), rt[[i]], col=col[i], type='l', lty=2)
-legend(2007, 27, legend=mods,cex=1,lwd=1, lty=2,
-    col=col ,bg="white",title='keep fake cmtrs');
+# for (i in 1:length(col)) lines(as.numeric(names(rt[[i]])), rt[[i]], col=col[i], type='l', lty=2)
+# legend(2007, 27, legend=mods,cex=1,lwd=1, lty=2,
+#     col=col ,bg="white",title='keep fake cmtrs');
 dev.off()
 
 plot(1, type='n', xlim=c(2005, 2013), ylim=c(0, 40),

@@ -3,6 +3,8 @@
 
 %\usepackage{verbatim}
 %\usepackage{comment}
+\usepackage{epstopdf}
+
 \newtheorem{observation}{\bf Observation}
 \newtheorem{question}{\bf Question}
 
@@ -124,8 +126,8 @@ of Linux kernel, e.g., Intel contributed 10.5\% of changes, ReHat 8.4\%
 in 2014\footnote{https://s3.amazonaws.com/storage.pardot.com/6342/120970/lf\_pub\_whowriteslinux2015.pdf}.
 Now more than ever, the development of the Linux kernel is a matter for 
 the professionals, as unpaid volunteer contributions to the project reached their 
-lowest recorded levels in the latest "Who Writes Linux" 
-report\footnote{linux.slashdot.org/story/15/02/18/1745246/torvalds-people-who-start-writing-kernel-code-get-hired-really-quickly}.
+lowest recorded levels in the latest ``Who Writes Linux''
+report\footnote{http://linux.slashdot.org/story/15/02/18/1745246/torvalds-people-who-start-writing-kernel-code-get-hired-really-quickly}.
 
 \begin{comment}
 As for why Linux is now mostly developed by well-paid engineers, the 
@@ -160,9 +162,12 @@ structure, whether or not that is associated with their contribution practice,
 and how they evolve over time adapting to different business environments. 
 In particular, we aim to answer the following questions:
 \begin{itemize}
-\item What are the structures of the different modules of Linux kernel?
+\item What are the structures of different modules of Linux kernel?
 \item Do different modules of Linux kernel have different contribution practice from each other?
-\item Do different modules of Linux kernel evolve their practice over time and how?
+\item Is there any relavance between module structures and contribution practice in Linux kernel?
+%? \item Do different modules of Linux kernel evolve their practice over time and how?
+%? participant feature: contribution type, and objective of contribution
+
 \end{itemize}
 On the one hand,
 it may help us understand the new challenges in the new FLOSS landscape like
@@ -262,7 +267,7 @@ We followed the following rules to obtain the final changes for this study.
 1), we only look at c files.
 2), we consider the first level modules retrieved from the file path 
 as the module structure used in linux kernel. Overall we obtained 22 modules.
-The top seven modules, in terms of number of changes, include drivers, arch, fs, net, mm, kernel, sound.
+The top seven modules, in terms of number of changes, include drivers, arch, net, fs, sound, kernel, mm.
 3), We consider a developer's joining time as the time they author their first commit.
 
 \begin{table*}
@@ -284,14 +289,14 @@ author & author time & committer & commit time & changed file & module\\ \hline
 We use directory structure to measure modularity of one module. While defining modularity, we have three considerations: \\
 1) one directory may have subdirectories, which means that one module may have submodules. Fox example, in Linux kernel, the $drivers$ directory has a sub directory named $staging$, 
 which contains numerous subdirectories with many drivers. All of the contained drivers in $drivers/staging$ are drivers that need more development before being added to the mainstream kernel. Further, subdirectory may also have subdirectories, therefore we take\\
-%+ need further explaination: smallest granularity
+%+ need further explaination: smallest granularity.
 2) modularity of one module may change over time, thus we take three years as a window, sliding month by month;\\
 3) one module's submodules may differ greatly in terms of number of changes. For example, module A has two submodules with 10,000 and 100 changes respectively, and module B has two submodules with 10,000 and 10,000 changes respectively, then we will say module B has a higher degree of modularity than A.
 
 Considering three aspects above, we have the definition of modularity of one module in a given period
 \begin{equation}
 \label{def_modularity}
-M = \sum\limits_{i=1}^{N} - p_{i} log p_{i}, 
+M = \sum\limits_{i=1}^{N} - p_{i} \log p_{i}, 
 \end{equation}
 where $N$ is the number of submodules of the given module, and $p_{i}$ is defined by
 \begin{equation}
@@ -487,22 +492,22 @@ authors stays the same, making the curve change sharply.
 
 \begin{figure}
 \centering
-\includegraphics[height=2.33in, width=3.5in]{author2committer2.eps}
-\caption{Ratio of \#authors over \#committers}
+\includegraphics[height=2.33in, width=3.5in]{./pics/a2c-in-mod.pdf}
+\caption{Ratio of \#authors to \#committers}
 \label{fig:atr2cmtr}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[height=2.33in, width=3.5in]{atr2cmtrDRIVERS.eps}
-\caption{Ratio of \#authors over \#committers on Drivers}
+\includegraphics[height=2.33in, width=3.5in]{./pics/testSmall.pdf}
+\caption{Ratio of \#authors to \#committers on Drivers}
 \label{fig:ratiodrivers}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[height=2.33in, width=3.5in]{atr2cmtrNET.eps}
-\caption{Ratio of \#authors over \#committers on Net}
+\includegraphics[height=2.33in, width=3.5in]{./pics/atr2cmtrNET.eps}
+\caption{Ratio of \#authors to \#committers on Net}
 \label{fig:rationet}
 \end{figure}
 
@@ -570,7 +575,7 @@ The module of kernel has the loosest control, next to it is the module of mm.
 
 \begin{figure}
 \centering
-\includegraphics[height=2.1in, width=3.5in]{avgchgerfileonmod(b).eps}
+\includegraphics[height=2.1in, width=3.5in]{./pics/avgchgerfileonmod(b).eps}
 \caption{Code ownership of different modules}
 \label{fig:ownership}
 \end{figure}
@@ -593,14 +598,14 @@ sharing code.
 
 \begin{figure}
 \centering
-\includegraphics[height=2.1in, width=3.5in]{chgerfkernel.eps} %10*6
+\includegraphics[height=2.1in, width=3.5in]{./pics/chgerfkernel.eps} %10*6
 \caption{Boxplot of code ownership of kernel module}
 \label{fig:ownershipkernel}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[height=2.1in, width=3.5in]{chgerfdrivers.eps} %10*6
+\includegraphics[height=2.1in, width=3.5in]{./pics/chgerfdrivers.eps} %10*6
 \caption{Boxplot of code ownership of drivers module}
 \label{fig:ownershipdrivers}
 \end{figure}
@@ -627,14 +632,14 @@ for the health of the community is reduced.
 
 \begin{figure}
 \centering
-\includegraphics[height=2.1in, width=3.5in]{fdvprkernel.eps} %10*6
+\includegraphics[height=2.1in, width=3.5in]{./pics/fdvprkernel.eps} %10*6
 \caption{Number of files touched by a developer each month on kernel}
 \label{fig:productivitykernel}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[height=2.1in, width=3.5in]{fdvprdrivers.eps} %10*6
+\includegraphics[height=2.1in, width=3.5in]{./pics/fdvprdrivers.eps} %10*6
 \caption{Number of files touched by a developer each month on drivers}
 \label{fig:productivitydrivers}
 \end{figure}

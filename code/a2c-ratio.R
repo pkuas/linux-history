@@ -40,10 +40,11 @@ for (i in 1:length(mods)) {
 }
 col <- 1:length(mods)
 #png('a2c-mod')
-png('./ratio-in-mod.png', width=800, height=600)
+png('./a2c-in-mod.png', width=800, height=600)
+postscript("a2c-in-mod.eps", width=10,height=6,horizontal=FALSE, onefile=FALSE, paper = "special");
 plot(1, type='n', xlim=c(2005, 2013), ylim=c(0, max(rt$drivers)),
     main='Ratio of # authors to # committers (in 3-year period)',
-    xlab='Natural month', ylab='Ratio')
+    xlab='Moving from 2005', ylab='Ratio')
 for (i in 1:length(col)) lines(as.numeric(names(rt[[i]])), rt[[i]], col=col[i], type='l')
 legend(2010, 27, legend=mods,cex=1,lwd=1,
     col=col ,bg="white");

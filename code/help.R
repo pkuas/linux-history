@@ -88,3 +88,4 @@ t<-read.table("./linux.l2", sep=";",comment.char="", quote="",
 write.table(data.frame(e=c(t$ae, t$ce), n=c(t$an, t$cn)), file="./e.n.full", 
     row.names = F, col.names = F)
 
+# draw a directory tree
