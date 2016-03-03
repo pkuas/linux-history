@@ -14,3 +14,9 @@ screenlog*
 .nfs*
 *.zip
 *.rar
+
+*.aux          
+*.fls  
+*.fdb_latexmk  
+*.log  
+*.synctex.gz
