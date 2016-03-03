@@ -50,15 +50,15 @@ for (i in 1:length(mods)) {
     tenc[[mod]] <- ey
 
 }
-col <- 1:length(mods)
 #png('a2c-mod')
 png('./ratio-in-mod.png', width=800, height=600)
 pdf('./a2c-in-mod.pdf', width=8,height=6, onefile=FALSE, paper = "special")
+col <- 1:length(mods)
 plot(1, type='n', xlim=c(2005, 2013), ylim=c(0, max(trt$drivers)),
     main='Ratio of # authors to # committers (in 3-year period) over time',
     xlab='Moving from Jan 2005 by month', ylab='Ratio')
 for (i in 1:length(col)) lines(as.numeric(names(trt[[i]])), trt[[i]], col=col[i], type='l', lwd=2, lty=i)
-legend(2010, 28, legend=mods,cex=1,lwd=1,lty=1:length(col), 
+legend(2010, 28, legend=mods,cex=1,lwd=2,lty=1:length(col), 
     col=col ,bg="white");
 # for (i in 1:length(col)) lines(as.numeric(names(rt[[i]])), rt[[i]], col=col[i], type='l', lty=2)
 # legend(2007, 27, legend=mods,cex=1,lwd=1, lty=2,
@@ -290,4 +290,153 @@ col <- 1:length(fsmods)
 for (i in tplt) lines(as.numeric(names(mert[[i]])), mert[[i]], col=col[i], type='l')
 legend(2007, 26, legend=fsmods[tplt],cex=1,lwd=1,
     col=col ,bg="white");
+dev.off()
+
+
+# drivers 
+# (core) ratio of a2c & ratio 
+drtrt <- list() # ratio
+drtnc <- list() # num of cmtrs
+drtert <- list() # entropy ratio
+drtenc <- list() # entropy
+for (i in 1:length(drmods)) {
+    mod <- drmods[i]
+    st <- 2005
+    ed <- st + 3
+    x <- y <- c()
+    cx <- cy <- c()
+    ex <- ey <- c()
+    while(ed <= 2015.917) {
+        tsel <- delta$mmod == mod & delta$m >= st & delta$m < ed
+        m <- as.character(st)
+        t1 <- sort(table(delta$cid[tsel]), decreasing=T)
+        t1 <- t1[names(t1) %in% truecmtr]
+        t2 <- sort(table(delta$aid[tsel]), decreasing=T)
+        y[m] <- length(t1)
+        x[m] <- length(t2) / y[m]
+        ey[m] <- 2 ** entropy(t1, method='ML', unit='log2')
+        ex[m] <- 2 ** entropy(t2, method='ML', unit='log2') / ey[m]
+        t1 <- sum(c(TRUE, cumsum(t1[-length(t1)]) / sum(t1) <= 0.8))
+        t2 <- sum(c(TRUE, cumsum(t2[-length(t2)]) / sum(t2) <= 0.8))
+        cx[m] <- t2 / t1
+        cy[m] <- t1
+        st <- st + 1/12
+        ed <- st + 3
+    }
+    drtrt[[mod]] <- x
+    drtnc[[mod]] <- y
+    drtert[[mod]] <- ex
+    drtenc[[mod]] <- ey
+
+}
+#png('a2c-mod')
+pdf('./a2c-dr.pdf', width=8,height=6, onefile=FALSE, paper = "special")
+col <- 1:length(drmods)
+plot(1, type='n', xlim=c(2005, 2013), ylim=c(0, 28),
+     main='Ratio of # authors to # committers (in 3-year period)',
+     xlab='Moving from Jan 2005 by month', ylab='Ratio')
+for (i in 1:length(col)) lines(as.numeric(names(drtrt[[i]])), drtrt[[i]], col=col[i], type='l', lwd=2, lty=i)
+legend(2009, 28, legend=drmods,cex=1,lwd=2,lty=1:length(col), 
+       col=col ,bg="white");
+
+dev.off()
+
+# arch
+artrt <- list() # ratio
+artnc <- list() # num of cmtrs
+artert <- list() # entropy ratio
+artenc <- list() # entropy
+
+for (i in 1:length(armods)) {
+    mod <- armods[i]
+    st <- 2005
+    ed <- st + 3
+    x <- y <- c()
+    cx <- cy <- c()
+    ex <- ey <- c()
+    while(ed <= 2015.917) {
+        tsel <- delta$mmod == mod & delta$m >= st & delta$m < ed
+        m <- as.character(st)
+        t1 <- sort(table(delta$cid[tsel]), decreasing=T)
+        t1 <- t1[names(t1) %in% truecmtr]
+        t2 <- sort(table(delta$aid[tsel]), decreasing=T)
+        y[m] <- length(t1)
+        x[m] <- length(t2) / y[m]
+        ey[m] <- 2 ** entropy(t1, method='ML', unit='log2')
+        ex[m] <- 2 ** entropy(t2, method='ML', unit='log2') / ey[m]
+        t1 <- sum(c(TRUE, cumsum(t1[-length(t1)]) / sum(t1) <= 0.8))
+        t2 <- sum(c(TRUE, cumsum(t2[-length(t2)]) / sum(t2) <= 0.8))
+        cx[m] <- t2 / t1
+        cy[m] <- t1
+        st <- st + 1/12
+        ed <- st + 3
+    }
+    artrt[[mod]] <- x
+    artnc[[mod]] <- y
+    artert[[mod]] <- ex
+    artenc[[mod]] <- ey
+
+}
+#png('a2c-mod')
+pdf('./a2c-ar.pdf', width=8,height=6, onefile=FALSE, paper = "special")
+plot(1, type='n', xlim=c(2005, 2013), ylim=c(0, 15),
+    main='Ratio of # authors to # committers (in 3-year period)',
+    xlab='Moving from Jan 2005 by month', ylab='Ratio')
+col <- 1:length(armods)
+for (i in 1:length(col)) lines(as.numeric(names(artrt[[i]])), artrt[[i]], col=col[i], type='l', lwd=2, lty=i)
+legend(2010, 15, legend=armods,cex=1,lwd=2,lty=1:length(col), 
+    col=col ,bg="white");
+# for (i in 1:length(col)) lines(as.numeric(names(rt[[i]])), rt[[i]], col=col[i], type='l', lty=2)
+# legend(2007, 27, legend=mods,cex=1,lwd=1, lty=2,
+#     col=col ,bg="white",title='keep fake cmtrs');
+dev.off()
+
+# net
+netrt <- list() # ratio
+netnc <- list() # num of cmtrs
+netert <- list() # entropy ratio
+netenc <- list() # entropy
+
+for (i in 1:length(nemods)) {
+    mod <- nemods[i]
+    st <- 2005
+    ed <- st + 3
+    x <- y <- c()
+    cx <- cy <- c()
+    ex <- ey <- c()
+    while(ed <= 2015.917) {
+        tsel <- delta$mmod == mod & delta$m >= st & delta$m < ed
+        m <- as.character(st)
+        t1 <- sort(table(delta$cid[tsel]), decreasing=T)
+        t1 <- t1[names(t1) %in% truecmtr]
+        t2 <- sort(table(delta$aid[tsel]), decreasing=T)
+        y[m] <- length(t1)
+        x[m] <- length(t2) / y[m]
+        ey[m] <- 2 ** entropy(t1, method='ML', unit='log2')
+        ex[m] <- 2 ** entropy(t2, method='ML', unit='log2') / ey[m]
+        t1 <- sum(c(TRUE, cumsum(t1[-length(t1)]) / sum(t1) <= 0.8))
+        t2 <- sum(c(TRUE, cumsum(t2[-length(t2)]) / sum(t2) <= 0.8))
+        cx[m] <- t2 / t1
+        cy[m] <- t1
+        st <- st + 1/12
+        ed <- st + 3
+    }
+    netrt[[mod]] <- x
+    netnc[[mod]] <- y
+    netert[[mod]] <- ex
+    netenc[[mod]] <- ey
+
+}
+#png('a2c-mod')
+pdf('./a2c-ne.pdf', width=8,height=6, onefile=FALSE, paper = "special")
+plot(1, type='n', xlim=c(2005, 2013), ylim=c(0, 28),
+    main='Ratio of # authors to # committers (in 3-year period)',
+    xlab='Moving from Jan 2005 by month', ylab='Ratio')
+col <- 1:length(nemods)
+for (i in 1:length(col)) lines(as.numeric(names(netrt[[i]])), netrt[[i]], col=col[i], type='l', lwd=2, lty=i)
+legend(2008, 28, legend=nemods,cex=1,lwd=2,lty=1:length(col), 
+    col=col ,bg="white");
+# for (i in 1:length(col)) lines(as.numeric(names(rt[[i]])), rt[[i]], col=col[i], type='l', lty=2)
+# legend(2007, 27, legend=mods,cex=1,lwd=1, lty=2,
+#     col=col ,bg="white",title='keep fake cmtrs');
 dev.off()

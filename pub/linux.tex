@@ -290,10 +290,10 @@ We use directory structure to measure modularity of one module. While defining m
 1) one directory may have subdirectories, which means that one module may have submodules. Fox example, in Linux kernel, the $drivers$ directory has a sub directory named $staging$, 
 which contains numerous subdirectories with many drivers. All of the contained drivers in $drivers/staging$ are drivers that need more development before being added to the mainstream kernel. Further, subdirectory may also have subdirectories, therefore we take\\
 %+ need further explaination: smallest granularity.
-2) modularity of one module may change over time, thus we take three years as a window, sliding month by month;\\
-3) one module's submodules may differ greatly in terms of number of changes. For example, module A has two submodules with 10,000 and 100 changes respectively, and module B has two submodules with 10,000 and 10,000 changes respectively, then we will say module B has a higher degree of modularity than A.
+2) one module's submodules may differ greatly in terms of number of changes. For example, module A has two submodules with 10,000 and 100 changes respectively, and module B has two submodules with 10,000 and 10,000 changes respectively, then we will say module B has a higher degree of modularity than A;
+3) modularity of one module may change over time, thus we take three years as a window, sliding month by month.\\
 
-Considering three aspects above, we have the definition of modularity of one module in a given period
+Considering three aspects above, we have the definition of modularity of one module in a given 3-year period
 \begin{equation}
 \label{def_modularity}
 M = \sum\limits_{i=1}^{N} - p_{i} \log p_{i}, 
@@ -343,7 +343,7 @@ Given the informal, distributed way in which FLOSS projects like linux kernel ar
 it seems that rather than
 any single individual writing all the code for a given module, those in the core group
 have a sufficient level of mutual trust that they contribute code to various modules as
-needed~\cite{MFH02}. In FLOSS projects, code "ownership" to be
+needed~\cite{MFH02}. In FLOSS projects, code ``ownership" to be
 more a matter of recognition of expertise than one of strictly enforced ability to make
 commits to partitions of the code base.
 
@@ -466,7 +466,8 @@ module has the biggest growth. At the same time, even both authors and committer
 
 We discovered that the ratio is around 10 for most modules but high above 10 for
 the module of drivers. 
-The ratio for modules like kernel, mm stabilizes at 6 or 7, a reasonable % a reference for team size 7?
+The ratio for modules like kernel, mm stabilizes at 6 or 7, a reasonable 
+%? a reference for team size 7?
 size that is a controllable number for a team.
 A further investigation reveals that the drivers module have a much looser control over
 the team, the fact that a committer works for 20 authors suggests that the tasks 
@@ -492,7 +493,7 @@ authors stays the same, making the curve change sharply.
 
 \begin{figure}
 \centering
-\includegraphics[height=2.33in, width=3.5in]{./pics/a2c-in-mod.pdf}
+\includegraphics[height=2.33in, width=3.5in]{./pics/a2c.pdf}
 \caption{Ratio of \#authors to \#committers}
 \label{fig:atr2cmtr}
 \end{figure}
@@ -538,9 +539,10 @@ size that is a controllable number for a team.
 A further investigation reveals that the drivers module have a much looser control over
 the team, the fact that a committer works for 20 authors suggests that the tasks 
 may be easy on this feature. Net drivers and staging drivers appear to be on
-the easiest tasks, suggesting a place where newbies like to start. The fact
-that the drivers module has more than 50\% share of newcomers supports this
-hypothesis (what's the proportion of changes of drivers?).
+the easiest tasks, suggesting a place where newbies like to start. 
+%? 
+%? The fact that the drivers module has about 56\% share of newcomers supports this
+%? hypothesis (the proportion of changes of drivers is 54\%).
 In fact more than 40\% of all the committers in the kernel community
 started from the drivers module (no comitters of kernel module or mm module started from kernel or mm).
 

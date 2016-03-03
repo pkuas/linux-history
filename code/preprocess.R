@@ -139,6 +139,14 @@ lg$fstCMod <- lg$mod[fstCmtrModIdx[lg$cid]]
 
 ## select deltas that we care
 delta <- lg[lg$m>=startdate & lg$m<=enddate & lg$ext=="c",];
+# consider .c files
+tmin <- tapply(delta$ty, delta$aid, min, na.rm=T);
+delta$fr.c <- tmin[delta$aid]
+tmax <- tapply(delta$ty, delta$aid, max, na.rm=T);
+delta$to.c <- tmax[delta$aid]
+delta$tenure.c <- delta$ty-delta$fr.c;
+
+
 
 ### first 2 module touched by author
 fst2ModIdx <- tapply(1:nrow(lg), lg$aid, get2ndModIdx)
@@ -195,3 +203,4 @@ png('numModsBefCmtr.cmtr.mod.png', width=800, height=600)
 boxplot(numMods ~ mod, data=tdf, las=2, ylab='# of modules',
 	main='# of modules per committer contributed to before he was a committer of one module')
 dev.off()
+
