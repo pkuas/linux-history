@@ -269,9 +269,11 @@ kernel、arch、fs一类收敛
 
 - objective of contribution
 
+## team organization
+#### drop fake cmtrs
+![x](./pics/a2c/a2c-mod-fake-true-cmtr.png)
 
-
-
+对于使用entropy来计算ratio的，drop fake cmtrs与否，结果基本一样。
 
 
 
