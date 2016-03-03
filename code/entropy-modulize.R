@@ -19,8 +19,8 @@ for (i in 1:length(mods)) {
 }
 
 plot(1, type='n', xlim=c(2005, 2013), ylim=c(0, 10),
-    main='Degree of coupling of each module (in 3-year period)',
-    xlab='Natural month', ylab='Degree of coupling')
+    main='Degree of modularization of each module (in 3-year period)',
+    xlab='Natural month', ylab='Degree of modularization')
 col <- 1:length(mods)
 for (i in 1:length(col)) {
 	x <- rmodentropy[[mods[i]]]

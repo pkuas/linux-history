@@ -257,6 +257,7 @@ The changed file is represented by its directory in the code repository.
 For example, ``drivers/pci/iova.c'' illustrates that the changed file
 is under the directory of pci driver.
 
+We use directory structure to measure 
 We followed the following rules to obtain the final changes for this study.
 1), we only look at c files.
 2), we consider the first level modules retrieved from the file path 
@@ -278,8 +279,17 @@ author & author time & committer & commit time & changed file & module\\ \hline
 
 \section{Metrics}
 %We measure three aspects of Linux kernel community to observe the evolution of its contribution practice.
-\paragraph{Module structure}
+\paragraph{Modularity}
 % use entropy to measure modulization in a 3-year window
+We use directory structure to measure modularity of one module. While defining modularity, we have three considerations: \\
+
+1) one directory may have several subdirectories, which means that one module may have submodules. Fox example, in Linux kernel, the drivers directory has a sub directory named staging, 
+which contains numerous subdirectories with many drivers. All of the contained drivers in drivers/staging are drivers that need more development before being added to the mainstream kernel.\\
+2) modularity of one module may change over time.\\
+3) given a period, one module's submodules may have differ greatly in terms of number of changes. For example, module A has two submodules with 10,000 and 100 changes respectively, and module B has two submodules with 10,000 and 10,000 changes respectively, then we will say module B has a higher degree of modularity than A.
+
+Considering three aspects above, we have the definition of modularity:
+
 
 \paragraph{Ratio of authors to committers}
 We focus on one particular factor that tries to measure the team relationship between
@@ -491,6 +501,7 @@ team. If the code is well modularized, the ratio could be bigger, otherwise
 it could be smaller.
 
 Through chcking with the core members of kernel, we found the ratio changes because of the following reasons: \\
+We use directory structure to measure 
 1), when there is new feature, a bulk of authors would cause fluctuation of this measure,
 because the committers wouldn't increase at the moment, e.g., drivers/staging/iio. \\
 2), when there is new feature, the increase of committers is likely to be behind

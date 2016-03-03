@@ -1,0 +1,26 @@
+
+professional programmer(employees) 会去fix bugs吗?
+各大公司employee的时间会有变化吗?
+
+committer和author的关系是怎样, 一个commtter会专门负责为多个特定的author做提交吗?
+committer的制度是怎样? committer和maintainer的关系是什么
+怎样可以成为一个committer?
+
+fs, net, mm, kernel, drivers, arch的committer制度有差别吗?
+
+2008, 2012, linux kernel发生了什么?
+
+不是被公司雇来coding的volunteer的加入对linux kernel有特殊价值吗?
+
+2016/03/03
+
+提交够多代码, 跟maintainer有信任关系, 
+1, 发送email, git merge, 其commit就是自己, (commit了其他author就是committer)
+2, pull request
+
+kernel和mm复杂度挺高, 大的maintainer收patch, 作者来源很丰富和广泛
+例如某个driver实现可能需要修改kernel, 因此他会提交一个kernel的patch
+
+driver的作者领域相对狭窄
+
+

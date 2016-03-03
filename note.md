@@ -258,7 +258,7 @@ kernel、arch、fs一类收敛
 考虑几个点：耦合度会随时间变化；目录之下可能还是目录，模块之下还是模块，应以最细粒度的模块为准；考虑模块的子模块的不同规模，假如一段时间内基本只向一个子模块写代码，那么其实该模块应该只算一个子模块。
 
 想了个方法：见code/entropy-modulize.R
-![x](./pics/coupling-mod.png)
+![x](./pics/modularization-mod.png)
 
 ## 
 
