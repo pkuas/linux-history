@@ -15,8 +15,10 @@ screenlog*
 *.zip
 *.rar
 
-*.aux          
-*.fls  
-*.fdb_latexmk  
-*.log  
+*.aux
+*.fls
+*.fdb_latexmk
+*.log
 *.synctex.gz
+
+*.ppt*

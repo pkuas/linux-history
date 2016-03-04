@@ -275,8 +275,28 @@ kernel、arch、fs一类收敛
 
 对于使用entropy来计算ratio的，drop fake cmtrs与否，结果基本一样。
 
+# Narrow 3
+> 具有不同特性的module，在team organization上是否有差异呢？
+
+注意：
+- 首先，引导受众：具有不同特性的module，在team organization上是有差异的。
+- 然后，陈述模块之间在若干特性的差异。
+- 再而，陈述不同模块的organization的差异。
+- 要注意，不强调：模块本身的演化、这些不同特性对organization的差异之间因果关系、甚至相关关系。
+- 要对各个量，给予详尽的、合理的解释
 
 
+## 不同模块的不同特性
+#### module structure 
+- modularity
 
+#### participant feature
+- contributor type
+    + volunteers(geeks) and employees
+- objective of contribution 
+    + 
 
+## 不同模块的organization的差异
+- ratio of #A to #C
+- code ownership(#A per file, or #C per file)
 

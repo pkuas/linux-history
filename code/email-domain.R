@@ -38,7 +38,7 @@ for ( i in 1:length(mods)) {
 	gart[[mods[i]]] <- x / y
 	acnt[[mods[i]]] <- y
 }
-plot(1, type='n', xlim=c(2005, 2013), ylim=c(0, 0.4),
+plot(1, type='n', xlim=c(2005, 2013), ylim=c(0, 0.3),
     main='Ratio of adjusted # authors to adjusted # committers (in 3-year period)',
     xlab='Natural month', ylab='Ratio')
 col <- 1:length(mods)
@@ -46,5 +46,9 @@ for (i in 1:length(col)) {
 	x <- gart[[mods[i]]]
     lines(as.numeric(names(x)), x, col=col[i], type='l')
 }
-legend(2007, 0.4, legend=mods,cex=1,lwd=1,
+legend(2007, 0.3, legend=mods,cex=1,lwd=1,
     col=col ,bg="white");
+
+# get domain
+delta$aed <- sub('.*@', '', delta$ae, perl=T) # author email domain
+delta$ced <- sub('.*@', '', delta$ce, perl=T) # committer email domain
