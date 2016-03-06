@@ -11,7 +11,7 @@ drivers的author to committer的比率要比其他模块都高很多。从趋势
 > ### 是不是drivers的author多，但是delta少，即driver模块的committer任务不是太多？
 
 这一点并不是。
-See below 
+See below
 ![deltas-in-mod-month.png](./pics/deltas-in-mod-month.png)
 
 > ### 在drivers中，再往下看一层
@@ -99,7 +99,7 @@ See below
 
 ### 搞清楚贡献体系
 - 组织结构，人员结构
-    + 搞清楚各类角色：maintainer, committer(same as maintainer?), reviewer, author, etc. 
+    + 搞清楚各类角色：maintainer, committer(same as maintainer?), reviewer, author, etc.
     + 各类角色的变化：关于maintainer, 看MAINTAINER文件的各个版本；committer和author，看git log的格式化信息，这部分我们已经取出；reviewer，看每个提交的comment信息；Linux Kernel的诸如[Documentation/SubmittingPatches](https://www.kernel.org/doc/Documentation/SubmittingPatches)这些开发者文档中对patch的格式做了要求、说明，在comment信息中，包括的信息有：Signed-off-by, Acked-by, Cc, Reported-by:, Tested-by:, Reviewed-by:, Suggested-by: and Fixes。
     + 根据这些分析，特别是drivers，分析难处
     + 特别注意new comer
@@ -122,7 +122,7 @@ See below
 ```
 
 - 以个人为分析对象
-    + 
+    +
 
 - 可以尝试一下codeface
 
@@ -163,7 +163,7 @@ See below
 3. introduction中到模块的过渡不好。
 4. 关于linux kernel的commit机制，如何成为committer需要进一步了解和阐述。这是因为，ratio的含义还应该结合具体的环境。
 5. volunteers. commercial participation
-6. 
+6.
 > it is of interest to understand if
 the contribution practice of different modules of Linux kernel differs from each other, and how they evolve over time
 adapting to different business environments
@@ -172,7 +172,7 @@ adapting to different business environments
 - 从目录层次来看。（arch和drivers，从文件层次来看，都是loose的，arch的ratio为何低，和mm差不多。）
 - 从各个目录的形成来看，drivers是各个硬件驱动代码的合集，mm则不然。（这个由文字叙述，需要相关资料的支持）
 - 从函数调用关系来看。
-- 
+-
 
 # team organization
 怎样描述team organization呢？
@@ -183,11 +183,11 @@ adapting to different business environments
 
 要用a2c，首先要理解'commit'到底是意味着什么。
 
-> 
+>
 From: lf_pub_whowriteslinux2015.pdf
 <br/>
 Who is Reviewing the Work
-Patches do not normally pass directly into the mainline kernel; instead, they pass through one of over 100 subsystem trees. Each subsystem tree is dedicated to a specific part of the kernel (examples might be SCSI drivers, x86 architecture code, or networking) and is under the control of a specific maintainer. 
+Patches do not normally pass directly into the mainline kernel; instead, they pass through one of over 100 subsystem trees. Each subsystem tree is dedicated to a specific part of the kernel (examples might be SCSI drivers, x86 architecture code, or networking) and is under the control of a specific maintainer.
 <br/>
 When a subsystem maintainer accepts a patch into a subsystem tree, he or she will attach a “Signed-off-by” line to it. This line is a statement that the patch can be legally incorporated into the kernel; the sequence of signoff lines can be used to establish the path by which each change got into the kernel.
 <br/>
@@ -253,14 +253,14 @@ kernel、arch、fs一类收敛
 不同的模块有不同的特征，由于这些不同的特征可能会对ratio值得差异产生了影响。而这些模块具有不同特征的论据包括：
 - directory structure，用耦合度来表示,就是下面一个。
 - 耦合度。（本来应该用调用关系来衡量耦合度，问一下：能否用code ownership来衡量呢？#owner each file衡量的是团队相关的东西，数值大意味着该文件由多人协作开发，在一个module中，整体的数值大，推出该模块的耦合度高。这样合不合理呢？)(PS: 和Z的计算结果差好多？)可以用ownership来验证耦合度的不同。
-![x](./pics/ownership-mod.png) 
+![x](./pics/ownership-mod.png)
 
 考虑几个点：耦合度会随时间变化；目录之下可能还是目录，模块之下还是模块，应以最细粒度的模块为准；考虑模块的子模块的不同规模，假如一段时间内基本只向一个子模块写代码，那么其实该模块应该只算一个子模块。
 
 想了个方法：见code/entropy-modulize.R
 ![x](./pics/modularization-mod.png)
 
-## 
+##
 
 ## contributor features
 不同的
@@ -287,16 +287,23 @@ kernel、arch、fs一类收敛
 
 
 ## 不同模块的不同特性
-#### module structure 
+#### module structure
 - modularity
 
 #### participant feature
 - contributor type
     + volunteers(geeks) and employees
-- objective of contribution 
-    + 
+- objective of contribution
+    +
 
 ## 不同模块的organization的差异
 - ratio of #A to #C
+有的cmtr在某个模块仅提交了几次，所以我很怀疑：虽然cmtr会有其负责的主要子系统，但是每个cmtr有向整个repo的写权限。如果是这样的话，#C的计算方式就要变一变了。应该确定每个cmtr贡献的模块，当然向linus torvalds这类非常核心的人还是会有多个模块。
+故而先搞清楚，模块中那些提交很少的人是什么情况。
+```
+- drivers--> fs: 'efivarfs: Move to fs/efivarfs' maintainer remains the same (10000)
+- 80
+```
+
 - code ownership(#A per file, or #C per file)
 

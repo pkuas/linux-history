@@ -19,6 +19,6 @@ screenlog*
 *.fls
 *.fdb_latexmk
 *.log
-*.synctex.gz
+*.synctex.gz*
 
 *.ppt*

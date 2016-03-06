@@ -1200,8 +1200,8 @@ window <- 0.5
 	e <- unlist(lapply(strsplit(names(t3), '%', ), function(x) if(!is.na(x)) return(x)))
 	g <- add.edges(g, e)
 	t <- rep(NA, length(x))
-	tsel <- c(TRUE, cumsum(x[-length(x)]) / sum(x) <= 0.8)
-	t[which(tsel)] <- substring(names(x[tsel]), 3)
+	sel <- c(TRUE, cumsum(x[-length(x)]) / sum(x) <= 0.8)
+	t[which(sel)] <- substring(names(x[sel]), 3)
 	t <- c(t, rep(NA, length(y)))
 	z <- sqrt(c(x, y))
 	col <- rep('yellow', length(e) / 2)
@@ -1306,7 +1306,7 @@ for ( i in 1:length(mods)) {
 		y[m] <- sum(tsel)
 		st <- st + 1/12
 		ed <- st + 1
-	}	
+	}
 	fixcnt[[mods[i]]] <- x
 	revcnt[[mods[i]]] <- y
 	fixrt[[mods[i]]] <- x / y
