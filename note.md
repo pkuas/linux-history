@@ -312,3 +312,6 @@ kernel、arch、fs一类收敛
 
 ##   EXPLORE
 [Role of a Linux Kernel Maintainer](https://www.linux.com/news/featured-blogs/199:greg-kroah-hartman/591212:role-of-a-linux-kernel-maintainer)
+
+## A2C
+与Z。对于一个模块，即便由一个或/2个主要的cmtr来为author提交代码，但是#A/#C仍然有其意义，因为这就是由数据算出来的，而且在各个模块之间的确呈现出了显著的区别。但是，#A/#C到底是什么意思呢？它的确是开发社区的一个量度，但，怎么说呢？
