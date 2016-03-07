@@ -304,6 +304,11 @@ kernel、arch、fs一类收敛
 - drivers--> fs: 'efivarfs: Move to fs/efivarfs' maintainer remains the same (10000)
 - 80
 ```
+重新审视drivers的ratio如何这么高，发现changes数量颇多的staging，其核心的committer就是一个，然而author很多，我猜想是因为staging对代码质量的要求低于很多其他的目录。
+所以，不能从模块化程度来分析organization, 毕竟，一个大模块如drivers由若干个模块构成，那么team size和也不会直接受影响，例如每个子模块的team规模和mm的team规模一样也是可能的。所以抛弃模块化程度吧。
 
+一个可能的因素是对模块质量的要求，
 - code ownership(#A per file, or #C per file)
 
+##   EXPLORE
+[Role of a Linux Kernel Maintainer](https://www.linux.com/news/featured-blogs/199:greg-kroah-hartman/591212:role-of-a-linux-kernel-maintainer)

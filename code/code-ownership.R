@@ -30,7 +30,7 @@ tsel <- delta$mod %in% mods;
 for (i in 1:length(mods)) {
 	sel <- tsel & delta$mod == mods[i]
 	cmtrownership[[mods[i]]] <- unlist(lapply(
-		t2apply(delta$cid[sel], delta$f[sel], delta$y[sel], numOfUnique), 
+		t2apply(delta$cid[sel], delta$f[sel], delta$m[sel], numOfUnique), 
 		mean))
 }
 pdf('./cmtrcodeowner.pdf', width=10,height=6, onefile=FALSE, paper = "special")
