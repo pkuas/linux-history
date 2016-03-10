@@ -9,7 +9,7 @@ for (i in 1:length(t)) {
 truecmtr <- truecmtr[tsel]
 
 
-# (core) ratio of a2c & ratio 
+# (core) ratio of a2c & ratio
 mods <- c('drivers', 'arch', 'net', 'sound', 'fs', 'kernel', 'mm')
 trt <- list() # ratio
 tnc <- list() # num of cmtrs
@@ -50,6 +50,13 @@ for (i in 1:length(mods)) {
     tenc[[mod]] <- ey
 
 }
+# #A to # e C
+ta2ec <- list()
+for (i in 1:length(mods)) {
+    mod <- mods[i]
+    ta2ec[[mod]] <- tnc[[mod]] * trt[[mod]] / tenc[[mod]]
+}
+
 #png('a2c-mod')
 png('./ratio-in-mod.png', width=800, height=600)
 pdf('./a2c-in-mod.pdf', width=8,height=6, onefile=FALSE, paper = "special")
@@ -58,7 +65,7 @@ plot(1, type='n', xlim=c(2005, 2013), ylim=c(0, max(trt$drivers)),
     main='Ratio of # authors to # committers (in 3-year period) over time',
     xlab='Moving from Jan 2005 by month', ylab='Ratio')
 for (i in 1:length(col)) lines(as.numeric(names(trt[[i]])), trt[[i]], col=col[i], type='l', lwd=2, lty=i)
-legend(2010, 28, legend=mods,cex=1,lwd=2,lty=1:length(col), 
+legend(2010, 28, legend=mods,cex=1,lwd=2,lty=1:length(col),
     col=col ,bg="white");
 # for (i in 1:length(col)) lines(as.numeric(names(rt[[i]])), rt[[i]], col=col[i], type='l', lty=2)
 # legend(2007, 27, legend=mods,cex=1,lwd=1, lty=2,
@@ -68,6 +75,7 @@ dev.off()
 plot(1, type='n', xlim=c(2005, 2013), ylim=c(0, 40),
     main='Ratio of # core authors to # core committers (in 3-year period)',
     xlab='natural month', ylab='ratio')
+col <- 1:length(mods)
 for (i in 1:length(col)) lines(as.numeric(names(tcrt[[i]])), tcrt[[i]], col=col[i], type='l')
 legend(2009, 40, legend=mods,cex=1,lwd=1,
     col=col ,bg="white");
@@ -122,7 +130,7 @@ yenc <- list() # entropy
 
 for (i in 1:length(mods)) {
     mod <- mods[i]
-    tsel <- delta$mod == mod 
+    tsel <- delta$mod == mod
     ync[[mod]] <- tapply(delta$cid[tsel], delta$y[tsel], numOfUnique)
     yrt[[mod]] <- tapply(delta$aid[tsel], delta$y[tsel], numOfUnique) / ync[[mod]]
     tf <- function(x) {exp(entropy(table(x)))}
@@ -221,7 +229,7 @@ dev.off()
 
 # fs
 
-fsmods <- c("fs/xfs", "fs/btrfs", "fs/nfs", "fs/cifs", "fs/ext4", "fs/ocfs2", "fs/gfs2", 
+fsmods <- c("fs/xfs", "fs/btrfs", "fs/nfs", "fs/cifs", "fs/ext4", "fs/ocfs2", "fs/gfs2",
     "fs/nfsd", "fs/f2fs", "fs/ceph", "fs/proc", "fs/reiserfs")
 
 mrt <- list() # ratio
@@ -293,8 +301,8 @@ legend(2007, 26, legend=fsmods[tplt],cex=1,lwd=1,
 dev.off()
 
 
-# drivers 
-# (core) ratio of a2c & ratio 
+# drivers
+# (core) ratio of a2c & ratio
 drtrt <- list() # ratio
 drtnc <- list() # num of cmtrs
 drtert <- list() # entropy ratio
@@ -336,7 +344,7 @@ plot(1, type='n', xlim=c(2005, 2013), ylim=c(0, 28),
      main='Ratio of # authors to # committers (in 3-year period)',
      xlab='Moving from Jan 2005 by month', ylab='Ratio')
 for (i in 1:length(col)) lines(as.numeric(names(drtrt[[i]])), drtrt[[i]], col=col[i], type='l', lwd=2, lty=i)
-legend(2009, 28, legend=drmods,cex=1,lwd=2,lty=1:length(col), 
+legend(2009, 28, legend=drmods,cex=1,lwd=2,lty=1:length(col),
        col=col ,bg="white");
 
 dev.off()
@@ -384,7 +392,7 @@ plot(1, type='n', xlim=c(2005, 2013), ylim=c(0, 15),
     xlab='Moving from Jan 2005 by month', ylab='Ratio')
 col <- 1:length(armods)
 for (i in 1:length(col)) lines(as.numeric(names(artrt[[i]])), artrt[[i]], col=col[i], type='l', lwd=2, lty=i)
-legend(2010, 15, legend=armods,cex=1,lwd=2,lty=1:length(col), 
+legend(2010, 15, legend=armods,cex=1,lwd=2,lty=1:length(col),
     col=col ,bg="white");
 # for (i in 1:length(col)) lines(as.numeric(names(rt[[i]])), rt[[i]], col=col[i], type='l', lty=2)
 # legend(2007, 27, legend=mods,cex=1,lwd=1, lty=2,
@@ -434,7 +442,7 @@ plot(1, type='n', xlim=c(2005, 2013), ylim=c(0, 28),
     xlab='Moving from Jan 2005 by month', ylab='Ratio')
 col <- 1:length(nemods)
 for (i in 1:length(col)) lines(as.numeric(names(netrt[[i]])), netrt[[i]], col=col[i], type='l', lwd=2, lty=i)
-legend(2008, 28, legend=nemods,cex=1,lwd=2,lty=1:length(col), 
+legend(2008, 28, legend=nemods,cex=1,lwd=2,lty=1:length(col),
     col=col ,bg="white");
 # for (i in 1:length(col)) lines(as.numeric(names(rt[[i]])), rt[[i]], col=col[i], type='l', lty=2)
 # legend(2007, 27, legend=mods,cex=1,lwd=1, lty=2,

@@ -304,6 +304,38 @@ kernel、arch、fs一类收敛
 - drivers--> fs: 'efivarfs: Move to fs/efivarfs' maintainer remains the same (10000)
 - 80
 ```
+看那些在mm中只有少量commit的cmtr，他们是什么情况？
+
+- mm共86个cmtr（排除fake cmtr), 76.55%的提交由linus torvalds进行，
+```
+> head(cumsum(t) / sum(t), 10)
+    linus torvalds       pekka enberg   htejun@gmail.com            al viro         axboe@carl
+         0.7655486          0.8105001          0.8393240          0.8648881          0.8867633
+       ingo molnar ak@linux.intel.com   from: mel gorman     h. peter anvin    catalin marinas
+         0.9055503          0.9144720          0.9204770          0.9263104          0.9318864
+
+t <- sort(t, decreasing = F)
+m <- names(t[1])
+table(delta$mod[delta$cid == m])
+```
+strange cmtrs  of mm
+```
+abergman@de.ibm.com: commit maily for arch and drivers. made a commit (authored by himself) for mm with cmt 'mm/slob: use min_t() to compare ARCH_SLAB_MINALIGN'
+airlied: mainly for drivers. for mm once: 'Export shmem_file_setup for DRM-GEM'. aid != cid . 1+, 0- (mm/shmem.c)
+
+```
+Many maintainers of subsystems of Linux kernel have their own repositories, and many of these repos (I manually inspected several listed below) are full versions of Linux kernel at some point.
+- https://github.com/agraf/linux-2.6
+- https://github.com/linux-wpan/linux-wpan-next
+- https://github.com/ceph/ceph-client
+- https://github.com/jonmason/ntb
+- https://github.com/czankel/xtensa-linux
+
+following is not a full version.
+- https://github.com/linux-test-project/ltp
+- github.com/KrasnikovEugene/wcn36xx
+- https://github.com/lmajewski/linux-samsung-thermal
+
 重新审视drivers的ratio如何这么高，发现changes数量颇多的staging，其核心的committer就是一个，然而author很多，我猜想是因为staging对代码质量的要求低于很多其他的目录。
 所以，不能从模块化程度来分析organization, 毕竟，一个大模块如drivers由若干个模块构成，那么team size和也不会直接受影响，例如每个子模块的team规模和mm的team规模一样也是可能的。所以抛弃模块化程度吧。
 
@@ -315,3 +347,60 @@ kernel、arch、fs一类收敛
 
 ## A2C
 与Z。对于一个模块，即便由一个或/2个主要的cmtr来为author提交代码，但是#A/#C仍然有其意义，因为这就是由数据算出来的，而且在各个模块之间的确呈现出了显著的区别。但是，#A/#C到底是什么意思呢？它的确是开发社区的一个量度，但，怎么说呢？
+
+## volunteers or paid dvprs
+```
+> for (m in c('dr', 'ar', 'ne', 'so', 'fs', 'ke', 'mm')) {
++     sel <- delta$md2 == m
++     t <- sort(table(delta$aed[sel]), decreasing = T)
++     print(m); print(head(t)/sum(t)); print(t['gmail.com']/sum(t))
++ }
+[1] "dr"
+
+      gmail.com       intel.com      redhat.com     samsung.com         suse.de linux.intel.com
+     0.12260581      0.08204828      0.06968472      0.02115728      0.02082690      0.02047506
+gmail.com
+0.1226058
+[1] "ar"
+
+     gmail.com     redhat.com     linaro.org         ti.com linux-mips.org  linutronix.de
+    0.05772161     0.03874491     0.03353407     0.03091546     0.02770980     0.02468224
+ gmail.com
+0.05772161
+[1] "ne"
+
+    gmail.com     intel.com     trash.net    redhat.com    google.com davemloft.net
+   0.09475896    0.07017686    0.04998586    0.04335879    0.03582926    0.03153244
+ gmail.com
+0.09475896
+[1] "so"
+
+                    suse.de opensource.wolfsonmicro.com                   gmail.com
+                 0.24544154                  0.09751519                  0.07281611
+                 metafoo.de                  ladisch.de                      ti.com
+                 0.05362889                  0.03459063                  0.02562269
+ gmail.com
+0.07281611
+[1] "fs"
+
+        redhat.com         oracle.com zeniv.linux.org.uk          gmail.com         netapp.com
+        0.15924805         0.08561414         0.06315977         0.05498583         0.04866027
+     infradead.org
+        0.03891178
+ gmail.com
+0.05498583
+[1] "ke"
+
+        redhat.com          gmail.com      linutronix.de         kernel.org linux.vnet.ibm.com
+        0.13126512         0.07366920         0.05379364         0.05133080         0.04796059
+         chello.nl
+        0.04752852
+gmail.com
+0.0736692
+[1] "mm"
+
+     gmail.com     google.com        suse.de     redhat.com     kernel.org jp.fujitsu.com
+    0.06399588     0.06399588     0.06116497     0.05979240     0.05172858     0.05009865
+ gmail.com
+0.06399588
+```

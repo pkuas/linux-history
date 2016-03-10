@@ -2,9 +2,9 @@
 mods <- c('drivers', 'arch', 'net', 'sound', 'fs', 'kernel', 'mm')
 tsel <- delta$mod %in% mods #& delta$y >= 2010
 res <- t2apply((1:numofdeltas)[tsel], delta$y[tsel], delta$mod[tsel], function(x) {
-	# t <- c(length(x), numOfUnique(delta$aid[x]), numOfUnique(delta$cid[x]), 
-	# 	numOfUnique(delta$ae[x]), numOfUnique(delta$ce[x]), 
-	# 	length(grep('gmail.com', delta$ae[x], ignore.case=T)), 
+	# t <- c(length(x), numOfUnique(delta$aid[x]), numOfUnique(delta$cid[x]),
+	# 	numOfUnique(delta$ae[x]), numOfUnique(delta$ce[x]),
+	# 	length(grep('gmail.com', delta$ae[x], ignore.case=T)),
 	# 	length(grep('gmail.com', delta$ce[x], ignore.case=T))
 	# 	)
 	# names(t) <- c('nchgs', 'na', 'nc', 'nae', 'nce', 'nga', 'ngc')
@@ -18,7 +18,7 @@ volnaes <- tapply(delta$ae[tsel], delta$mod[tsel], function(x) {
 	return(length(grep('gmail.com', x, ignore.case=T)))
 
 	})
- 
+
 # 3 - year period
 mods <- c('drivers', 'arch', 'net', 'sound', 'fs', 'kernel', 'mm')
 gart <- list() # gmail athr
@@ -34,7 +34,7 @@ for ( i in 1:length(mods)) {
 		y[m] <- numOfUnique(delta$ae[tsel])
 		st <- st + 1/12
 		ed <- st + 3
-	}	
+	}
 	gart[[mods[i]]] <- x / y
 	acnt[[mods[i]]] <- y
 }
@@ -52,3 +52,19 @@ legend(2007, 0.3, legend=mods,cex=1,lwd=1,
 # get domain
 delta$aed <- sub('.*@', '', delta$ae, perl=T) # author email domain
 delta$ced <- sub('.*@', '', delta$ce, perl=T) # committer email domain
+
+##a
+for (m in c('dr', 'ar', 'ne', 'so', 'fs', 'ke', 'mm')) {
+	sel <- delta$md2 == m
+	t <- sort(table(delta$aed[sel]), decreasing = T)
+	cat(m, numOfUnique(delta$aed[sel]), exp(entropy(t)), '\n');
+	print(head(t)/sum(t)); print(t['gmail.com']/sum(t))
+	print('---------------------------')
+}
+##c
+for (m in c('dr', 'ar', 'ne', 'so', 'fs', 'ke', 'mm')) {
+	sel <- delta$md2 == m
+	t <- sort(table(delta$ced[sel]), decreasing = T)
+	cat(m, numOfUnique(delta$ced[sel]), exp(entropy(t)));
+	print(head(t)/sum(t)); print(t['gmail.com']/sum(t))
+}

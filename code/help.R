@@ -5,7 +5,7 @@ save.image(file = "./.RData")
 load("/store1/chenqy/linuxhistory/.RData")
 library("entropy", lib.loc="~/R/x86_64-redhat-linux-gnu-library/3.1")
 library("igraph", lib.loc="~/R/x86_64-redhat-linux-gnu-library/3.1")
-
+#/store1/chenqy/linuxhistory/linux
 # check mapping between email and name
 numOfUnique<-function(x) {return(length(unique(x)))}
 numAnamePerAemail <- tapply(delta$an, delta$ae, numOfUnique)
@@ -82,10 +82,10 @@ numofaliasofid.tb / sum(numofaliasofid.tb)
 
 # merge aliases with full dataset
 t<-read.table("./linux.l2", sep=";",comment.char="", quote="",
-    col.names=c("v","an","cn","ae","ce","line","at","ct","f","cmt"), 
+    col.names=c("v","an","cn","ae","ce","line","at","ct","f","cmt"),
     colClasses= c("NULL", rep("character", 4), rep("NULL", 5)))
 # t<-transform(t, an=tolower(an), ae=tolower(ae), cn=tolower(cn), ce=tolower(ce))
-write.table(data.frame(e=c(t$ae, t$ce), n=c(t$an, t$cn)), file="./e.n.full", 
+write.table(data.frame(e=c(t$ae, t$ce), n=c(t$an, t$cn)), file="./e.n.full",
     row.names = F, col.names = F)
 
 # draw a directory tree
