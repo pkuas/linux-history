@@ -13,6 +13,10 @@ cosSim<-function(x, y) {return(sum(x*y)/sqrt(sum(x^2))/sqrt(sum(y^2)))}
 numOfLessThan0 <- function(x) {return(sum(x < 0))}
 t2apply <- function(v, g2, g1, f) {return(tapply(1:length(g1), g1, function(x) {return(tapply(v[x], g2[x], f))}))}
 mySummary <- function(v) {t <- summary(v); t['Num'] <- length(v); return(t)}
+ycnt <- function(mod, dst, f=length) {
+	colnm <- c('mod', 'mmod', 'smod')[str_count(mod, '/') + 1]; 
+	sel <- delta[,colnm]==mod;
+	return(tapply(delta[sel, dst], delta$y[sel], f))}
 startdate <- 2005
 enddate <- 2015.917
 

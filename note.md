@@ -404,3 +404,117 @@ gmail.com
  gmail.com
 0.06399588
 ```
+
+## Restart and Explore
+- Community structure: may refer to: Toward an Understanding of the Motivation of Open Source ....
+
+- **topic: how does product structure shape community organization**
+- **topic: dynamics of community**
+- 
+
+in a community, dvprs have different roles: project leader, core members, active dvprs, peripheral dvprs, bug fixers, bug reporters, readers, passive users.
+
+**we can define several aspects of community structre.**
+
+during a given period: 
+
+- size, percentage of different roles(Lorenz curve), coupling degree of community.
+- diversity of experience in a community.
+- 
+
+
+- Different modules may have different community structure.
+
+>Here's a picture of our development model, in a simplified form.
+We have about 3000 different developers. They make a patch, and send it through email to the file/driver maintainer. We have about 700 different maintainers listed in the kernel tree at the moment. That maintainer reviews it, and if they accept it, they forward it on to the subsystem maintainer. We have around 85 different subsystem maintainers at the moment, and there are about 160 different subsystem trees that get merged to Linus.
+Those maintainers have public kernel trees that all get merged into the linux-next release every day. Then, when the merge window opens up, the subsystem maintainers send their stuff to Linus.(2013)
+
+refer to: 'THE LIFECYCLE OF A PATCH' in Documentation/development-process/2.Process
+
+
+- we may mean 'module' by considering that one mailing list contributes to.
+
+(drivers|arch|fs)/[0-9a-zA-Z]+/$
+
+But one may argue that if you define 'module' using mailing list, it will be a recursive problem in the sense that module is defined using team's feature and the objective of this research is to understand how module structure shapes team organization. Is that ok? 
+
+Yeah, we have more considerations. First, actually, we would take 'subsystem' as objects of this research. In Linux kernel, many subsystems have their own ailing lists and source trees. Therefore, forget things about 'module'. we're understanding 'subsystem'. 
+
+- we can select several modules from different domains like mm, kernel, drivers, fs, etc.
+
+#### team structure
+select bluetooth drivers to inspect:
+- from maintainers(one very new version):
+see: BLUETOOTH SUBSYSTEM, BLUETOOTH DRIVERS
+
+M:  Marcel Holtmann <marcel@holtmann.org>
+M:  Gustavo Padovan <gustavo@padovan.org>
+M:  Johan Hedberg <johan.hedberg@gmail.com>
+
+- from cids:
+```                  from: greg kroah-hartman
+                                        24
+                            linus torvalds
+                                        70
+                               dave miller
+                                        80
+                         dominik brodowski
+                                       122
+                        gustavo f. padovan
+                                       215
+                             johan hedberg
+                                       236
+                           marcel holtmann
+                                       454
+
+```
+
+use 'git show <SHA1>:<FILE>' to view content of the file at the time of the given commit.
+
+#### select subsystem/module
+- bluetooth
+
+> BLUETOOTH DRIVERS
+M:  Marcel Holtmann <marcel@holtmann.org>
+M:  Gustavo Padovan <gustavo@padovan.org>
+M:  Johan Hedberg <johan.hedberg@gmail.com>
+L:  linux-bluetooth@vger.kernel.org
+W:  http://www.bluez.org/
+T:  git git://git.kernel.org/pub/scm/linux/kernel/git/bluetooth/bluetooth.git
+T:  git git://git.kernel.org/pub/scm/linux/kernel/git/bluetooth/bluetooth-next.git
+S:  Maintained
+F:  drivers/bluetooth/
+-
+F:  net/bluetooth/
+F:  include/net/bluetooth/
+目录下皆是文件
+
+net's "bluetooth"  "nfc"        "ieee802154" "atm" can be found in drivers.
+net's "wireless"   "irda"       "caif"       "ieee802154" "dsa" "can"        "ethernet"   "wimax"      "appletalk" can be found in drivers/net.
+
+
+- scsi
+
+> M:    "James E.J. Bottomley" <JBottomley@odin.com>
+T:  git git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git
+M:  "Martin K. Petersen" <martin.petersen@oracle.com>
+T:  git git://git.kernel.org/pub/scm/linux/kernel/git/mkp/scsi.git
+L:  linux-scsi@vger.kernel.org
+S:  Maintained
+F:  drivers/scsi/
+F:  include/scsi/
+目录下有很多文件，也有一些目录
+
+
+- usb
+
+> USB SUBSYSTEM
+M:  Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+L:  linux-usb@vger.kernel.org
+W:  http://www.linux-usb.org
+T:  git git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git
+S:  Supported
+F:  Documentation/usb/
+F:  drivers/usb/
+F:  include/linux/usb.h
+F:  include/linux/usb/

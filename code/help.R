@@ -5,6 +5,8 @@ save.image(file = "./.RData")
 load("/store1/chenqy/linuxhistory/.RData")
 library("entropy", lib.loc="~/R/x86_64-redhat-linux-gnu-library/3.1")
 library("igraph", lib.loc="~/R/x86_64-redhat-linux-gnu-library/3.1")
+library(Hmisc)
+
 #/store1/chenqy/linuxhistory/linux
 # check mapping between email and name
 numOfUnique<-function(x) {return(length(unique(x)))}
@@ -65,10 +67,10 @@ tsel<-which(is.na(delta$cid))
 
 delta$aid<-idmp[tolower(delta$ae)]
 tsel<-which(is.na(delta$aid))
-    # > delta[tsel, 'ae']
+    # delta[tsel, 'ae']
     # [1] "" "" ""
     # >
-    # > tolower(delta[tsel, 'an'])
+    # tolower(delta[tsel, 'an'])
     # [1] "jiayingz@google.com (jiaying zhang)" "solofo.ramangalahy@bull.net"
     # [3] "
 delta$aid[tsel[1]]<-idmp['jiayingz@google.com']
@@ -89,3 +91,9 @@ write.table(data.frame(e=c(t$ae, t$ce), n=c(t$an, t$cn)), file="./e.n.full",
     row.names = F, col.names = F)
 
 # draw a directory tree
+
+
+
+sel <- delta$mmod %in% c('drivers/android', 'drivers/bluetooth', 'drivers/cpufreq', 'arch/ia64', 'arch/powerpc', 'archk/m68k', 'arch/microblaze', 'arch/mips')
+tsel <- sel & delta$ty >= 2014
+tapply((1:numofdeltas)[tsel], delta$mmod[tsel], function(x) {a <- numOfUnique(delta$aid[x]); c <- numOfUnique(delta$cid[x]); aa <- exp(entropy(table(delta$aid[x]))); ac<-exp(entropy(table(delta$cid[x]))); return(round(c(a, c, aa, ac, a/aa, c/ac, a/c, aa/ac), 2))})
