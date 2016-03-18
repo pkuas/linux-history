@@ -35,3 +35,37 @@ col <- 1:length(mods)
 for (i in 1:length(col)) lines(as.numeric(names(yert[[i]])), yert[[i]], col=col[i], type='l')
 legend(2009, 35, legend=mods,cex=1,lwd=1,
     col=col ,bg="white");
+
+#
+t <- list()
+for (m in mods) {
+    sel <- delta$mod==m;
+    x <- table(delta$aid[sel], delta$cvsn[sel]);
+    res <- c()
+    h <- x[, 1] / 2
+    for (i in 2:ncol(x)){res <- c(res, (cosine(h, x[,i]))); h <-  (h + x[, i]) / 2; }
+    names(res)<-colnames(x)[-1]
+    t[[m]] <- res
+}
+m <- 'mm'; plot(as.Date(names(t[[m]])), t[[m]], type='b', ylim=c(0, 1))
+m <- 'kernel'; lines(as.Date(names(t[[m]])), t[[m]], type='b', col=2)
+
+m <- mods[1]; plot(as.Date(names(t[[m]])), t[[m]], type='b', ylim=c(0, 1))
+for (i in 2:length(mods)){#m in mods[-1]) {
+    m <- mods[i]
+    lines(as.Date(names(t[[m]])), t[[m]], type='b', col=i, lty=i)
+}
+legend(as.Date('2009', '%Y'), 0.4, legend=mods,cex=1,lwd=1,
+    col=col ,bg="white");
+
+plot(as.Date(names(res)), res, type='b', ylim=c(0, 1))
+lines(as.Date(names(res)), res, type='b', col=2)
+
+sel <- delta$mod == 'mm'
+st <- 2005
+ed <- st + 0.25
+tsel <- sel & delta$m >= st & delta$m < ed
+t <- table
+while (ed < 2015.917) {
+
+}

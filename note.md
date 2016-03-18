@@ -409,18 +409,18 @@ gmail.com
 - Community structure: may refer to: Toward an Understanding of the Motivation of Open Source ....
 
 - **topic: how does product structure shape community organization**
-- **topic: dynamics of community**
-- 
+- **topic: dynamics of community** (different communities in different stages)
+-
 
 in a community, dvprs have different roles: project leader, core members, active dvprs, peripheral dvprs, bug fixers, bug reporters, readers, passive users.
 
 **we can define several aspects of community structre.**
 
-during a given period: 
+during a given period:
 
 - size, percentage of different roles(Lorenz curve), coupling degree of community.
 - diversity of experience in a community.
-- 
+-
 
 
 - Different modules may have different community structure.
@@ -436,9 +436,9 @@ refer to: 'THE LIFECYCLE OF A PATCH' in Documentation/development-process/2.Proc
 
 (drivers|arch|fs)/[0-9a-zA-Z]+/$
 
-But one may argue that if you define 'module' using mailing list, it will be a recursive problem in the sense that module is defined using team's feature and the objective of this research is to understand how module structure shapes team organization. Is that ok? 
+But one may argue that if you define 'module' using mailing list, it will be a recursive problem in the sense that module is defined using team's feature and the objective of this research is to understand how module structure shapes team organization. Is that ok?
 
-Yeah, we have more considerations. First, actually, we would take 'subsystem' as objects of this research. In Linux kernel, many subsystems have their own ailing lists and source trees. Therefore, forget things about 'module'. we're understanding 'subsystem'. 
+Yeah, we have more considerations. First, actually, we would take 'subsystem' as objects of this research. In Linux kernel, many subsystems have their own ailing lists and source trees. Therefore, forget things about 'module'. we're understanding 'subsystem'.
 
 - we can select several modules from different domains like mm, kernel, drivers, fs, etc.
 
@@ -518,3 +518,23 @@ F:  Documentation/usb/
 F:  drivers/usb/
 F:  include/linux/usb.h
 F:  include/linux/usb/
+
+
+## idea: how does community change?
+
+
+> discuss:
+things are full of variety, but still represent some stability.
+For a subsystem, how authors correspond to maintainers and/or committers?
+IEEE transaction on se
+ACM trans on se methodology
+TSE, TOSEM
+
+## Signed-off-by
+- mm has avg 3
+$ git log --no-merges  mm | grep 'Signed-off-by' | wc -l
+23817
+$ git log --no-merges  mm | grep 'Author:' | wc -l
+8844
+
+- fs 2, kernel 2, arch 2, net 2, sound 2, dr 2

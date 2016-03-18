@@ -88,7 +88,7 @@ mpa.to_csv("./all.aliase.id.lower")
 # 	if not :
 # 		mpa[alsofcid[cid]] = cid
 # 	else:
-# 		mpa[cid] = 
+# 		mpa[cid] =
 
 # a simple solution using graph
 import pandas as pd
@@ -159,3 +159,18 @@ for k in domains.keys():
 dms_of_id = pd.Series(ids, index=dms)
 dms_of_id.to_csv("./id.dm.full")
 
+# release date
+from lxml import *
+import lxml.html as lhtml
+import urllib2
+import re
+
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+url = 'https://en.wikipedia.org/wiki/Linux_kernel'
+page = urllib2.urlopen(url).read()
+
+
+xpath = '//*[@id="mw-content-text"]/table[6]/tbody/tr[16]/td[2]/span[2]'

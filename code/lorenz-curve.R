@@ -4,6 +4,7 @@ library(ineq)
 mmods <- c('drivers/usb', 'drivers/scsi', 'drivers/bluetooth', 'drivers/staging', 
 	'arch/ia64', 'arch/mips', 'arch/arm', 'fs/ntfs')
 mmods <- c(mmods, "fs/xfs", "fs/btrfs", "fs/nfs", "fs/cifs", "fs/ext4")
+
 submods <- c('mm', 'net')
 sel <- (delta$mmod %in% mmods)
 tsel <-sel & delta$y == 2014
@@ -12,7 +13,19 @@ tsel <- delta$mod %in% submods & delta$y == 2014
 y <- tapply(delta$aid[tsel], delta$mod[tsel], table)
 for (i in submods) x[[i]] <- y[[i]]
 y <- unlist(lapply(x, sum))
-y <- x[which(y >= 800 & y <= 1500)]
+y <- x[which(y >= 800 & y <= 3500)]
+
+mmods <- c("arch/mips", "drivers/scsi", "drivers/usb",  "fs/btrfs", "fs/xfs")      
+res <- list()
+for (m in mmods) {
+	tsel <- delta$mmod == m
+	z <- tapply(delta$aid[tsel], delta$y[tsel], table)
+	res[[m]] <- unlist(lapply(z, ineq))
+}
+m <- 'mm'
+tsel <- delta$mod == m
+z <- tapply(delta$aid[tsel], delta$y[tsel], table)
+res[[m]] <- unlist(lapply(z, ineq))
 
 plotLC <- function(x, fn) {
 	pdf(fn, width=8, height=8, onefile=FALSE, paper = "special")
@@ -28,3 +41,12 @@ plotLC <- function(x, fn) {
 }
 
 plotLC(y, 'lc.pdf')
+
+mmods <- c('drivers/usb', 'drivers/scsi', 'drivers/bluetooth', 'drivers/staging', 
+	'arch/ia64', 'arch/mips', 'arch/arm', 'fs/ntfs')
+mmods <- c(mmods, "fs/xfs", "fs/btrfs", "fs/nfs", "fs/cifs", "fs/ext4")
+for (m in mmods) {
+	print(m);
+	print(ycnt(m,'aid', length))
+	print('---------');
+}

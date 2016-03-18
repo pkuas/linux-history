@@ -3,9 +3,13 @@ load("./.RData")
 save.image(file = "./.RData")
 
 load("/store1/chenqy/linuxhistory/.RData")
-library("entropy", lib.loc="~/R/x86_64-redhat-linux-gnu-library/3.1")
 library("igraph", lib.loc="~/R/x86_64-redhat-linux-gnu-library/3.1")
 library(Hmisc)
+library(ineq)
+library('lsa')
+library(stringr)
+library("entropy", lib.loc="~/R/x86_64-redhat-linux-gnu-library/3.1")
+
 
 #/store1/chenqy/linuxhistory/linux
 # check mapping between email and name

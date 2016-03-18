@@ -14,9 +14,12 @@ numOfLessThan0 <- function(x) {return(sum(x < 0))}
 t2apply <- function(v, g2, g1, f) {return(tapply(1:length(g1), g1, function(x) {return(tapply(v[x], g2[x], f))}))}
 mySummary <- function(v) {t <- summary(v); t['Num'] <- length(v); return(t)}
 ycnt <- function(mod, dst, f=length) {
-	colnm <- c('mod', 'mmod', 'smod')[str_count(mod, '/') + 1]; 
+	colnm <- c('mod', 'mmod', 'smod')[str_count(mod, '/') + 1];
 	sel <- delta[,colnm]==mod;
 	return(tapply(delta[sel, dst], delta$y[sel], f))}
+
+n <- len <- length
+nu <- nunique <- numOfUnique
 startdate <- 2005
 enddate <- 2015.917
 
@@ -30,11 +33,12 @@ lg <- read.table("linux.l2", sep=";",comment.char="", quote="",
 #/     row.names = F, col.names = F)
 ### merging using python
 ### read each dvpr's email domains.
-dmsid<-read.csv("id.dm.full", header=F, col.names=c('dm', 'id'), colClasses=c(rep("character", 2))) 
+dmsid<-read.csv("id.dm.full", header=F, col.names=c('dm', 'id'), colClasses=c(rep("character", 2)))
 id2dms <- tapply(dmsid$dm, dmsid$id, function(x) return(x))
 t<-read.csv("all.aliase.id.networkx.full", header=F, col.names=c('als', 'id'))
 idmp<-as.character(t[,2])
 names(idmp)<-t[,1]
+idmp[which(idmp=='al')] <- 'al viro'
 lg$cid<-idmp[tolower(lg$ce)]
 tsel<-which(is.na(lg$cid))
 #### see nothing in tsel
@@ -129,9 +133,9 @@ get2ndModIdx<-function(idx) { # idx is in lg
 	return(idx[todr][which(c('#$', mods) != c(mods, NA))[1:2]])
 }
 getFst2ModAndDTime <- function(idx) {
-	if(is.na(idx[2])) return(data.frame(mod1=character(0), mod2=character(0), 
+	if(is.na(idx[2])) return(data.frame(mod1=character(0), mod2=character(0),
 		dtime = numeric(0)))
-	return(data.frame(mod1=lg$mod[idx[1]], mod2=lg$mod[idx[2]], 
+	return(data.frame(mod1=lg$mod[idx[1]], mod2=lg$mod[idx[2]],
 		dtime = lg$ty[idx[2]] - lg$ty[idx[1]]))
 }
 ### first module of author
@@ -170,7 +174,7 @@ for (mod in names(dateBecmCmtr.cmtr.mod)){
 	numCModsBefCmtr.cmtr.mod[[mod]] <- t
 }
 lapply(numCModsBefCmtr.cmtr.mod, mySummary)
-#### correlation 
+#### correlation
 t <- lapply(numCModsBefCmtr.cmtr.mod, mySummary)
 m <- unlist(lapply(t, function(x) return(x['Median'])))
 n <- unlist(lapply(t, function(x) return(x['Num'])))
@@ -194,7 +198,7 @@ for (mod in names(dateBecmCmtr.cmtr.mod)){
 	numModsBefCmtr.cmtr.mod[[mod]] <- t
 }
 lapply(numModsBefCmtr.cmtr.mod, mySummary)
-#### correlation 
+#### correlation
 t <- lapply(numModsBefCmtr.cmtr.mod, mySummary)
 m <- unlist(lapply(t, function(x) return(x['Median'])))
 n <- unlist(lapply(t, function(x) return(x['Num'])))
@@ -208,3 +212,25 @@ boxplot(numMods ~ mod, data=tdf, las=2, ylab='# of modules',
 	main='# of modules per committer contributed to before he was a committer of one module')
 dev.off()
 
+# version date
+versions <- read.table('./versions.txt', header = F, col.names =  c('vsn', 'rd', 'now', 'spt'),
+	stringsAsFactors = F);
+versions$d <- as.Date(versions$rd, '%d %b %Y')
+d <- sort(versions$d, decreasing=T)
+td <- as.character(d)
+v2d <- versions$d
+names(v2d) <- versions$vsn
+d2v <- versions$vsn
+names(d2v) <- as.character(versions$d)
+t <- as.Date(delta$at / 24 / 3600, origin = '1970-1-1')
+delta$avsn <- 'N'
+for (i in 1:length(d)) {
+	delta$avsn[t < d[i]] <- td[i]
+}
+t <- as.Date(delta$ct / 24 / 3600, origin = '1970-1-1')
+delta$cvsn <- 'N'
+for (i in 1:length(d)) {
+	delta$cvsn[t < d[i]] <- td[i]
+}
+x <-table(delta$cvsn)
+plot(as.Date(names(x)), x, type='b', ylim=c(0, max(x)))

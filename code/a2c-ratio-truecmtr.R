@@ -448,3 +448,26 @@ legend(2008, 28, legend=nemods,cex=1,lwd=2,lty=1:length(col),
 # legend(2007, 27, legend=mods,cex=1,lwd=1, lty=2,
 #     col=col ,bg="white",title='keep fake cmtrs');
 dev.off()
+
+
+
+# explore foreign cmtrs
+ysel <- delta$y >= 2014
+df <- list()
+for (m in mods) {
+    msel <- delta$mod == m
+    tsel <- ysel & msel
+    x <- sort(table(delta$cid[tsel]), decreasing=T)
+    tdf <- data.frame(cid=names(x), chgs=x, row.names=NULL, stringsAsFactors =F)
+    tdf$chgs1 <- tdf$tchgs <- 0
+    tdf$mod1 <- 'x'
+    for (i in 1:length(x)) {
+        cid <- tdf$cid[i]
+        t <- table(delta$md2[ysel & delta$cid == cid])
+        tdf$tchgs[i] <- sum(t)
+        idx <- which.max(t)
+        tdf$chgs1[i] <- t[idx]
+        tdf$mod1[i] <- names(t)[idx]
+    }
+    df[[m]] <- tdf
+}
