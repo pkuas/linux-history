@@ -1,0 +1,231 @@
+%f=linux; latex $f.tex; bibtex $f; latex $f.tex; latex $f.tex; dvips -t letter $f; ps2pdf $f.ps; evince $f.pdf
+\documentclass{sig-alternate-05-2015}
+%\usepackage{verbatim}
+%\usepackage{comment}
+\usepackage{epstopdf}
+
+\newtheorem{observation}{\bf Observation}
+\newtheorem{question}{\bf Question}
+\begin{document}
+% Copyright
+\setcopyright{acmcopyright}
+%\setcopyright{acmlicensed}
+%\setcopyright{rightsretained}
+%\setcopyright{usgov}
+%\setcopyright{usgovmixed}
+%\setcopyright{cagov}
+%\setcopyright{cagovmixed}
+
+\title{Code contribution practice in Linux kernel:
+How product structure shapes organization}
+
+\numberofauthors{4}
+\author{
+\alignauthor
+Ben Trovato\titlenote{Dr.~Trovato insisted his name be first.}\\
+       \affaddr{Institute for Clarity in Documentation}\\
+       \affaddr{1932 Wallamaloo Lane}\\
+       \affaddr{Wallamaloo, New Zealand}\\
+       \email{trovato@corporation.com}
+% 2nd. author
+\alignauthor
+G.K.M. Tobin\titlenote{The secretary disavows
+any knowledge of this author's actions.}\\
+       \affaddr{Institute for Clarity in Documentation}\\
+       \affaddr{P.O. Box 1212}\\
+       \affaddr{Dublin, Ohio 43017-6221}\\
+       \email{webmaster@marysville-ohio.com}
+
+\maketitle
+\begin{abstract}
+
+\end{abstract}
+\keywords{product structure, code commitment organization}
+
+\section{Introduction}
+%If I tell you to think of an open-source project, the first word that probably comes to mind is Linux.
+
+%
+Linux kernel has been a legend in the Free/Libre and Open Source Software (FLOSS) world.
+Linux kernel based distributions (operating systems) established a commercial success
+that many other FLOSS projects would like to pursue.
+For example, they take 98.8\% positions in the top 500 fastest supercomputers
+in Nov 2015\footnote{https://en.wikipedia.org/wiki/Usage\_share\_of\_operating\_systems}.
+The statistics from monitoring a substantial number of web sites during the
+last twelve months (until Dec 2015) show Linux kernel based
+web clients have a 28.89\% share in the market.
+
+The success of Linux kernel can not be achieved without the contributions
+from participants. Starting from Linus Torvards,  volunteers
+played a crucial role in the development of linux kernel.
+However, the number of volunteers (unpaid developers) contributing to the
+Linux kernel has been slowly declining for many years, now sitting at just
+ 12.4\% (it was 13.6\% in 2014, and 14.6\% in 2013).
+Meanwhile, commercial participation substantially grows in recent years,
+large companies like RedHat and Intel put substantial resources on the development
+of Linux kernel, e.g., Intel contributed 10.5\% of changes, ReHat 8.4\%
+in 2014\footnote{https://s3.amazonaws.com/storage.pardot.com/6342/120970/lf\_pub\_whowriteslinux2015.pdf}.
+Now more than ever, the development of the Linux kernel is a matter for
+the professionals, as unpaid volunteer contributions to the project reached their
+lowest recorded levels in the latest ``Who Writes Linux''
+report\footnote{http://linux.slashdot.org/story/15/02/18/1745246/torvalds-people-who-start-writing-kernel-code-get-hired-really-quickly}.
+
+\begin{comment}
+As for why Linux is now mostly developed by well-paid engineers, the
+possible reasons are myriad. The most obvious and compelling reason
+is that these big companies have a commercial interest in the continued
+good health of Linux. 10 years ago, Linux was the plaything of hobbyists
+and supercomputer makers -- today, it powers everything from smartphones
+(Android) to wireless routers to set-top boxes. The continuing commercial
+interest in Linux is highlighted by another statistic from The Linux
+Foundation report: In mid-2011, only 191 companies were involved in the
+Linux kernel; by the end of 2013, that number was up to
+243\footnote{www.extremetech.com/computing/175919-who-actually-develops-linux-the-answer-might-surprise-you}.
+%If the Linux kernel was to survive, it would need new programmers to fix all of
+%the bugs that were added\footnote{eudyptula-challenge.org}.
+\end{comment}
+
+Apparently, Linux kernel experienced dramatic change since the very
+beginning, e.g., expanding of substantial code and increasing of commercial participation.
+Different modules of Linux kernel present different nature
+and attract different contributors. For example, the module of drivers
+accounts for the largest proportion of linecount (56.6\%) in the kernel,
+probably because various of
+hardware manufacturers have been trying to get their drivers into the kernel
+and devoted substantial effort for their cause.
+ As for the module of kernel, the very central one, attracting the most
+capable and ambitious developers in the world, takes only 1.2\%.
+According to Conway's law~\cite{conway}, the structure of software reflects
+the communication structure of people writing it.
+It is of interest to understand how different modules present different
+structure, whether or not that is associated with their contribution practice,
+%? what is module structure? need a definition?
+% contribution practice of different modules of Linux kernel differs from each other,
+%?(evolve? business?) and how they evolve over time adapting to different business environments.
+In particular, we aim to answer the following questions:
+\begin{itemize}
+\item What are the structures of different modules of Linux kernel?
+\item Do different modules of Linux kernel have different contribution practice from each other?
+%? \item Do different modules of Linux kernel evolve their practice over time and how?
+%? \item Is there any relavance between module structures and contribution practice in Linux kernel?
+%? participant feature: contribution type, and objective of contribution
+%? evidence on commercial participation.
+
+\end{itemize}
+On the one hand,
+it may help us understand the new challenges in the new FLOSS landscape like
+commercial participation. %? how
+On the other hand, the understanding can help us
+utilize the best practices and amplify the effect.
+
+%In our study, the three aspects we investigate are all crucial for hybrid
+%project development and the results of the measures we construct are agreed
+%with reality, suggesting their validity.
+
+%By using code change history, we quantify how contribution is organized for this FLOSS project.
+We retrieve the code commits from the mainline repository of linux kernel, and
+use the data to analyze module structure and quantify the community contribution practice.
+We observed that different modules of Linux kernel have different structures in terms of modularity.
+In particular, the module of drivers is better modularized than other modules.
+
+We focus on two particular factors that try to depict contribution practice.
+The first one is the ratio of number of authors to number of committers(A2C), which tries to measure %? factor? or metrics
+how many authors each committer commits code for on average, i.e. team size. This factor represents contribution organization. We found that
+1), the module of drivers is unique among all the modules in terms of having the biggest team size; %? and organized more spontaneously. %? spontaneously
+2), the ratio of A2C is decreasing over time for most of modules, even though both the number of authors and committers are increasing (the module of drivers is the single module that has a sharp increase for both that is different from the other modules), apparently, the increase of committers is faster than that of authors.
+That may suggest a more professional organization of the working teams has been happening in the community;
+3), the ratio of A2C on each module correlates with the number of new joiners, and the number of new LTCs. This may imply that a looser control of working team brings more outsiders which requires attention from the community.
+
+%code ownership?
+The second factor to depict contribution practice is code ownership, defined by number of committers per file. This factor measures how close the cooperation is. We found that the core modules of Linux kernel, like $mm$ and $kernel$, have stronger code ownership than other modules.
+
+The rest of the paper is organized as follows. Section~\ref{s:related}
+discusses the related work. Section~\ref{s:method} describes the research
+methodology used in our study. Section~\ref{s:result} presents the results
+of our study. Section~\ref{s:limitation} discuses limitations of our study.
+We discuss practical implications of our empirical results in Section~\ref{s:discussion}
+and conclude in Section~\ref{s:conclusion}.
+
+\section{Background and Related Work}\label{s:related}
+
+%online communities can be designed and managed to achieve the goals that their owners, managers or members desire.~\cite{Kraut2012}
+%Open source software development communities have the potential to provide firms with a valuable
+%platform for innovation and product development (Chesbrough 2003). In order to realize such potential
+%benefits, a firm must participate in an OSS community. If such involvement is articulated through direct
+%contributions by the firm's developers, the firm has to choose which software developers to dedicate to
+%this effort~\cite{Daniel2011}.
+The nature and performance of FLOSS development are subject of
+numerous investigations, but studies on evolution of contribution practice
+along the change of project landscape particularly commercial participation
+ are far less common.
+
+An early study of Apache web server and Mozilla web browser~\cite{MFH02}
+quantified various aspects of OSS development practices. The
+results were framed as seven hypotheses that outline key aspects of
+OSS development.  In this paper we focus on a different aspect of
+ contribution organization.
+
+Community strategies and practices are often addressed in the
+literature, e.g., community architecture~\cite{MFH02,YK03}, license
+and intelligence property management mechanism~\cite{Hippel03}, and
+code commit privilege or ownership control~\cite{MFH02,YK03,KSL03}, etc.
+  Meneely  and  Williams~\cite{meneely09}  examined  the  relationship
+of  the  number  of  developers  working  on  parts  of  the
+Linux kernel with security vulnerabilities.  They found
+that when more than nine developers contribute to a source
+file, it is sixteen times more likely to include a security vulnerability.
+
+Unlike in prior work, we observe the contribution practice
+presented by Linux kernel experiencing various of technical and economic landscape
+and quantify the important aspects of the development that are likely
+to be affected by the product structure:
+ the organization of author to committer team.
+
+According to Conway's law~\cite{conway}, the structure of software reflects
+the communication structure of people writing it.
+Conway's law emphasizes the effect on the artifacts induced by social activities,
+and provides insights on how to look at software development
+through the perspectives of organizational science.
+
+\section{Methodology}\label{s:method}
+\subsection{Data preparation}
+We retrieved all the changes from the mainline repository of Linux
+kernel\footnote{git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git}.
+We took steps to clean and standardize the data, and obtained a data level for the further analysis.
+According to the following rules, we obtained the final changes for this study:
+1), we only look at changes to $.c$ files. We consider $.c$ files to be important files as they are implementation of functionality in Linux kernel. These changes account for 65.86\% of all changes.
+2), we consider the first level directory retrieved from the file path as the module used in Linux kernel. Overall we obtained 22 modules. The top seven modules, in terms of number of changes, include drivers, arch(architecture), net, fs(file system), sound, kernel, mm(memory management).
+%? has nothing to do with this study 3), we consider a developer's joining time as the time they author their first commit.
+
+Table~\ref{tab:data} shows an observation used for this study.
+Each observation corresponds to a change. It records who and when writes the code,
+who and when commits the code, and which file this change is made on.
+The author and the committer may be the same person, but most of the time (74\%) they are not.
+The changed file is represented by its directory in the code repository.
+For example, ``drivers/pci/iova.c'' illustrates that the changed file
+is under the directory of pci driver. The last column named module in the table is
+the first level directory retrieved from the file path.
+
+\begin{table*}
+\centering
+\caption{Attributes of an observation}
+\begin{tabular}{c|c|c|c|c|l} \hline
+author & author time & committer & commit time & changed file & module\\ \hline
+ Minfei Huang & Nov 6 16:32:45 2015 -0800 & Linus Torvalds & Nov 6 17:50:42 2015 -0800 & kernel/kexec.c &kernel\\ \hline
+\label{tab:data}
+\end{tabular}
+\end{table*}
+\section{Note}\label{s:note}
+
+
+\section{Discussion}\label{s:discussion}
+
+\section{Limitation}\label{s:limitation}
+
+\section{Conclusion}\label{s:conclusion}
+
+\bibliographystyle{abbrv}
+\bibliography{../paper/bib/audris,../paper/bib/all,../paper/bib/pkuas,../paper/bib/hybrid}
+
+
+\end{document}

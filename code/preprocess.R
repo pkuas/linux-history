@@ -17,7 +17,11 @@ ycnt <- function(mod, dst, f=length) {
 	colnm <- c('mod', 'mmod', 'smod')[str_count(mod, '/') + 1];
 	sel <- delta[,colnm]==mod;
 	return(tapply(delta[sel, dst], delta$y[sel], f))}
-
+getSel <- function(mod) {
+	colnm <- c('mod', 'mmod', 'smod')[str_count(mod, '/') + 1];
+	return(delta[,colnm]==mod)
+}
+st <- stable <- function(x) sort(table(x), decreasing = T)
 n <- len <- length
 nu <- nunique <- numOfUnique
 startdate <- 2005
@@ -146,7 +150,7 @@ fstCmtrModIdx <- tapply(1:nrow(lg), lg$cid, get1stCmtrModIdx)
 lg$fstCMod <- lg$mod[fstCmtrModIdx[lg$cid]]
 
 ## select deltas that we care
-delta <- lg[lg$m>=startdate & lg$m<=enddate & lg$ext=="c",];
+delta <- lg[lg$cm>=startdate & lg$cm<=enddate & lg$ext=="c",];
 # consider .c files
 tmin <- tapply(delta$ty, delta$aid, min, na.rm=T);
 delta$fr.c <- tmin[delta$aid]
@@ -232,5 +236,6 @@ delta$cvsn <- 'N'
 for (i in 1:length(d)) {
 	delta$cvsn[t < d[i]] <- td[i]
 }
+delta <- delta[delta$cvsn != "2016-01-10", ]
 x <-table(delta$cvsn)
 plot(as.Date(names(x)), x, type='b', ylim=c(0, max(x)))
