@@ -538,3 +538,37 @@ $ git log --no-merges  mm | grep 'Author:' | wc -l
 8844
 
 - fs 2, kernel 2, arch 2, net 2, sound 2, dr 2
+
+
+## Important: System evolution and community evolution
+- how community and System evolve
+- 不同system的community的不同演化
+
+community
+- size
+- structure
+- code ownership
+- 成员的变化性
+
+System
+- 技术的重大变更
+- 外部依赖（drivers对mm的依赖）
+- 日常维护
+
+code ownership(own)
+
+    \#chgs & #core | #chgs & #peri | #peri & #core | owner & #chgs | owner & #core | owner & #peri
+mm:     ---- 0.92 ---- 0.56 ---- 0.61
+arm:    0.52 0.89 0.79 0.72 0.70 0.78
+mips:  -0.39 0.69 ---- 0.42 ---- 0.58
+x86:    ---- 0.95 ---- 0.78 ---- 0.78
+power:  ---- 0.73 0.55 0.63 ---- 0.39
+ide:    ---- 0.83 ---- 0.60 0.44 0.83
+scsi:   ---- 0.82 ---- 0.74 ---- 0.60
+usb:    ---- 0.84 ---- ---- ---- 0.35
+xfs:   -0.37 0.51 ---- 0.45 0.30 0.51
+btrfs:  ---- 0.40 0.62 0.41 0.67 0.85
+nfs:    ---- 0.75 0.28 0.73 0.39 0.71
+cifs:   ---- 0.42 ---- 0.41 0.33 0.63
+ext4:   ---- 0.82 ---- 0.65 0.35 0.74
+

@@ -18,7 +18,6 @@ xmods <- c(xmods, c('arch/mips', 'arch/arm', 'arch/x86','arch/powerpc'))
 
 # fs
 xfss <- delta$mmod == 'fs/xfs'
-xfss <- delta$mmod == 'fs/xfs'
 btrs <- delta$mmod == 'fs/btrfs'
 nfss <- delta$mmod == 'fs/nfs'
 cifss <- delta$mmod == 'fs/cifs'
@@ -27,4 +26,3 @@ xmods <- c(xmods, c('fs/xfs', 'fs/btrfs', 'fs/nfs','fs/cifs', 'fs/ext4'))
 
 
 
-for (m in )
