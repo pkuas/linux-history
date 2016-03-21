@@ -544,6 +544,8 @@ $ git log --no-merges  mm | grep 'Author:' | wc -l
 - how community and System evolve
 - 不同system的community的不同演化
 
+或者： 不谈evolution， 毕竟题目太大。换个： 理解开源软件贡献团队的变化性。
+
 community
 - size
 - structure

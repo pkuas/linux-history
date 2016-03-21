@@ -122,6 +122,7 @@ lg$mmod<-sub("^([^/]*/[^/]*)/.*","\\1", lg$f, perl=T,useBytes=T); # second modul
 lg$smod<-sub("^([^/]*/[^/]*/[^/]*)/.*","\\1", lg$f, perl=T,useBytes=T); # 3rd module
 lg$fm<-sub("/[^/]*$","", lg$f, perl=T,useBytes=T);
 
+####
 get1stModIdx<-function(idx) { # idx is in lg
 	todr <- order(lg$ty[idx])
 	mods<- lg$mod[idx[todr]]
@@ -240,3 +241,15 @@ for (i in 1:length(d)) {
 delta <- delta[delta$cvsn != "2016-01-10", ]
 x <-table(delta$cvsn)
 plot(as.Date(names(x)), x, type='b', ylim=c(0, max(x)))
+
+
+# file history
+tmin <- tapply(lg$cty, lg$f, min, na.rm=T);
+lg$ffr <- tmin[lg$f]
+# tmax <- tapply(lg$cty, lg$f, max, na.rm=T);
+# lg$cto <- tmax[lg$f]
+lg$ftenure <- lg$cty-lg$ffr;
+#lg$ctt <- ceiling((lg$ctenure+.000001)*12); # tenure months, .000001 is used to spare, e.g., one delta people
+delta$ffr <- lg[rownames(delta), 'ffr']
+delta$ftenure <- lg[rownames(delta), 'ftenure']
+

@@ -111,13 +111,23 @@ t[['mo']] <- mo
 ## average add
 nadd <- tapply(delta$add[sel], delta$cvsn[sel], mean)
 
+## number of new file
+#for (m in xmods) {
+#sel <- getSel(m)
+nf <- tapply(delta$ftenure[sel], delta$cvsn[sel], numOfZero)
+t[['nf']] <- nf
+#cmn[[m]][['nf']] <- nf
+#}
+
 cmn[[m]] <- t
 
-devon <- F
-if (devon) pdf(paste(sub('/','-', m), '.pdf', sep=''), width=8,height=6, onefile=FALSE, paper = "special")
+for ( m in xmods) {
+devon <- T
+if (devon) pdf(paste('t/', sub('/','-', m), '.pdf', sep=''), width=8,height=6, onefile=FALSE, paper = "special")
 opar <- par(no.readonly=TRUE)
 par(mar=c(5, 4, 4, 8) + 0.1)
 t <- cmn[[m]]; x <- t[['x']]; mx <- t[['mx']]; y <- t[['y']]; my <- t[['my']]; own <- t[['own']]; mo <- t[['mo']];
+nf <- t[['nf']]
 p <- barplot(x, main=paste('Community of', m), xlab='Releases', ylab='# of authors',
     #col=c('red', 'yellow'),
     ylim=c(0, mx),
@@ -131,11 +141,12 @@ axis(4, at=z / my * mx, labels=z, col.axis="red", cex.axis=1)
 #mtext("# of changes", side=4, line=3, cex.lab=1, las=2, col="red")
 lines(p, own / mo * mx, col='blue', lty=2, lwd=2)
 z <- seq(0,floor(mo), ifelse(mo > 5, 2, 1))
-axis(4, at=z / mo * mx, labels=z, col.axis="blue", cex.axis=1, pos=tail(p, 1) + 6)
+axis(4, at=z / mo * mx, labels=z, col.axis="blue", cex.axis=1, pos=tail(p, 1) + 7)
 #mtext(paste('ownership:', round(mo,2), round(median(own), 2)), col='blue')
+lines(p, nf / max(nf) * mx, col='green', lty=2, lwd=2,type='l')
 if(devon) dev.off()
 par(opar)
-
+}
 cor.test(y, x[1, ])
 cor.test(y, x[2, ])
 cor.test(x[1, ], x[2, ])
@@ -182,3 +193,28 @@ lines(p, own / mo * mx, col='blue', lty=2, lwd=2)
 mtext(paste('ownership:', round(mo,2)), col='blue')
 
 # lines(p[-1], res * mx, col='blue', lty=3, lwd=2)
+
+
+# cosine sim
+sel <- getSel(m)
+t <- tapply(delta$aid[sel], delta$cvsn[sel], function(x) {
+    t1 <- sort(table(x), decreasing=T)
+    t2 <- as.vector(t1)
+    names(t2) <- names(t1)
+    t1 <- t2
+    cs <- cumsum(t1)
+    tsel <- cs / sum(t1) < 0.8
+    cnt <- length(tsel)
+    tsel <- c(TRUE, tsel[-cnt]);
+    return(t1[tsel])
+})
+
+mcos <- function(u, v, tp='v') {
+ns <- unique(c(names(u), names(v)));
+u[ns[!ns %in% names(u)]] <-0;
+v[ns[!ns %in% names(v)]] <-0;
+u <- u[ns];
+v <- v[ns];
+if (tp=='v') return(cosine(u, v))
+return(cosine(as.integer(u > 0), as.integer(v > 0)))
+}
