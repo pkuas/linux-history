@@ -72,8 +72,9 @@ while (ed < 2015.917) {
 }
 
 #
+cmn <- list() # community
 for (m in xmods) {
-devon <- TRUE
+t <- list()
 #m <- 'arch/arm'
 sel <- getSel(m)
 x <- tapply(delta$aid[sel], delta$cvsn[sel], function(x) {
@@ -86,22 +87,14 @@ x <- tapply(delta$aid[sel], delta$cvsn[sel], function(x) {
     return(c(core, cnt - core))
     })
 x <- matrix(unlist(x), nrow=2)
-mv <- max(colSums(x))
-if (devon) pdf(paste(sub('/','-', m), '.pdf', sep=''), width=8,height=6, onefile=FALSE, paper = "special")
-
-p <- barplot(x, main=paste('# of authors on', m), xlab='Releases', ylab='# of authors',
-    #col=c('red', 'yellow'),
-    ylim=c(0, mv * 1.1),
-    legend=c('Core', 'Peripheral'),
-    args.legend = list(x = "topleft"))
+t[['x']] <- x
+mx <- max(colSums(x))
+t[['mx']] <- mx
 
 y <- tapply(delta$aid[sel], delta$cvsn[sel], length)
 my <- max(y)
-lines(p, y / my * mv, col='red', lty=2, lwd=2)
-z <- seq(0, my, ceil(my / 500) * 100)
-axis(4, at=z / my * mv, labels=z,
-    col.axis="red", cex.axis=0.7)
-mtext("# of changes", side=4, line=3, cex.lab=1, las=2, col="red")
+t[['y']] <- y
+t[['my']] <- my
 
 # code ownership
 nchg <- t2apply(delta$v[sel], delta$f[sel], delta$cvsn[sel], length)
@@ -112,9 +105,36 @@ for (v in names(na)) {
     own[v] <- sum(na[[v]] * t1) / sum(t1)
 }
 mo <- max(own)
-lines(p, own / mo * mv, col='blue', lty=2, lwd=2)
-mtext(paste('ownership:', round(mo,2), round(median(own), 2)), col='blue')
+t[['own']] <- own
+t[['mo']] <- mo
+
+## average add
+nadd <- tapply(delta$add[sel], delta$cvsn[sel], mean)
+
+cmn[[m]] <- t
+
+devon <- F
+if (devon) pdf(paste(sub('/','-', m), '.pdf', sep=''), width=8,height=6, onefile=FALSE, paper = "special")
+opar <- par(no.readonly=TRUE)
+par(mar=c(5, 4, 4, 8) + 0.1)
+t <- cmn[[m]]; x <- t[['x']]; mx <- t[['mx']]; y <- t[['y']]; my <- t[['my']]; own <- t[['own']]; mo <- t[['mo']];
+p <- barplot(x, main=paste('Community of', m), xlab='Releases', ylab='# of authors',
+    #col=c('red', 'yellow'),
+    ylim=c(0, mx),
+    legend=c('#core', '#prph'),
+    args.legend = list(x = "topleft", cex=0.7))
+legend('topright', legend = c('#chgs', 'owner'), col = c('red', 'blue'),
+    lty=1, cex=0.7, seg.len=1)
+lines(p, y / my * mx, col='red', lty=2, lwd=2)
+z <- seq(0, my, ifelse(my > 200, ceil(my / 500) * 100, 50))
+axis(4, at=z / my * mx, labels=z, col.axis="red", cex.axis=1)
+#mtext("# of changes", side=4, line=3, cex.lab=1, las=2, col="red")
+lines(p, own / mo * mx, col='blue', lty=2, lwd=2)
+z <- seq(0,floor(mo), ifelse(mo > 5, 2, 1))
+axis(4, at=z / mo * mx, labels=z, col.axis="blue", cex.axis=1, pos=tail(p, 1) + 6)
+#mtext(paste('ownership:', round(mo,2), round(median(own), 2)), col='blue')
 if(devon) dev.off()
+par(opar)
 
 cor.test(y, x[1, ])
 cor.test(y, x[2, ])
@@ -137,7 +157,7 @@ round(c(
 #     t1 <- ineq(table(x))
 #     return(t1)
 #     })
-# lines(p, u * mv, col='blue', lty=2, lwd=2)
+# lines(p, u * mx, col='blue', lty=2, lwd=2)
 
 # w <- table(delta$aid[sel], delta$cvsn[sel]);
 # rate <- 1/2
@@ -146,19 +166,19 @@ round(c(
 # for (i in 2:ncol(w)){res <- c(res, (cosine(h, w[,i]))); h <-  (h + w[, i]) * rate; }
 # names(res)<-colnames(w)[-1]
 # mr <- max(res)
-# lines(p[-1], res * mv, col='blue', lty=3, lwd=2)
+# lines(p[-1], res * mx, col='blue', lty=3, lwd=2)
 
 p <- barplot(x, main=paste('# of authors on', m), xlab='Releases', ylab='# of authors',
     #col=c('red', 'yellow'),
-    ylim=c(0, mv * 1.1),
+    ylim=c(0, mx * 1.1),
     legend=c('Core', 'Peripheral'),
     args.legend = list(x = "topleft"))
-lines(p, y / my * mv, col='red', lty=2, lwd=2)
+lines(p, y / my * mx, col='red', lty=2, lwd=2)
 z <- seq(0, my, ceil(my / 500) * 100)
-axis(4, at=z / my * mv, labels=z,
+axis(4, at=z / my * mx, labels=z,
     col.axis="red", cex.axis=0.7)
 mtext("# of changes", side=4, line=3, cex.lab=1, las=2, col="red")
-lines(p, own / mo * mv, col='blue', lty=2, lwd=2)
+lines(p, own / mo * mx, col='blue', lty=2, lwd=2)
 mtext(paste('ownership:', round(mo,2)), col='blue')
 
-# lines(p[-1], res * mv, col='blue', lty=3, lwd=2)
+# lines(p[-1], res * mx, col='blue', lty=3, lwd=2)

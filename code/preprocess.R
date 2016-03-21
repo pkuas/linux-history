@@ -18,6 +18,7 @@ ycnt <- function(mod, dst, f=length) {
 	sel <- delta[,colnm]==mod;
 	return(tapply(delta[sel, dst], delta$y[sel], f))}
 getSel <- function(mod) {
+	if (mod == '' | mod=='root') return(rep(TRUE, nrow(delta)))
 	colnm <- c('mod', 'mmod', 'smod')[str_count(mod, '/') + 1];
 	return(delta[,colnm]==mod)
 }
