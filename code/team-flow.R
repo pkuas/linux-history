@@ -218,3 +218,74 @@ v <- v[ns];
 if (tp=='v') return(cosine(u, v))
 return(cosine(as.integer(u > 0), as.integer(v > 0)))
 }
+
+# long term
+lcmn <- list()
+for (m in xmods) {
+    sel <- getSel(m)
+    st <- 2005
+    ed <- st + 3
+    tx <- ty <- town <- c()
+    while (ed < 2015.835) {
+        tsel <- sel & delta$cty >= st & delta$cty < ed
+        t1 <- sort(table(delta$aid[tsel]), decreasing=T)
+        cs <- cumsum(t1)
+        ts <- cs / sum(t1) < 0.8
+        cnt <- length(ts)
+        ts <- c(TRUE, ts[-cnt])
+        core <- sum(ts)
+        tx <- c(tx, core, cnt - core)
+        ty <- c(ty, sum(t1))
+
+        fchgs <- tapply(delta$aid[tsel], delta$f[tsel], length)
+        faids <- tapply(delta$aid[tsel], delta$f[tsel], numOfUnique)
+        town <- c(town, sum(fchgs * faids) / sum(fchgs))
+
+        st <- st + 1/12
+        ed <- st + 3
+    }
+    tx <- matrix(tx, nrow=2)
+    tmod <- list(x=tx, mx=max(colSums(tx)), y=ty, my=max(ty), own=town, mo=max(town))
+    lcmn[[m]] <- tmod
+}
+
+for ( m in xmods) {
+    devon <- T
+    if (devon) pdf(paste('t/', sub('/','-', m), '-l.pdf', sep=''), width=8,height=6, onefile=FALSE, paper = "special")
+    opar <- par(no.readonly=TRUE)
+    par(mar=c(5, 4, 4, 8) + 0.1)
+    t <- lcmn[[m]]; x <- t[['x']]; mx <- t[['mx']]; y <- t[['y']]; my <- t[['my']]; own <- t[['own']]; mo <- t[['mo']];
+    #nf <- t[['nf']]
+    p <- barplot(x, main=paste('Community of', m), xlab='Months', ylab='# of authors',
+        #col=c('red', 'yellow'),
+        ylim=c(0, mx),
+        legend=c('#core', '#prph'),
+        args.legend = list(x = "topleft", cex=0.7))
+    legend('topright', legend = c('#chgs', 'owner'), col = c('red', 'blue'),
+        lty=1, cex=0.7, seg.len=1)
+    lines(p, y / my * mx, col='red', lty=2, lwd=2)
+    z <- seq(0, my, ifelse(my > 200, ceil(my / 500) * 100, 50))
+    axis(4, at=z / my * mx, labels=z, col.axis="red", cex.axis=1)
+    #mtext("# of changes", side=4, line=3, cex.lab=1, las=2, col="red")
+    lines(p, own / mo * mx, col='blue', lty=2, lwd=2)
+    z <- seq(0,floor(mo), ifelse(mo > 5, 2, 1))
+    axis(4, at=z / mo * mx, labels=z, col.axis="blue", cex.axis=1, pos=tail(p, 1) + 7)
+    #mtext(paste('ownership:', round(mo,2), round(median(own), 2)), col='blue')
+    #lines(p, nf / max(nf) * mx, col='green', lty=2, lwd=2,type='l')
+    if(devon) dev.off()
+    par(opar)
+    cor.test(y, x[1, ])
+    cor.test(y, x[2, ])
+    cor.test(x[1, ], x[2, ])
+    cor.test(own, y)
+    cor.test(own, x[1, ])
+    cor.test(own, x[2, ])
+    round(c(
+        stats::cor(y, x[1, ]),
+        stats::cor(y, x[2, ]),
+        stats::cor(x[1, ], x[2, ]),
+        stats::cor(own, y),
+        stats::cor(own, x[1, ]),
+        stats::cor(own, x[2, ])
+    ), 2)
+}
