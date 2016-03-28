@@ -289,3 +289,9 @@ for ( m in xmods) {
         stats::cor(own, x[2, ])
     ), 2)
 }
+
+
+# 
+t <- tapply(delta$cmt[sel], delta$cvsn[sel], function(x) {
+    return(length(grep('add ', x, ignore.case=T)))
+    })
