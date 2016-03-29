@@ -544,7 +544,7 @@ $ git log --no-merges  mm | grep 'Author:' | wc -l
 - how community and System evolve
 - 不同system的community的不同演化
 
-或者： 不谈evolution， 毕竟题目太大。换个： 理解开源软件贡献团队的变化性。
+或者： 不谈evolut ion， 毕竟题目太大。换个： 理解开源软件贡献团队的变化性。
 
 community
 - size
@@ -558,7 +558,12 @@ System
 - 日常维护
 
 changes数量多表示什么，数量少又表示什么？需要解释清楚。可能和#new file有关系，但不一定是在同一个版本内。
-core和peripheral各自的成分又是什么？各个subsystem之间是否有什么不同？
+core和peripheral各自的成分又是什么？相互转化存在吗，是否存在什么规律？各个subsystem之间是否有什么不同？
+
+## 开发者团队结构的变化规律（抽象级别）
+- 如何描述、量化结构
+- 有什么变化规律
+- 与该团队相联系的软件系统或模块的变化与开发者结构的变化有什么关系？若有，如何解释这样的关系？
 
 code ownership(own)
 
@@ -587,6 +592,8 @@ cifs:   ---- 0.42 ---- 0.41 0.33 0.63 (2, 8, 80)
 ide:    ---- 0.83 ---- 0.60 0.44 0.83 (5, 15, 100)
 
 for 'root' and 'drivers', positive correlation between #core and #chgs perhaps can be explained by increasing number of subsystems. Inspired by this, maybe we can identify several types of status from macro perspective, say developing, developed (or maintained). 
+
+We notice that no significant correlation between #core and #chgs. More specifical, #core is more stable than #peri. When #chgs is high, #core can be very low or , where these changes are mainly writen by a few authors; ---(Can we identify cases with high #chgs and high #core, and cases with high #chgs and low #core?)
 
 long term
 
