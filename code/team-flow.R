@@ -119,6 +119,32 @@ t[['nf']] <- nf
 #cmn[[m]][['nf']] <- nf
 #}
 
+## ages of changes
+#for (m in xmods) {
+m <- 'mm'
+sel <- getSel(m)
+ages <- tapply(delta$ftenure[sel], delta$cvsn[sel], mean)
+tint <- 3
+rates <- c(1)
+eages <- ages[1:3]
+td <- as.Date(names(ages))
+for (idx in 4:length(ages)){
+    tn <- idx - tint
+    tdelta <- as.numeric((as.Date(names(ages[idx])) - td)[1:tn] / 365)
+    eages <- c(eages, sum((ages[1:tn] + tdelta) * rates) / sum(rates))
+    rates <- c(rates * 3/4, 1)
+}
+y<-cmn[[m]][['y']];plot(y, ylim=c(0, max(y)), type='b')
+lines(eages * max(y) / max(eages), col='blue', type='b')
+lines(ages * max(y) / max(eages), col='red', type='b')
+#cor.test(eages - ages, cmn[[m]][['x']][1, ])
+#cor.test(eages - ages, cmn[[m]][['x']][2, ])
+m
+
+t[['nf']] <- nf
+#cmn[[m]][['nf']] <- nf
+#}
+
 cmn[[m]] <- t
 
 for ( m in xmods) {
@@ -291,7 +317,7 @@ for ( m in xmods) {
 }
 
 
-# 
+#
 t <- tapply(delta$cmt[sel], delta$cvsn[sel], function(x) {
     return(length(grep('add ', x, ignore.case=T)))
     })
