@@ -119,6 +119,11 @@ t[['nf']] <- nf
 #cmn[[m]][['nf']] <- nf
 #}
 
+# gini
+gn <- tapply(delta$aid[sel], delta$cvsn[sel], function(x) ineq(table(x)))
+lines(gn * mx / max(gn) / 2, col='yellow', type='b')
+
+
 ## ages of changes
 #for (m in xmods) {
 m <- 'mm'

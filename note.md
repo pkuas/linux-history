@@ -565,6 +565,12 @@ core和peripheral各自的成分又是什么？相互转化存在吗，是否存
 - 有什么变化规律
 - 与该团队相联系的软件系统或模块的变化与开发者结构的变化有什么关系？若有，如何解释这样的关系？
 
+?? 
+age小，#chgs多：大new feature，
+age小，#chgs少：小new feature，临时文件
+age大，#chgs多：重构，
+age大，#chgs少：稳定状态，
+
 code ownership(own)
 
     \#chgs & #core | #chgs & #peri | #peri & #core | owner & #chgs | owner & #core | owner & #peri
@@ -594,6 +600,13 @@ ide:    ---- 0.83 ---- 0.60 0.44 0.83 (5, 15, 100)
 for 'root' and 'drivers', positive correlation between #core and #chgs perhaps can be explained by increasing number of subsystems. Inspired by this, maybe we can identify several types of status from macro perspective, say developing, developed (or maintained). 
 
 We notice that no significant correlation between #core and #chgs. More specifical, #core is more stable than #peri. When #chgs is high, #core can be very low or , where these changes are mainly writen by a few authors; ---(Can we identify cases with high #chgs and high #core, and cases with high #chgs and low #core?)
+
+基尼系数和#chgs的正相关，和core的负相关，和peri的正相关。
+
+也可能是这样的解释：不管change多还是少，其实团队的成员可能没什么大的变化，只是在change少的时候实际上的core开发者贡献的数量也就不多，此时其core体现地不是那么的明显，而在changes数量多的时候，其core的特征就得到很好的体现了。所以，如果从这个角度来看，团队本身可能没有变，只是在不同的项目状态下有不同的呈现形式。
+
+主题：理解项目不同状态下的团队状态。项目的状态可以用changs数量和age来度量，团队的状态可以用团队结构来度量，但我想还可以更多，否则不够丰富。可能的比如，#athr, #core, #peri, gini index, new comer,------.
+
 
 long term
 
