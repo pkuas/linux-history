@@ -528,7 +528,8 @@ things are full of variety, but still represent some stability.
 For a subsystem, how authors correspond to maintainers and/or committers?
 IEEE transaction on se
 ACM trans on se methodology
-TSE, TOSEM
+TSE(IEEE Transactions on Software Engineering, IEEE T SOFTWARE ENG, 双月刊, 2.588, 1.980)
+TOSEM(ACM Transactions on Software Engineering and Methodology, ACM T SOFTW ENG METH, 季刊,  1.548, 1.269)
 
 ## Signed-off-by
 - mm has avg 3
@@ -544,7 +545,7 @@ $ git log --no-merges  mm | grep 'Author:' | wc -l
 - how community and System evolve
 - 不同system的community的不同演化
 
-或者： 不谈evolut ion， 毕竟题目太大。换个： 理解开源软件贡献团队的变化性。
+或者： 不谈evolution， 毕竟题目太大。换个： 理解开源软件贡献团队的变化性。
 
 community
 - size
@@ -606,6 +607,13 @@ We notice that no significant correlation between #core and #chgs. More specific
 也可能是这样的解释：不管change多还是少，其实团队的成员可能没什么大的变化，只是在change少的时候实际上的core开发者贡献的数量也就不多，此时其core体现地不是那么的明显，而在changes数量多的时候，其core的特征就得到很好的体现了。所以，如果从这个角度来看，团队本身可能没有变，只是在不同的项目状态下有不同的呈现形式。
 
 主题：理解项目不同状态下的团队状态。项目的状态可以用changs数量和age来度量，团队的状态可以用团队结构来度量，但我想还可以更多，否则不够丰富。可能的比如，#athr, #core, #peri, gini index, new comer,------.
+
+### new observation:
+- in most cases, weighted age of authors is greater than age of authors.(Ob1)
+- (expected age of changes - age of changes), (expected age of authors - age of authors) have positive correlation. (Ob2)
+- (expected age of changes - age of changes), (expected weighted age of authors - weighted age of authors) have positive correlation. (Ob3)
+
+Ob2 by itself suggests that new features may attract new comers, or that new features are more likely to be developed by new comers. Ob3 has the same suggestions. Combining Ob2 or Ob3 with Ob1, we can find that the former case is more often, i.e. new features attract new comers. Yet there are some cases where 
 
 
 long term

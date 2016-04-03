@@ -72,6 +72,19 @@ while (ed < 2015.917) {
 }
 
 #
+getExpected <- function(x, k = 0.5, tint = 3) {
+    rates <- c(1)
+    ex <- x[1:3]
+    td <- as.Date(names(x))
+    for (idx in 4:length(x)){
+        tn <- idx - tint
+        tdelta <- as.numeric((as.Date(names(x[idx])) - td)[1:tn] / 365)
+        ex <- c(ex, sum((x[1:tn] + tdelta) * rates) / sum(rates))
+        rates <- c(rates * k, 1)
+    }
+    names(ex) <- names(x)
+    return(ex)
+}
 cmn <- list() # community
 for (m in xmods) {
 t <- list()
@@ -129,16 +142,8 @@ lines(gn * mx / max(gn) / 2, col='yellow', type='b')
 m <- 'mm'
 sel <- getSel(m)
 ages <- tapply(delta$ftenure[sel], delta$cvsn[sel], mean)
-tint <- 3
-rates <- c(1)
-eages <- ages[1:3]
-td <- as.Date(names(ages))
-for (idx in 4:length(ages)){
-    tn <- idx - tint
-    tdelta <- as.numeric((as.Date(names(ages[idx])) - td)[1:tn] / 365)
-    eages <- c(eages, sum((ages[1:tn] + tdelta) * rates) / sum(rates))
-    rates <- c(rates * 3/4, 1)
-}
+eages <- getExpected(ages)
+dc <- eages - ages
 y<-cmn[[m]][['y']];plot(y, ylim=c(0, max(y)), type='b')
 lines(eages * max(y) / max(eages), col='blue', type='b')
 lines(ages * max(y) / max(eages), col='red', type='b')
@@ -146,6 +151,31 @@ lines(ages * max(y) / max(eages), col='red', type='b')
 #cor.test(eages - ages, cmn[[m]][['x']][2, ])
 m
 
+# age of athrs
+#for (m in xmods){
+#sel <- getSel(m)
+#devon <- F
+modmin <- tapply(delta$ctenure[sel], delta$aid[sel], min)
+waage <- tapply(delta$ctenure[sel] - modmin[delta$aid[sel]], delta$cvsn[sel], mean)
+aage <- unlist(lapply(
+    t2apply(delta$ctenure[sel] - modmin[delta$aid[sel]], delta$aid[sel], delta$cvsn[sel], mean),
+    mean))
+ewaage <- getExpected(waage)
+eaage <- getExpected(aage)
+dwa <- ewaage - waage
+da <- eaage - aage
+if (devon) pdf(paste('t/', sub('/','-', m), '.pdf', sep=''), width=8,height=6, onefile=FALSE, paper = "special")
+plot(as.Date(names(ewaage)), ewaage, type='l', lwd=2, lty=3, 
+     xlab='Dates of versions', ylab='Age(years)', col='red',
+     main=paste("Authors' mean age of each version on", m))
+lines(as.Date(names(waage)), waage, type='l', lwd=2, lty=1, col='red')
+lines(as.Date(names(eaage)), eaage, type='l', lwd=2, lty=3, col='green')
+lines(as.Date(names(aage)), aage, type='l', lwd=2, lty=1, col='green')
+legend('topleft', legend = c('EW mean', 'W mean', 'E mean', 'mean'), 
+       col = c('red', 'red', 'green', 'green'),
+       lty=c(3, 1, 3, 1), cex=1, seg.len=2, lwd=2)
+if (devon) dev.off()
+#}
 t[['nf']] <- nf
 #cmn[[m]][['nf']] <- nf
 #}
