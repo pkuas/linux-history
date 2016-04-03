@@ -566,7 +566,7 @@ core和peripheral各自的成分又是什么？相互转化存在吗，是否存
 - 有什么变化规律
 - 与该团队相联系的软件系统或模块的变化与开发者结构的变化有什么关系？若有，如何解释这样的关系？
 
-?? 
+??
 age小，#chgs多：大new feature，
 age小，#chgs少：小new feature，临时文件
 age大，#chgs多：重构，
@@ -598,7 +598,7 @@ nfs:    ---- 0.75 0.28 0.73 0.39 0.71 (5, 15, 100)
 cifs:   ---- 0.42 ---- 0.41 0.33 0.63 (2, 8, 80)
 ide:    ---- 0.83 ---- 0.60 0.44 0.83 (5, 15, 100)
 
-for 'root' and 'drivers', positive correlation between #core and #chgs perhaps can be explained by increasing number of subsystems. Inspired by this, maybe we can identify several types of status from macro perspective, say developing, developed (or maintained). 
+for 'root' and 'drivers', positive correlation between #core and #chgs perhaps can be explained by increasing number of subsystems. Inspired by this, maybe we can identify several types of status from macro perspective, say developing, developed (or maintained).
 
 We notice that no significant correlation between #core and #chgs. More specifical, #core is more stable than #peri. When #chgs is high, #core can be very low or , where these changes are mainly writen by a few authors; ---(Can we identify cases with high #chgs and high #core, and cases with high #chgs and low #core?)
 
@@ -613,7 +613,35 @@ We notice that no significant correlation between #core and #chgs. More specific
 - (expected age of changes - age of changes), (expected age of authors - age of authors) have positive correlation. (Ob2)
 - (expected age of changes - age of changes), (expected weighted age of authors - weighted age of authors) have positive correlation. (Ob3)
 
-Ob2 by itself suggests that new features may attract new comers, or that new features are more likely to be developed by new comers. Ob3 has the same suggestions. Combining Ob2 or Ob3 with Ob1, we can find that the former case is more often, i.e. new features attract new comers. Yet there are some cases where 
+Ob2 by itself suggests that new features may attract new comers, or that new features are more likely to be developed by new comers. Ob3 has the same suggestions. Combining Ob2 or Ob3 with Ob1, we can find that the former case is more often, i.e. new features attract new comers. Yet there are some cases where weighted age of authors is less than non-weighted.
+
+#### Argu: Why don't use  # of new files and # of new comers to tackle this problem?
+- for both metrics,
+correlation between # new files and # of new athrs
+
+mm 0.16, 0.25,
+usb 0.12, 0.39,
+scsi 0.72, ***, (大值)
+ide 0.06, 0.70
+mips 0.34, 0.016
+arm 0.58, ***
+x86 0.32, 0.057
+power 0.49, ***
+xfs -0.076, 0.60
+btrfs 0.30, 0.064
+nfs 0.11, 0.44
+cifs 0.10, 0.47
+ext4 0.05, 0.77
+
+-
+mod, dc and dwa, dc and da
+mm, 0.25 0.068, 0.196 0.16
+usb 0.25 0.069, 0.10 0.47
+scsi, 0.66 ***, 0.55 ***
+ide, 0.28 0.047, 0.28 0.05
+mips, 0.22 0.118, 0.375 ***
+arm, 0.52 ***, 0.58 ***
+x86,
 
 
 long term

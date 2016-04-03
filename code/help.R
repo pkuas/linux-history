@@ -10,6 +10,8 @@ library('lsa')
 library(stringr)
 library("entropy", lib.loc="~/R/x86_64-redhat-linux-gnu-library/3.1")
 
+t1 <- tapply(delta$tenure[sel], delta$cvsn[sel], numOfZero)
+t2 <- tapply(delta$ftenure[sel], delta$cvsn[sel], numOfZero)
 
 #/store1/chenqy/linuxhistory/linux
 # check mapping between email and name

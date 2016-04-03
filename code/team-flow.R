@@ -155,23 +155,23 @@ m
 #for (m in xmods){
 #sel <- getSel(m)
 #devon <- F
-modmin <- tapply(delta$ctenure[sel], delta$aid[sel], min)
-waage <- tapply(delta$ctenure[sel] - modmin[delta$aid[sel]], delta$cvsn[sel], mean)
+modmin <- tapply(delta$cty[sel], delta$aid[sel], min)
+waage <- tapply(delta$cty[sel] - modmin[delta$aid[sel]], delta$cvsn[sel], mean)
 aage <- unlist(lapply(
-    t2apply(delta$ctenure[sel] - modmin[delta$aid[sel]], delta$aid[sel], delta$cvsn[sel], mean),
+    t2apply(delta$cty[sel] - modmin[delta$aid[sel]], delta$aid[sel], delta$cvsn[sel], mean),
     mean))
 ewaage <- getExpected(waage)
 eaage <- getExpected(aage)
 dwa <- ewaage - waage
 da <- eaage - aage
 if (devon) pdf(paste('t/', sub('/','-', m), '.pdf', sep=''), width=8,height=6, onefile=FALSE, paper = "special")
-plot(as.Date(names(ewaage)), ewaage, type='l', lwd=2, lty=3, 
+plot(as.Date(names(ewaage)), ewaage, type='l', lwd=2, lty=3,
      xlab='Dates of versions', ylab='Age(years)', col='red',
      main=paste("Authors' mean age of each version on", m))
 lines(as.Date(names(waage)), waage, type='l', lwd=2, lty=1, col='red')
 lines(as.Date(names(eaage)), eaage, type='l', lwd=2, lty=3, col='green')
 lines(as.Date(names(aage)), aage, type='l', lwd=2, lty=1, col='green')
-legend('topleft', legend = c('EW mean', 'W mean', 'E mean', 'mean'), 
+legend('topleft', legend = c('EW mean', 'W mean', 'E mean', 'mean'),
        col = c('red', 'red', 'green', 'green'),
        lty=c(3, 1, 3, 1), cex=1, seg.len=2, lwd=2)
 if (devon) dev.off()
