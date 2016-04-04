@@ -72,11 +72,11 @@ while (ed < 2015.917) {
 }
 
 #
-getExpected <- function(x, k = 0.5, tint = 3) {
+getExpected <- function(x, k = 0, tint = 1) {
     rates <- c(1)
-    ex <- x[1:3]
+    ex <- x[1:tint]
     td <- as.Date(names(x))
-    for (idx in 4:length(x)){
+    for (idx in (1+tint):length(x)){
         tn <- idx - tint
         tdelta <- as.numeric((as.Date(names(x[idx])) - td)[1:tn] / 365)
         ex <- c(ex, sum((x[1:tn] + tdelta) * rates) / sum(rates))
@@ -139,11 +139,32 @@ lines(gn * mx / max(gn) / 2, col='yellow', type='b')
 
 ## ages of changes
 #for (m in xmods) {
-m <- 'mm'
+#m <- 'mm'
 sel <- getSel(m)
 ages <- tapply(delta$ftenure[sel], delta$cvsn[sel], mean)
 eages <- getExpected(ages)
 dc <- eages - ages
+#}
+# cmn[[m]][['ages']] <- ages
+# cmn[[m]][['dc']] <- dc
+#for(m in xmods) {
+#sel <- getSel(m)
+#devon <- F
+ages <- cmn[[m]][['ages']]
+eages <- ages + cmn[[m]][['dc']]
+nf <- cmn[[m]][['nf']]
+if (devon) pdf(paste('t/', sub('/','-', m), '.pdf', sep=''), width=8,height=6, onefile=FALSE, paper = "special")
+plot(as.Date(names(eages)), eages, type='l', lwd=2, lty=3,
+     xlab='Dates of versions', ylab='Age(years)', col='red',
+     main=paste("Changes' mean age of each version on", m))
+lines(as.Date(names(ages)), ages, type='l', lwd=2, lty=1, col='red')
+lines(as.Date(names(ages)), eages - ages, type='l', lwd=2, lty=1, col='blue')
+lines(as.Date(names(nf)), nf * max(eages)/max(nf)/2, type='l', lwd=2, lty=1)
+legend('topleft', legend = c('E mean', 'mean', '#new file'),
+       col = c('red', 'red', 'black'),
+       lty=c(3, 1, 1), cex=1, seg.len=2, lwd=2)
+if (devon) dev.off()
+
 y<-cmn[[m]][['y']];plot(y, ylim=c(0, max(y)), type='b')
 lines(eages * max(y) / max(eages), col='blue', type='b')
 lines(ages * max(y) / max(eages), col='red', type='b')
@@ -155,15 +176,29 @@ m
 #for (m in xmods){
 #sel <- getSel(m)
 #devon <- F
-modmin <- tapply(delta$cty[sel], delta$aid[sel], min)
-waage <- tapply(delta$cty[sel] - modmin[delta$aid[sel]], delta$cvsn[sel], mean)
+modmin <- tapply(delta$ty[sel], delta$aid[sel], min)
+waage <- tapply(delta$ty[sel] - modmin[delta$aid[sel]], delta$cvsn[sel], mean)
 aage <- unlist(lapply(
-    t2apply(delta$cty[sel] - modmin[delta$aid[sel]], delta$aid[sel], delta$cvsn[sel], mean),
+    t2apply(delta$ty[sel] - modmin[delta$aid[sel]], delta$aid[sel], delta$cvsn[sel], mean),
     mean))
 ewaage <- getExpected(waage)
 eaage <- getExpected(aage)
 dwa <- ewaage - waage
 da <- eaage - aage
+#cmn[[m]][['waage']] <- waage
+#cmn[[m]][['aage']] <- aage
+#cmn[[m]][['dwa']] <- dwa
+#cmn[[m]][['da']] <- da
+#}
+for (m in xmods){
+sel <- getSel(m)
+devon <- F
+t <- cmn[[m]]; 
+waage <- cmn[[m]][['waage']];
+aage <- cmn[[m]][['aage']];
+ewaage <- waage + cmn[[m]][['dwa']]
+eaage <- aage + cmn[[m]][['da']]
+na <- cmn[[m]][['na']] # new athr/ new comer
 if (devon) pdf(paste('t/', sub('/','-', m), '.pdf', sep=''), width=8,height=6, onefile=FALSE, paper = "special")
 plot(as.Date(names(ewaage)), ewaage, type='l', lwd=2, lty=3,
      xlab='Dates of versions', ylab='Age(years)', col='red',
@@ -171,13 +206,11 @@ plot(as.Date(names(ewaage)), ewaage, type='l', lwd=2, lty=3,
 lines(as.Date(names(waage)), waage, type='l', lwd=2, lty=1, col='red')
 lines(as.Date(names(eaage)), eaage, type='l', lwd=2, lty=3, col='green')
 lines(as.Date(names(aage)), aage, type='l', lwd=2, lty=1, col='green')
+lines(as.Date(names(na)), na * max(ewaage)/max(na)/2, type='l', lwd=2, lty=1)
 legend('topleft', legend = c('EW mean', 'W mean', 'E mean', 'mean'),
        col = c('red', 'red', 'green', 'green'),
        lty=c(3, 1, 3, 1), cex=1, seg.len=2, lwd=2)
 if (devon) dev.off()
-#}
-t[['nf']] <- nf
-#cmn[[m]][['nf']] <- nf
 #}
 
 cmn[[m]] <- t
@@ -356,3 +389,86 @@ for ( m in xmods) {
 t <- tapply(delta$cmt[sel], delta$cvsn[sel], function(x) {
     return(length(grep('add ', x, ignore.case=T)))
     })
+
+
+# file changes cos sim
+getpcos <- function(x) {
+    r <- nrow(x)
+    idx <- seq(0, (r - 2) * r, r) + seq(2, r, 1)
+    return(x[idx])
+}
+sel <- getSel(m)
+t <- table(delta$f[sel], delta$cvsn[sel])
+x <- cosine(t)
+y <- t; y[which(t>0)] <- 1
+y <- cosine(y)
+sp <- stats::cor(t, method='spearman')
+i <- nrow(x)
+plot(x[, i], type='b')
+lines(y[, i], type='b', col='red')
+lines(sp[, i], type='b', col='blue')
+abline(a=0.5, b=0)
+i <- i - 1
+m <- xmods[i]
+sel <- getSel(m)
+t <- cmn[[m]]
+y <- t[['y']]
+plot(y, type='b', ylim=c(0, max(y)))
+ages <- t[['ages']]
+dc <- getExpected(ages, k=0.5) - ages
+z <- dc - min(dc)
+plot(y, type='b', ylim=c(0, max(y)))
+lines(z/max(z)*max(y) / 2, type='b', col='blue'); abline(a=-min(dc)/max(z)*max(y) / 2, b=0)
+i <- i+ 1
+
+# #chgs, #new, #new12, #old ---> structure
+fvsn <- tapply((1:nrow(delta)), delta$f, function(x) {
+    return(delta$cvsn[x[which.min(delta$ftenure[x])]])
+    })
+versions$d <- as.Date(versions$rd, '%d %b %Y')
+vsns <- as.character(sort(versions$d, decreasing=F))
+getPvsn <- function(now) {
+    return(vsns[which(vsns == now) - 1])
+}
+for (m in xmods) {    
+    sel <- getSel(m)
+#    fvcnt <- tapply(delta$f[sel], delta$cvsn[sel], table)
+    vvcnt <- tapply(delta$f[sel], delta$cvsn[sel], function(x){
+        return(table(fvsn[x]))
+        })
+    n0 <- n1 <- n2 <- nold <- c()
+
+    for (v in names(vvcnt)[-1:-4]) {
+        tv <- vvcnt[[v]]
+        tn <- length(tv)
+        tn0 <- ifelse(is.na(tv[v]), 0, tv[v])
+        n0 <- c(n0, tn0)
+        p1v <- getPvsn(v)
+        tn1 <- ifelse(is.na(tv[p1v]), 0, tv[p1v])
+        n1 <- c(n1, tn1)
+        p2v <- getPvsn(p1v)
+        tn2 <- ifelse(is.na(tv[p2v]), 0, tv[p2v])
+        n2 <- c(n2, tn2)
+        nold <- c(nold, sum(tv) - tn0 - tn1 - tn2)
+    }
+    # n0 <- ifelse(is.na(n0), 0, n0)
+    # n1 <- ifelse(is.na(n1), 0, n1)
+    # n2 <- ifelse(is.na(n2), 0, n2)
+    # nold <- ifelse(is.na(nold), 0, nold)
+    names(n1) <- names(n2) <- names(nold) <- names(vvcnt)[-1:-4]
+    cmn[[m]][['n0']] <- n0
+    cmn[[m]][['n1']] <- n1
+    cmn[[m]][['n2']] <- n2
+    cmn[[m]][['nold']] <- nold
+
+}
+t <- cmn[[m]]
+drp <- -1:-4
+n12 <- t[['n1']] + t[['n0']] + t[['n2']]
+nold <- t[['nold']] 
+ns <- n12 + nold
+n12 <- n12 / ns
+nold <- nold / ns
+#md <- lm(x[2, ][drp] ~ y[drp] + nf[drp] + n1 + n2 + nold, data=t)
+md <- lm(t[['x']][1, ][drp] ~ ns + n12 + nold)
+summary(md)

@@ -619,20 +619,6 @@ Ob2 by itself suggests that new features may attract new comers, or that new fea
 - for both metrics,
 correlation between # new files and # of new athrs
 
-mm 0.16, 0.25,
-usb 0.12, 0.39,
-scsi 0.72, ***, (大值)
-ide 0.06, 0.70
-mips 0.34, 0.016
-arm 0.58, ***
-x86 0.32, 0.057
-power 0.49, ***
-xfs -0.076, 0.60
-btrfs 0.30, 0.064
-nfs 0.11, 0.44
-cifs 0.10, 0.47
-ext4 0.05, 0.77
-
 -
 mod, dc and dwa, dc and da
 mm, 0.25 0.068, 0.196 0.16
