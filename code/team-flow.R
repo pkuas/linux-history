@@ -471,16 +471,16 @@ for (m in xmods) {
     aout <- c(0)
     for (v in names(ta)[-1]){
         p1v <- getPvsn(v)
-        #aprev <- ta[[p1v]]
-        aprev <- c(ta[[p1v]], ta[[getPvsn(p1v)]]) # last one may be null
+        aprev <- ta[[p1v]]
+        #aprev <- c(ta[[p1v]], ta[[getPvsn(p1v)]]) # last one may be null
         ain <- c(ain, sum(!ta[[v]] %in% aprev))
         aout <- c(aout, sum(!aprev %in% ta[[v]]))
     }
     names(ain) <- names(aout) <- names(ta)
-    # cmn[[m]][['ain']] <- ain
-    # cmn[[m]][['aout']] <- aout
-    cmn[[m]][['ain2']] <- ain
-    cmn[[m]][['aout2']] <- aout
+    cmn[[m]][['ain']] <- ain
+    cmn[[m]][['aout']] <- aout
+    #cmn[[m]][['ain2']] <- ain
+    #cmn[[m]][['aout2']] <- aout
 }
 # core and peri in and out
 for (m in xmods) {
@@ -507,6 +507,18 @@ for (m in xmods) {
     cmn[[m]][['aout2']] <- aout
 }
 
+# structure in terms of LTC and freshman
+for (m in xmods) {
+    sel <- getSel(m)
+    modmin <- tapply(delta$ty[sel], delta$aid[sel], min)
+    res <- t2apply(delta$ty[sel] - modmin[delta$aid[sel]], delta$aid[sel], delta$cvsn[sel], function(x) return(max(x, na.rm=T)))
+    thresh <- 1
+    ltc <- unlist(lapply(res, function(x) {return(sum(x >= thresh))}))
+    fresh <- unlist(lapply(res, function(x) {return(sum(x < thresh))}))
+    cmn[[m]][['ltc']] <- ltc
+    cmn[[m]][['fresh']] <- fresh
+}
+
 t <- cmn[[m]]
 drp <- -1:-4
 n12 <- t[['n1']] + t[['n0']] + t[['n2']]
@@ -514,16 +526,34 @@ nold <- t[['nold']]
 ns <- n12 + nold
 n12 <- n12 / ns
 nold <- nold / ns
-ain <- t[['ain2']][drp]
-aout <- t[['aout2']][drp]
+ain <- t[['ain']][drp]
+aout <- t[['aout']][drp]
 xa <- as.Date(names(n12))
 plot(xa, n12, type='b', ylim=c(0, 0.6))
 lines(xa, ns / max(ns) * 0.5, col='red')
-lines(xa, aout / max(aout) * 0.5, col='blue')
+lines(xa, ain / max(aout) * 0.5, col='blue')
+lines(xa, aout / max(aout) * 0.5, col='green')
 abline(a=median(ain)/max(aout)*0.5, b=0)
 cor.test(ain, aout)
 cor.test(ain[-length(ain)], aout[-1]) # strong correlation
 cor.test(ain, n12)
+
+t <- cmn[[m]]
+drp <- -1:-4
+y <- t[['y']][drp]
+n12 <- t[['n1']] + t[['n0']] + t[['n2']]
+nold <- t[['nold']] 
+ns <- n12 + nold
+n12 <- n12 / ns
+ltc <- t[['ltc']][drp]
+fresh <- t[['fresh']][drp]
+ltcr <- ltc / (ltc + fresh)
+xa <- as.Date(names(y))
+my <- max(y)
+plot(xa, y, type='b', ylim=c(0, my))
+lines(xa, n12 * my, type='l', col='red')
+lines(xa, ltcr / max(ltcr) * 0.5 * my, type='l', col='blue')
+
 
 #md <- lm(x[2, ][drp] ~ y[drp] + nf[drp] + n1 + n2 + nold, data=t)
 md <- lm(t[['x']][1, ][drp] ~ ns + n12 + nold)
