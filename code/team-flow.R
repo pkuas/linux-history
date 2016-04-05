@@ -462,6 +462,27 @@ for (m in xmods) {
     cmn[[m]][['nold']] <- nold
 
 }
+
+# team in and out : flow
+for (m in xmods) {
+    sel <- getSel(m)
+    ta <- tapply(delta$aid[sel], delta$cvsn[sel], unique)
+    ain <- c(length(ta[[1]]))
+    aout <- c(0)
+    for (v in names(ta)[-1]){
+        p1v <- getPvsn(v)
+        #aprev <- ta[[p1v]]
+        aprev <- c(ta[[p1v]], ta[[getPvsn(p1v)]]) # last one may be null
+        ain <- c(ain, sum(!ta[[v]] %in% aprev))
+        aout <- c(aout, sum(!aprev %in% ta[[v]]))
+    }
+    names(ain) <- names(aout) <- names(ta)
+    # cmn[[m]][['ain']] <- ain
+    # cmn[[m]][['aout']] <- aout
+    cmn[[m]][['ain2']] <- ain
+    cmn[[m]][['aout2']] <- aout
+}
+
 t <- cmn[[m]]
 drp <- -1:-4
 n12 <- t[['n1']] + t[['n0']] + t[['n2']]
@@ -469,6 +490,23 @@ nold <- t[['nold']]
 ns <- n12 + nold
 n12 <- n12 / ns
 nold <- nold / ns
+ain <- t[['ain2']][drp]
+aout <- t[['aout2']][drp]
+xa <- as.Date(names(n12))
+plot(xa, n12, type='b', ylim=c(0, 0.6))
+lines(xa, ain / max(aout) * 0.5, col='red')
+lines(xa, aout / max(aout) * 0.5, col='blue')
+cor.test(ain, aout)
+cor.test(ain[-length(ain)], aout[-1]) # strong correlation
+cor.test(ain, n12)
+
 #md <- lm(x[2, ][drp] ~ y[drp] + nf[drp] + n1 + n2 + nold, data=t)
 md <- lm(t[['x']][1, ][drp] ~ ns + n12 + nold)
 summary(md)
+
+
+
+res<-scatterplot3d(n12,nold,t[['x']][1,][drp],colors='red', col.axis="blue", col.grid="lightblue",pch=16, zlim=c(0,12),xlab='x1',ylab='x2',zlab='x3', angle=55)
+res$plane3d(-nb, -nw[1,1],-nw[2,1], "solid", col="grey")
+title("Fisher")
+legend("topright", "",legend = as.expression(c(bquote(w==.(theta2.ml)), bquote(sigma^2==.(sigma2.square.ml)))))

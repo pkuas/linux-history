@@ -9,6 +9,7 @@ library(ineq)
 library('lsa')
 library(stringr)
 library("entropy", lib.loc="~/R/x86_64-redhat-linux-gnu-library/3.1")
+library(scatterplot3d)
 
 t1 <- tapply(delta$tenure[sel], delta$cvsn[sel], numOfZero)
 t2 <- tapply(delta$ftenure[sel], delta$cvsn[sel], numOfZero)
