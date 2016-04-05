@@ -482,6 +482,30 @@ for (m in xmods) {
     cmn[[m]][['ain2']] <- ain
     cmn[[m]][['aout2']] <- aout
 }
+# core and peri in and out
+for (m in xmods) {
+    sel <- getSel(m)
+    ta <- tapply(delta$aid[sel], delta$cvsn[sel], function  (x) {
+        tb <- sort(table(x), decreasing=T)
+        cs <- tb / sum(tb) >= 0.02
+        tsel <- cs#c(TRUE, cs[-length(cs)])
+        return(list(ca=names(tb[tsel]), pa=names(tb[!tsel])))
+        })
+    ain <- c(length(ta[[1]]))
+    aout <- c(0)
+    for (v in names(ta)[-1]){
+        p1v <- getPvsn(v)
+        #aprev <- ta[[p1v]]
+        aprev <- c(ta[[p1v]], ta[[getPvsn(p1v)]]) # last one may be null
+        ain <- c(ain, sum(!ta[[v]] %in% aprev))
+        aout <- c(aout, sum(!aprev %in% ta[[v]]))
+    }
+    names(ain) <- names(aout) <- names(ta)
+    # cmn[[m]][['ain']] <- ain
+    # cmn[[m]][['aout']] <- aout
+    cmn[[m]][['ain2']] <- ain
+    cmn[[m]][['aout2']] <- aout
+}
 
 t <- cmn[[m]]
 drp <- -1:-4
@@ -494,8 +518,9 @@ ain <- t[['ain2']][drp]
 aout <- t[['aout2']][drp]
 xa <- as.Date(names(n12))
 plot(xa, n12, type='b', ylim=c(0, 0.6))
-lines(xa, ain / max(aout) * 0.5, col='red')
+lines(xa, ns / max(ns) * 0.5, col='red')
 lines(xa, aout / max(aout) * 0.5, col='blue')
+abline(a=median(ain)/max(aout)*0.5, b=0)
 cor.test(ain, aout)
 cor.test(ain[-length(ain)], aout[-1]) # strong correlation
 cor.test(ain, n12)

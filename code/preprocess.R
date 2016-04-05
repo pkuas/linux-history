@@ -16,7 +16,7 @@ mySummary <- function(v) {t <- summary(v); t['Num'] <- length(v); return(t)}
 ycnt <- function(mod, dst, f=length) {
 	colnm <- c('mod', 'mmod', 'smod')[str_count(mod, '/') + 1];
 	sel <- delta[,colnm]==mod;
-	return(tapply(delta[sel, dst], delta$y[sel], f))}
+	return(tapply(delta[sel, dst], delta$cy[sel], f))}
 getSel <- function(mod) {
 	if (mod == '' | mod=='root') return(rep(TRUE, nrow(delta)))
 	colnm <- c('mod', 'mmod', 'smod')[str_count(mod, '/') + 1];
