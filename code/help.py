@@ -93,7 +93,7 @@ mpa.to_csv("./all.aliase.id.lower")
 # a simple solution using graph
 import pandas as pd
 import numpy as np
-ae_an = pd.read_table("./e.n.full", names=['ae', 'an'], sep=' ').fillna("")
+ae_an = pd.read_table("./gn.name.email", names=['ae', 'an'], sep=' ').fillna("")
 ae_an.ae = map(str.lower, ae_an.ae)
 ae_an.an = map(str.lower, ae_an.an)
 ansofae = ae_an.an.groupby(ae_an.ae).unique()
@@ -134,7 +134,7 @@ for i in range(len(belong)):
 			print e
 
 mp = pd.Series(nds2gid_mp.index[list(belong[nds2gid_mp])], index=nds2gid_mp.index)
-mp.to_csv("./all.aliase.id.networkx.full")
+mp.to_csv("./gnome.all.aliase.id.networkx.full")
 
 # get each dvpr's email domain names, dvpr is identified by gid
 def get_email_domain(em):

@@ -193,7 +193,7 @@ da <- eaage - aage
 for (m in xmods){
 sel <- getSel(m)
 devon <- F
-t <- cmn[[m]]; 
+t <- cmn[[m]];
 waage <- cmn[[m]][['waage']];
 aage <- cmn[[m]][['aage']];
 ewaage <- waage + cmn[[m]][['dwa']]
@@ -430,7 +430,7 @@ vsns <- as.character(sort(versions$d, decreasing=F))
 getPvsn <- function(now) {
     return(vsns[which(vsns == now) - 1])
 }
-for (m in xmods) {    
+for (m in xmods) {
     sel <- getSel(m)
 #    fvcnt <- tapply(delta$f[sel], delta$cvsn[sel], table)
     vvcnt <- tapply(delta$f[sel], delta$cvsn[sel], function(x){
@@ -511,10 +511,11 @@ for (m in xmods) {
 for (m in xmods) {
     sel <- getSel(m)
     modmin <- tapply(delta$ty[sel], delta$aid[sel], min)
-    res <- t2apply(delta$ty[sel] - modmin[delta$aid[sel]], delta$aid[sel], delta$cvsn[sel], function(x) return(max(x, na.rm=T)))
-    thresh <- 1
+    res <- t2apply(delta$ty[sel] - modmin[delta$aid[sel]], delta$aid[sel], delta$cvsn[sel], function(x) return(min(x, na.rm=T)))
+    thresh <- 3/12
     ltc <- unlist(lapply(res, function(x) {return(sum(x >= thresh))}))
     fresh <- unlist(lapply(res, function(x) {return(sum(x < thresh))}))
+    names(ltc) <- names(fresh) <- names(res)
     cmn[[m]][['ltc']] <- ltc
     cmn[[m]][['fresh']] <- fresh
 }
@@ -522,7 +523,7 @@ for (m in xmods) {
 t <- cmn[[m]]
 drp <- -1:-4
 n12 <- t[['n1']] + t[['n0']] + t[['n2']]
-nold <- t[['nold']] 
+nold <- t[['nold']]
 ns <- n12 + nold
 n12 <- n12 / ns
 nold <- nold / ns
@@ -542,7 +543,7 @@ t <- cmn[[m]]
 drp <- -1:-4
 y <- t[['y']][drp]
 n12 <- t[['n1']] + t[['n0']] + t[['n2']]
-nold <- t[['nold']] 
+nold <- t[['nold']]
 ns <- n12 + nold
 n12 <- n12 / ns
 ltc <- t[['ltc']][drp]
@@ -565,3 +566,85 @@ res<-scatterplot3d(n12,nold,t[['x']][1,][drp],colors='red', col.axis="blue", col
 res$plane3d(-nb, -nw[1,1],-nw[2,1], "solid", col="grey")
 title("Fisher")
 legend("topright", "",legend = as.expression(c(bquote(w==.(theta2.ml)), bquote(sigma^2==.(sigma2.square.ml)))))
+
+
+for (m in xmods){
+sel <- getSel(m)
+devon <- F
+t <- cmn[[m]];
+waage <- cmn[[m]][['waage']];
+aage <- cmn[[m]][['aage']];
+ewaage <- waage + cmn[[m]][['dwa']]
+eaage <- aage + cmn[[m]][['da']]
+na <- cmn[[m]][['na']] # new athr/ new comer
+if (devon) pdf(paste('t/', sub('/','-', m), '.pdf', sep=''), width=8,height=6, onefile=FALSE, paper = "special")
+plot(as.Date(names(ewaage)), ewaage, type='l', lwd=2, lty=3,
+     xlab='Dates of versions', ylab='Age(years)', col='red',
+     main=paste("Authors' mean age of each version on", m))
+lines(as.Date(names(waage)), waage, type='l', lwd=2, lty=1, col='red')
+lines(as.Date(names(eaage)), eaage, type='l', lwd=2, lty=3, col='green')
+lines(as.Date(names(aage)), aage, type='l', lwd=2, lty=1, col='green')
+lines(as.Date(names(na)), na * max(ewaage)/max(na)/2, type='l', lwd=2, lty=1)
+legend('topleft', legend = c('EW mean', 'W mean', 'E mean', 'mean'),
+       col = c('red', 'red', 'green', 'green'),
+       lty=c(3, 1, 3, 1), cex=1, seg.len=2, lwd=2)
+if (devon) dev.off()
+#}
+
+cmn[[m]] <- t
+
+for ( m in xmods) {
+devon <- T
+drp<- -1:-10
+ndrp <- -1:-6
+if (devon) pdf(paste('t/', sub('/','-', m), '.pdf', sep=''), width=8,height=6, onefile=FALSE, paper = "special")
+opar <- par(no.readonly=TRUE)
+par(mar=c(5, 4, 4, 8) + 0.1)
+t <- cmn[[m]]; x <- t[['x']]; mx <- t[['mx']]; y <- t[['y']]; my <- t[['my']]; own <- t[['own']]; mo <- t[['mo']];
+nf <- t[['nf']]
+n12 <- t[['n0']] + t[['n1']] + t[['n2']]
+nold <- t[['nold']]
+st <- matrix(c(t[['ltc']], t[['fresh']]), nrow=2, byrow=T)
+mst <- max(colSums(st))
+p <- barplot(st, main=paste('Community of', m), xlab='Releases', ylab='# of authors',
+    #col=c('red', 'yellow'),
+    ylim=c(0, mst),
+    legend=c('#core', '#prph'),
+    args.legend = list(x = "topleft", cex=0.7))
+legend('topright', legend = c('#chgs', 'owner'), col = c('red', 'blue'),
+    lty=1, cex=0.7, seg.len=1)
+lines(p, y / my * mst, col='red', lty=2, lwd=2)
+lines(p[-1:-4], n12 / my * mst, col='yellow', lty=2, lwd=2)
+z <- seq(0, my, ifelse(my > 200, ceil(my / 500) * 100, 50))
+axis(4, at=z / my * mst, labels=z, col.axis="red", cex.axis=1)
+#mtext("# of changes", side=4, line=3, cex.lab=1, las=2, col="red")
+#lines(p, own / mo * mst, col='blue', lty=2, lwd=2)
+#z <- seq(0,floor(mo), ifelse(mo > 5, 2, 1))
+#axis(4, at=z / mo * mst, labels=z, col.axis="blue", cex.axis=1, pos=tail(p, 1) + 7)
+#mtext(paste('ownership:', round(mo,2), round(median(own), 2)), col='blue')
+lines(p, nf / max(nf) * mst, col='green', lty=2, lwd=2,type='l')
+
+if(devon) dev.off()
+par(opar)
+
+cor.test(y[drp], st[1, ][drp])
+cor.test(y[drp], st[2, ][drp])
+cor.test(st[1, ][drp], st[2, ][drp])
+# cor.test(own[drp], y[drp])
+# cor.test(own[drp], st[1, ][drp])
+# cor.test(own[drp], st[2, ][drp])
+
+round(c(
+    stats::cor(y[drp], st[1, ][drp]),
+    stats::cor(y[drp], st[2, ][drp]),
+    stats::cor(st[1, ][drp], st[2, ][drp]),
+    stats::cor(n12[ndrp], st[1, ][drp]),
+    stats::cor(nold[ndrp], st[1, ][drp]),
+    stats::cor(n12[ndrp], st[2, ][drp]),
+    stats::cor(nold[ndrp], st[2, ][drp])
+
+#    stats::cor(own[drp], y[drp]),
+#    stats::cor(own[drp], st[1, ][drp]),
+#    stats::cor(own[drp], st[2, ][drp])
+), 2)
+}

@@ -655,3 +655,15 @@ nfs:    0.28  0.71  0.59  0.25  ----  0.35
 cifs:   0.37 ----- -0.40  0.66  0.78 -0.38
 ext4:   -0.46 0.94 -0.38  0.76  ----  0.68
 
+## discuss 2016.4.6
+
+开源软件最佳实践的度量与对比分析
+
+通过度量来帮助最佳实践。
+
+#### 对比分析：Linux kernel 和 FireFox.
+- 总体情况（基本面），如changes, loc,authors,committers.这个比较general，一般都会看。
+- 面向开发者的度量，如LTC,  new comers, 转化为LTC的比率，author转化为committer的比率。author和committer的比率。
+
+软件开发状态的dashboard，要有层次感。
+
