@@ -17,37 +17,37 @@ legend(2005, 1e6,legend=c("Lines of added code","Lines of deleted code"),cex=1,l
 dev.off();
 
 ## how num of changes, files/modules touched varys
-chgs.month.arr <- tapply(delta$aid, delta$m, length)
-tt <- max(chgs.month.arr)
-files.month.arr <- tapply(delta$f, delta$m, numOfUnique)
-mods.month.arr <- tapply(delta$mod, delta$m, numOfUnique)
-png("changes.files.mods-month.png", width=800,height=600);
-plot(as.numeric(names(chgs.month.arr)), chgs.month.arr, ylim=c(1,tt+10),main = "# of changes, files and modules touched each month",type="l",xlab="Tenure (months)",ylab="# each month", col=1);
-lines(as.numeric(names(files.month.arr)),files.month.arr, col=2);
-lines(as.numeric(names(mods.month.arr)),mods.month.arr * 100, col=3);
-legend(2010, tt,legend=c("# of changes","# of files touched", "# of modules touched * 100"),cex=1,lwd=2,col=rep(1:3),bg="white");
+t1 <- tapply(delta$aid, delta$m, length)
+tt <- max(t1)
+t2 <- tapply(delta$f, delta$m, numOfUnique)
+t3 <- tapply(delta$mod, delta$m, numOfUnique)
+pdf("changes.files.mods-month.pdf",width=8,height=6, onefile=FALSE, paper = "special");
+plot(as.numeric(names(t1)), t1, ylim=c(1,tt+10),main = "# of changes, files and modules touched each month",type="l",xlab="Tenure (months)",ylab="# each month", col=1);
+lines(as.numeric(names(t2)),t2, col=2);
+lines(as.numeric(names(t3)),t3 * 100, col=3);
+legend(2008, tt,legend=c("# of changes","# of files touched", "# of modules touched * 100"),cex=1,lwd=2,col=rep(1:3),bg="white");
 dev.off()
 
 ## how num of authors/committers/joiners/LTCs/core-committers varys
-authors.month.arr <- tapply(delta$aid, delta$m, numOfUnique) # authors
-tt <- max(authors.month.arr)
-cmtrs.month.arr <- tapply(delta$cid, delta$m, numOfUnique) # committers
+t1 <- tapply(delta$aid, delta$m, numOfUnique) # authors
+tt <- max(t1)
+t2 <- tapply(delta$cid, delta$m, numOfUnique) # committers
 tsel <- delta$tenure==0
-joiners.month.arr <- tapply(delta$aid[tsel], delta$m[tsel], numOfUnique) # joiners
+t3 <- tapply(delta$aid[tsel], delta$m[tsel], numOfUnique) # joiners
 tsel <- tsel & delta$contr3y
 tsel[is.na(tsel)] <- FALSE
-ltcs.month.arr <- tapply(delta$aid[tsel], delta$m[tsel], numOfUnique) # LTC
-ltcratio.month.arr <- ltcs.month.arr / joiners.month.arr[1:(length(joiners.month.arr) - 36 - 1)]
-png("dvprs-month.png", width=800,height=600);
-plot(as.numeric(names(authors.month.arr)), authors.month.arr, ylim=c(1,tt+10),main = "# of developers each month",type="l",xlab="Tenure (months)",ylab="# each month", col=1);
-lines(as.numeric(names(cmtrs.month.arr)),cmtrs.month.arr, col=2);
-lines(as.numeric(names(joiners.month.arr)),joiners.month.arr, col=4);
-lines(as.numeric(names(ltcs.month.arr)),ltcs.month.arr, col=3);
+t4 <- tapply(delta$aid[tsel], delta$m[tsel], numOfUnique) # LTC
+t5 <- t4 / t3[1:(length(t3) - 36 - 1)]
+pdf("dvprs-month.pdf",width=8,height=6, onefile=FALSE, paper = "special");
+plot(as.numeric(names(t1)), t1, ylim=c(1,tt+10),main = "# of developers each month",type="l",xlab="Tenure (months)",ylab="# each month", col=1);
+lines(as.numeric(names(t2)),t2, col=2);
+lines(as.numeric(names(t3)),t3, col=3);
+lines(as.numeric(names(t4)),t4, col=4);
 legend(2005, tt,legend=c("# of authors","# of committers", "# of joiners", "# of LTCs"),cex=1,lwd=2,col=rep(1:4),bg="white");
 dev.off()
-png("ltcratio-month.png", width=800,height=600)
-tt <- max(ltcratio.month.arr)
-plot(as.numeric(names(ltcratio.month.arr)), ltcratio.month.arr, ylim=c(0,tt),main = "Ratio of LTCs to joiners each month",type="l",xlab="Tenure (months)",ylab="Ratio", col=2);
+pdf("ltcratio-month.pdf", width=800,height=600)
+tt <- max(t5)
+plot(as.numeric(names(t5)), t5, ylim=c(0,tt),main = "Ratio of LTCs to joiners each month",type="l",xlab="Tenure (months)",ylab="Ratio", col=2);
 dev.off()
 
 ## how avg of files/modules touched by one person varys

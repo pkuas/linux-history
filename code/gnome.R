@@ -64,3 +64,8 @@ gn$to <- tmax[gn$aid]
 gn$tenure <- gn$ty-gn$fr;
 gn$tt <- ceiling((gn$tenure+.000001)*12); # tenure months, .000001 is used to spare, e.
 
+### LTC
+gn$contr3y <- (gn$to-gn$ty>=3) # still contrbuting 3 years later
+gn$contr3y[gn$ty > (max(gn$cty) - 3)] <- NA
+
+delta <- gn[gn$ext %in% c('c','cpp'), ]

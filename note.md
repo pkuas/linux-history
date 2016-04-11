@@ -667,3 +667,12 @@ ext4:   -0.46 0.94 -0.38  0.76  ----  0.68
 
 软件开发状态的dashboard，要有层次感。
 
+###### Community Structure Metrics
+- Current. yearly or monthly. No sliding window.
+- Historical. Full history or in the past several years. Sliding window. Based on this metrics, we can analyze growth of peripheral contributors from a macro view. 
+    + Core code athr
+    + code athr
+    + documentation
+    + bug reporters
+
+
