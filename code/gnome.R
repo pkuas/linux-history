@@ -69,3 +69,50 @@ gn$contr3y <- (gn$to-gn$ty>=3) # still contrbuting 3 years later
 gn$contr3y[gn$ty > (max(gn$cty) - 3)] <- NA
 
 delta <- gn[gn$ext %in% c('c','cpp'), ]
+
+gnrtc <- list() # ratio
+gnncc <- list() # num of cmtrs
+
+for (i in 1:length(gnprojects)) {
+	prj <- gnprojects[i]
+	st <- 2005
+	ed <- st + 3
+	x <- y <- c()
+	while(ed <= 2015.92) {
+		tsel <- delta$prj == prj & delta$m >= st & delta$m < ed
+        m <- as.character(st)
+        y[m] <- numOfUnique(delta$cid[tsel])
+        x[m] <- numOfUnique(delta$aid[tsel]) / y[m]
+        st <- st + 1/12
+        ed <- st + 3
+	}
+	gnrtc[[prj]] <- x
+	gnncc[[prj]] <- y
+}
+pdf('./a2c-in-gnome.pdf', width=8,height=6, onefile=FALSE, paper = "special")
+col <- 1:length(gnprojects)
+plot(1, type='n', xlim=c(2005, 2013), ylim=c(1, 5),
+     main='Ratio of # authors to # committers (in 3-year period) over time',
+     xlab='Moving from Jan 2005 by month', ylab='Ratio')
+for (i in 1:length(col)) lines(as.numeric(names(gnrtc[[i]])), gnrtc[[i]], col=col[i], type='l', lwd=2, lty=i)
+legend(2006, 5, legend=gnprojects,cex=1,lwd=2,lty=1:length(col),
+       col=col ,bg="white");
+# for (i in 1:length(col)) lines(as.numeric(names(rt[[i]])), rt[[i]], col=col[i], type='l', lty=2)
+# legend(2007, 27, legend=gnprojects,cex=1,lwd=1, lty=2,
+#     col=col ,bg="white",title='keep fake cmtrs');
+dev.off()
+
+
+for (i in 1:len(gnprojects)) {
+	p=gnprojects[i];
+	sel <- gn$prj == p;
+
+	na <- tapply(gn$aid[sel], gn$y[sel], nu);
+	nc <- tapply(gn$cid[sel], gn$y[sel], nu);
+
+	if(i==0) {
+    	plot(as.numeric(names(na)), na/nc, col=i,ylim=c(0, 2)) ;
+    } else {
+    	lines(as.numeric(names(na)), na/nc, col=i);
+    }
+}
