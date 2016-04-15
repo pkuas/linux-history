@@ -1183,42 +1183,44 @@ head(delta[delta$cid=='axboe@carl', c('cty', 'ce')], n=10)
 # team organization
 library('igraph', lib='/home/pkuas/R/x86_64-redhat-linux-gnu-library/3.1/')
 ## author/committer graph
-mod <- 'kernel'
-tm <- 2005
-window <- 0.5
-#while (tm < 2016) {
-	tsel <- delta$m >= tm & delta$m <= tm + window & delta$mod == mod
-	g <- graph.empty(directed = F)
-	t1 <- paste('c', delta$cid[tsel], sep='-')
-	t2 <- paste('a', delta$aid[tsel], sep='-')
-	t3 <- table(paste(t1, t2, sep='%'))
-	x <- sort(table(t1), decreasing=T)
-	y <- sort(table(t2), decreasing=T)
-	t <- c(names(x), names(y))
-	col <- c(rep('green', length(x)), rep('red', length(y)))
-	g <- add.vertices(g, length(t), attr=list(name=t, color = col))
-	e <- unlist(lapply(strsplit(names(t3), '%', ), function(x) if(!is.na(x)) return(x)))
-	g <- add.edges(g, e)
-	t <- rep(NA, length(x))
-	sel <- c(TRUE, cumsum(x[-length(x)]) / sum(x) <= 0.8)
-	t[which(sel)] <- substring(names(x[sel]), 3)
-	t <- c(t, rep(NA, length(y)))
-	z <- sqrt(c(x, y))
-	col <- rep('yellow', length(e) / 2)
-	e <- substring(e, 3)
-	ne <- length(e)
-	col[e[seq(1, ne, 2)] == e[seq(2, ne, 2)]] <- 'blue'
-	nm <- paste(mod, ' of ', tm, '~', tm + window, sep='')
-	#png(paste('a2c/', nm, '.png', sep=''), width=800, height=600)
-	plot(g, vertex.label=t, vertex.size=z/max(z)*15, edge.width=t3/max(t3)*20, edge.color=col,
-		main=nm)
-	#dev.off()
-	f <- function(x) return(exp(entropy(x)))
-	round(c(f(x), f(y), f(y) / f(x), tm), 2)
-	round(c(length(x), length(y), length(y) / length(x), sum(x)), 2)
-	tm <- tm + 0.5
-#}
+drawTeamNet <- function(mod, tm, window=3, save=F){
+    tsel <- delta$m >= tm & delta$m <= tm + window & delta$mod == mod
+    tsel <- tsel & (delta$cid %in% truecmtr)
+    g <- graph.empty(directed = F)
+    t1 <- paste('c', delta$cid[tsel], sep='-')
+    t2 <- paste('a', delta$aid[tsel], sep='-')
+    t3 <- table(paste(t1, t2, sep='%'))
+    x <- sort(table(t1), decreasing=T)
+    y <- sort(table(t2), decreasing=T)
+    t <- c(names(x), names(y))
+    col <- c(rep('green', length(x)), rep('red', length(y)))
+    g <- add.vertices(g, length(t), attr=list(name=t, color = col))
+    e <- unlist(lapply(strsplit(names(t3), '%', ), function(x) if(!is.na(x)) return(x)))
+    g <- add.edges(g, e)
+    t <- rep(NA, length(x))
+    sel <- c(TRUE, cumsum(x[-length(x)]) / sum(x) <= 0.8)
+    t[which(sel)] <- substring(names(x[sel]), 3)
+    t <- c(t, rep(NA, length(y)))
+    z <- sqrt(c(x, y))
+    col <- rep('yellow', length(e) / 2)
+    e <- substring(e, 3)
+    ne <- length(e)
+    col[e[seq(1, ne, 2)] == e[seq(2, ne, 2)]] <- 'blue'
+    nm <- paste(mod, ' of ', tm, '~', tm + window, sep='')
+    if (save) pdf(paste('t/',sub('/', '_', mod),'-net.pdf', sep=''), width=8,height=6, onefile=FALSE, paper = "special")
+    plot(g, vertex.label=t, vertex.size=z/max(z)*15, edge.width=t3/max(t3)*20, edge.color=col,
+        main=nm)
+    if (save) dev.off()
+}
 
+for (mod in mods){
+    tm <- 2005
+    window <- 1
+    while (tm < 2016) {
+        drawTeamNet(mod, tm, window, save=F)
+    	tm <- tm + 0.5
+    }
+}
 ## file/committer graph
 mod <- 'kernel'
 tm <- 2005
