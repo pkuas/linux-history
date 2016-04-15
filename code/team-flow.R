@@ -230,7 +230,7 @@ p <- barplot(x, main=paste('Community of', m), xlab='Releases', ylab='# of autho
 legend('topright', legend = c('#chgs', 'owner'), col = c('red', 'blue'),
     lty=1, cex=0.7, seg.len=1)
 lines(p, y / my * mx, col='red', lty=2, lwd=2)
-z <- seq(0, my, ifelse(my > 200, ceil(my / 500) * 100, 50))
+z <- seq(0, my, ifelse(my > 200, ceiling(my / 500) * 100, 50))
 axis(4, at=z / my * mx, labels=z, col.axis="red", cex.axis=1)
 #mtext("# of changes", side=4, line=3, cex.lab=1, las=2, col="red")
 lines(p, own / mo * mx, col='blue', lty=2, lwd=2)
@@ -279,7 +279,7 @@ p <- barplot(x, main=paste('# of authors on', m), xlab='Releases', ylab='# of au
     legend=c('Core', 'Peripheral'),
     args.legend = list(x = "topleft"))
 lines(p, y / my * mx, col='red', lty=2, lwd=2)
-z <- seq(0, my, ceil(my / 500) * 100)
+z <- seq(0, my, ceiling(my / 500) * 100)
 axis(4, at=z / my * mx, labels=z,
     col.axis="red", cex.axis=0.7)
 mtext("# of changes", side=4, line=3, cex.lab=1, las=2, col="red")
@@ -358,7 +358,7 @@ for ( m in xmods) {
     legend('topright', legend = c('#chgs', 'owner'), col = c('red', 'blue'),
         lty=1, cex=0.7, seg.len=1)
     lines(p, y / my * mx, col='red', lty=2, lwd=2)
-    z <- seq(0, my, ifelse(my > 200, ceil(my / 500) * 100, 50))
+    z <- seq(0, my, ifelse(my > 200, ceiling(my / 500) * 100, 50))
     axis(4, at=z / my * mx, labels=z, col.axis="red", cex.axis=1)
     #mtext("# of changes", side=4, line=3, cex.lab=1, las=2, col="red")
     lines(p, own / mo * mx, col='blue', lty=2, lwd=2)
@@ -615,7 +615,7 @@ legend('topright', legend = c('#chgs', 'owner'), col = c('red', 'blue'),
     lty=1, cex=0.7, seg.len=1)
 lines(p, y / my * mst, col='red', lty=2, lwd=2)
 lines(p[-1:-4], n12 / my * mst, col='yellow', lty=2, lwd=2)
-z <- seq(0, my, ifelse(my > 200, ceil(my / 500) * 100, 50))
+z <- seq(0, my, ifelse(my > 200, ceiling(my / 500) * 100, 50))
 axis(4, at=z / my * mst, labels=z, col.axis="red", cex.axis=1)
 #mtext("# of changes", side=4, line=3, cex.lab=1, las=2, col="red")
 #lines(p, own / mo * mst, col='blue', lty=2, lwd=2)
