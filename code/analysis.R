@@ -1183,7 +1183,7 @@ head(delta[delta$cid=='axboe@carl', c('cty', 'ce')], n=10)
 # team organization
 library('igraph', lib='/home/pkuas/R/x86_64-redhat-linux-gnu-library/3.1/')
 ## author/committer graph
-drawTeamNet <- function(mod, tm, window=3, save=F){
+drawTeamNet <- function(mod, tm, window=3, save=F, ext='png'){
     tsel <- delta$m >= tm & delta$m <= tm + window & delta$mod == mod
     tsel <- tsel & (delta$cid %in% truecmtr)
     g <- graph.empty(directed = F)
@@ -1206,19 +1206,23 @@ drawTeamNet <- function(mod, tm, window=3, save=F){
     e <- substring(e, 3)
     ne <- length(e)
     col[e[seq(1, ne, 2)] == e[seq(2, ne, 2)]] <- 'blue'
-    nm <- paste(mod, ' of ', tm, '~', tm + window, sep='')
-    if (save) pdf(paste('t/',sub('/', '_', mod),'-net.pdf', sep=''), width=8,height=6, onefile=FALSE, paper = "special")
+    nm <- paste(mod, ' in ', tm, '~', tm + window, sep='')
+    if (save)
+    if (save){
+        if (ext=='pdf') {pdf(paste('t/',sub('/', '_', mod),'-net.pdf', sep=''), width=8,height=6, onefile=FALSE, paper = "special")}
+        else {png(paste('t/',sub('/', '_', mod),'-net.png', sep=''),  width=800, height=600);}
+    }
     plot(g, vertex.label=t, vertex.size=z/max(z)*15, edge.width=t3/max(t3)*20, edge.color=col,
         main=nm)
     if (save) dev.off()
 }
 
-for (mod in mods){
+for (mod in mods){# if (mod == 'drivers') next
     tm <- 2005
     window <- 1
     while (tm < 2016) {
-        drawTeamNet(mod, tm, window, save=F)
-    	tm <- tm + 0.5
+        drawTeamNet(mod, tm, window, save=F, ext='png')
+        tm <- tm + 1
     }
 }
 ## file/committer graph
