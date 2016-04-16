@@ -1207,7 +1207,6 @@ drawTeamNet <- function(mod, tm, window=3, save=F, ext='png'){
     ne <- length(e)
     col[e[seq(1, ne, 2)] == e[seq(2, ne, 2)]] <- 'blue'
     nm <- paste(mod, ' in ', tm, '~', tm + window, sep='')
-    if (save)
     if (save){
         if (ext=='pdf') {pdf(paste('t/',sub('/', '_', mod),'-net.pdf', sep=''), width=8,height=6, onefile=FALSE, paper = "special")}
         else {png(paste('t/',sub('/', '_', mod),'-net.png', sep=''),  width=800, height=600);}
