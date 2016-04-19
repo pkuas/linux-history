@@ -3,7 +3,12 @@ maintainer <- read.table('/store1/chenqy/linuxhistory/file-maintainers',
     col.names=c("file","mn","me"),
     colClasses=c(rep("character", 3)));
 
-maintainer$mid <- idmp[tolower(maintainer$me)]
+maintainer$mid <- idmp[tolower(maintainer$me)] 
+tsel <- which(is.na(maintainer$mid))	# there are some NAs
+maintainer$mid[tsel] <- idmp[tolower(maintainer$mn[tsel])]
+tsel <- which(is.na(maintainer$mid))
+maintainer$mid[tsel] <- tolower(maintainer$mn[tsel])
+
 
 maintainer$mod <- sub("/.*", "", maintainer$file,perl=T,useBytes=T); # first module
 maintainer$mod[maintainer$file == '*/*/*/vexpress*'] <- '*vexpress*'
@@ -30,10 +35,10 @@ for (m in mods) {
 	t <- t[t %in% truecmtr]
 	t <- t[!t %in% mt]
 	t <- t[t != 'linus torvalds']
-	t1 <- getIdNameOrEmail(t, 'email')
-	names(t1) <- getIdNameOrEmail(t, 'name')
+	#t1 <- getIdNameOrEmail(t, 'email')
+	#names(t1) <- getIdNameOrEmail(t, 'name')
 	print(m)
-	print(t1)
+	print(t)
 }
 t <- unique(unlist(tc))
 t <- t[t %in% truecmtr]

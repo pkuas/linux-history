@@ -3,29 +3,25 @@
 ### "drivers"
 ```
  [1] "ben skeggs"                     "thellstrom@vmware.com"         
- [3] "eric anholt"                    "jdelvare@suse.de"              
- [5] "rclark@redhat.com"              "daniel vetter"                 
- [7] "johan hedberg"                  "goldwyn rodrigues"             
- [9] "coelho@ti.com"                  "james liao"                    
-[11] "frederic weisbecker"            "u.kleine-koenig@pengutronix.de"
-[13] "bryan wu"                       "p_gortmaker@yahoo.com"         
-[15] "dominik brodowski"              "jsarha@ti.com"                 
-[17] "rdreier@cisco.com"              "ricardo neri"                  
-[19] "john linville"    
+ [3] "eric anholt"                    "rclark@redhat.com"             
+ [5] "goldwyn rodrigues"              "coelho@ti.com"                 
+ [7] "james liao"                     "frederic weisbecker"           
+ [9] "u.kleine-koenig@pengutronix.de" "bryan wu"                      
+[11] "p_gortmaker@yahoo.com"          "dominik brodowski"             
+[13] "jsarha@ti.com"                  "rdreier@cisco.com"             
+[15] "ricardo neri"                   "john linville"                 
 ```
 ### "arch"
 ```
-[1] "[agraf@suse.de]"       "p_gortmaker@yahoo.com" "marcelo tosatti"      
-[4] "21cnbao@gmail.com"     "daniel vetter"         "frederic weisbecker"  
-[7] "markos chandras"       "jon medhurst"         
+[1] "p_gortmaker@yahoo.com" "marcelo tosatti"       "frederic weisbecker"  
+[4] "markos chandras"       "jon medhurst"         
 ```
 ### "net"
 ```
-[1] "johan hedberg"         "p_gortmaker@yahoo.com" "paul moore"           
+[1] "p_gortmaker@yahoo.com"
 ```
 ### "sound"
 ```
-[1] "daniel vetter"
 ```
 ### "fs"
 ```
@@ -34,8 +30,8 @@
 ```
 ### "kernel"
 ```
-[1] "paul moore"            "frederic weisbecker"   "p_gortmaker@yahoo.com"
-[4] "marcelo tosatti"       "jon medhurst"         
+[1] "frederic weisbecker"   "p_gortmaker@yahoo.com" "marcelo tosatti"      
+[4] "jon medhurst"         
 ```
 ### "mm"
 ```
@@ -43,18 +39,15 @@
 ```
 ### 把以上结果并起来，得到整个系统的非maintainer的committer
 ```
-[1] "[agraf@suse.de]"                "p_gortmaker@yahoo.com"         
- [3] "marcelo tosatti"                "21cnbao@gmail.com"             
- [5] "daniel vetter"                  "frederic weisbecker"           
- [7] "markos chandras"                "jon medhurst"                  
- [9] "ricardo neri"                   "ben skeggs"                    
-[11] "thellstrom@vmware.com"          "eric anholt"                   
-[13] "jdelvare@suse.de"               "rclark@redhat.com"             
-[15] "johan hedberg"                  "goldwyn rodrigues"             
-[17] "coelho@ti.com"                  "james liao"                    
-[19] "u.kleine-koenig@pengutronix.de" "bryan wu"                      
-[21] "dominik brodowski"              "jsarha@ti.com"                 
-[23] "rdreier@cisco.com"              "john linville"                 
-[25] "fdmanana@gmail.com"             "loghyr@primarydata.com"        
-[27] "paul moore"                    
+ [1] "p_gortmaker@yahoo.com"          "marcelo tosatti"               
+ [3] "frederic weisbecker"            "markos chandras"               
+ [5] "jon medhurst"                   "ricardo neri"                  
+ [7] "ben skeggs"                     "thellstrom@vmware.com"         
+ [9] "eric anholt"                    "rclark@redhat.com"             
+[11] "goldwyn rodrigues"              "coelho@ti.com"                 
+[13] "james liao"                     "u.kleine-koenig@pengutronix.de"
+[15] "bryan wu"                       "dominik brodowski"             
+[17] "jsarha@ti.com"                  "rdreier@cisco.com"             
+[19] "john linville"                  "fdmanana@gmail.com"            
+[21] "loghyr@primarydata.com"                      
 ```
