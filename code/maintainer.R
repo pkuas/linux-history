@@ -22,3 +22,20 @@ for (m in mods) {
     print(m)
     print(t)
 }
+
+# 不区分maintainer为哪个模块的maintainer，而把其当作整个系统的maintainer
+mt <- unique(maintainer$mid)
+for (m in mods) {
+	t <- tc[[m]]
+	t <- t[t %in% truecmtr]
+	t <- t[!t %in% mt]
+	t <- t[t != 'linus torvalds']
+	print(m)
+	print(t)
+}
+t <- unique(unlist(tc))
+t <- t[t %in% truecmtr]
+t <- t[!t %in% mt]
+t <- t[t != 'linus torvalds']
+print(t)
+

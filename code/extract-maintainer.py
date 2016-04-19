@@ -4,7 +4,9 @@ import re
 fn = '/store1/chenqy/linuxhistory/linux/MAINTAINERS'
 mid = '^M:\s+'
 fid = '^F:\s+'
-lines = open(fn, 'r').readlines()
+fin = open(fn, 'r')
+lines = fin.readlines()
+fin.close()
 out = ''
 stline = 127 # ignore previous lines
 edline = len(lines)
