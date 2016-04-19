@@ -104,3 +104,17 @@ write.table(data.frame(e=c(t$ae, t$ce), n=c(t$an, t$cn)), file="./e.n.full",
 sel <- delta$mmod %in% c('drivers/android', 'drivers/bluetooth', 'drivers/cpufreq', 'arch/ia64', 'arch/powerpc', 'archk/m68k', 'arch/microblaze', 'arch/mips')
 tsel <- sel & delta$ty >= 2014
 tapply((1:numofdeltas)[tsel], delta$mmod[tsel], function(x) {a <- numOfUnique(delta$aid[x]); c <- numOfUnique(delta$cid[x]); aa <- exp(entropy(table(delta$aid[x]))); ac<-exp(entropy(table(delta$cid[x]))); return(round(c(a, c, aa, ac, a/aa, c/ac, a/c, aa/ac), 2))})
+
+getIdNameOrEmail <- function(uid, type='email') {
+    if (length(uid) > 1) return(unlist(Map(getIdNameOrEmail, uid, type)))
+    sel <- idmp == uid
+    nms <- names(idmp[sel])
+    idx <- grep('@', nms)
+    idx <- c(idx, grep(' at ', nms))
+    if (type=='email' & length(idx) >= 1) {
+        return(nms[idx[1]])
+    }
+    i <- 1:length(nms)
+    i <- i[-idx]
+    return(ifelse(length(i) >= 1, nms[i[1]], nms[1]))
+}

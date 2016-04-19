@@ -30,8 +30,10 @@ for (m in mods) {
 	t <- t[t %in% truecmtr]
 	t <- t[!t %in% mt]
 	t <- t[t != 'linus torvalds']
+	t1 <- getIdNameOrEmail(t, 'email')
+	names(t1) <- getIdNameOrEmail(t, 'name')
 	print(m)
-	print(t)
+	print(t1)
 }
 t <- unique(unlist(tc))
 t <- t[t %in% truecmtr]
