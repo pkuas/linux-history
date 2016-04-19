@@ -1,4 +1,4 @@
-## 2015的非maintainer的committer
+## 2015各个模块的非maintainer的committer
 ## 不区分maintainer为哪个模块的maintainer，而把其当作整个系统的maintainer.
 ### "drivers"
 ```
