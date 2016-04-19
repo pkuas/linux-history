@@ -1,5 +1,5 @@
 ## 2015各个模块的非maintainer的committer
-## 不区分maintainer为哪个模块的maintainer，而把其当作整个系统的maintainer.
+## 不区分maintainer为哪个模块的maintainer，而把其当作整个系统的maintainer.在区分maintainer所属模块的情况下，见[这里](./cmtr-not-maintainer.md).
 ### "drivers"
 ```
  [1] "ben skeggs"                     "thellstrom@vmware.com"         
