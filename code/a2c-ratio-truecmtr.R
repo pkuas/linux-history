@@ -471,3 +471,124 @@ for (m in mods) {
     }
     df[[m]] <- tdf
 }
+
+
+
+# gabbage
+tmods <- c('drivers/net', 'drivers/staging', 'drivers/media', 'net/ipv4', 'net/mac80211', 'drivers/gpu',
+    'drivers/usb',  'drivers/scsi', 'net/ipv6', 'net/netfilter', 'net/core', 'net/sched', 'net/wireless',
+    'sound/soc', 'sound/usb', 'sound/pci', 'drivers/video', 'drivers/acpi', 'net/bluetooth', 'net/sunrpc',
+    'sound/core', 'sound/oss', 'sound/isa')
+library('xtable')
+mrt <- list() # ratio
+mnc <- list() # num of cmtrs
+mna <- list()
+
+for (i in 1:length(tmods)) {
+    mod <- tmods[i]
+    st <- 2005
+    ed <- st + 3
+    x <- y <- z <- c()
+    while(ed <= 2015.917) {
+        tsel <- delta$mmod == mod & delta$m >= st & delta$m < ed
+        m <- as.character(st)
+        t1 <- unique(delta$cid[tsel])
+        t1 <- t1[t1 %in% truecmtr]
+        t2 <- unique(delta$aid[tsel])
+        y[m] <- length(t1)
+        z[m] <- length(t2)
+        x[m] <- z[m] / y[m]
+        st <- st + 1/12
+        ed <- st + 3
+    }
+    mrt[[mod]] <- x
+    mnc[[mod]] <- y
+    mna[[mod]] <- z
+}
+# for i in drivers drivers/net drivers/staging drivers/media net/mac80211 net sound drivers/gpu drivers/usb drivers/scsi net/ipv4 net/ipv6 net/netfilter net/wireless sound/soc sound/usb sound/pci kernel mm fs drivers/video drivers/acpi net/core net/sched net/bluetooth net/sunrpc sound/core sound/oss sound/isa arch;
+# do
+# nf=`find $i | wc -l` ;
+# loc=`find $i | xargs wc  -l  | tail -n 1` ;
+# nd=`ll $i|grep "^d"|wc -l` ;
+# echo $i, $nf, $loc, $nd ;
+# done > cqy.tmp.ign
+# cat cqy.tmp.ign
+#drivers drivers/net drivers/staging drivers/media net/mac80211 net sound drivers/gpu drivers/usb drivers/scsi net/ipv4 net/ipv6 net/netfilter net/wireless sound/soc sound/usb sound/pci kernel mm fs drivers/video drivers/acpi net/core net/sched net/bluetooth net/sunrpc sound/core sound/oss sound/isa arch
+tamods <- c('drivers', 'drivers/net', 'drivers/staging', 'drivers/media', 'net/mac80211', 'net', 'sound', 'drivers/gpu', 'drivers/usb', 'drivers/scsi', 'net/ipv4', 'net/ipv6', 'net/netfilter', 'net/wireless', 'sound/soc', 'sound/usb', 'sound/pci', 'kernel', 'mm', 'fs', 'drivers/video', 'drivers/acpi', 'net/core', 'net/sched', 'net/bluetooth', 'net/sunrpc', 'sound/core', 'sound/oss', 'sound/isa', 'arch')
+tn  <- length(tamods)
+td <- data.frame(mod=tamods)
+td$na2 <- td$na1 <- td$na0 <- 0
+td$nc2 <- td$nc1 <- td$nc0 <- 0
+td$rt2 <- td$rt1 <- td$rt0 <- 0
+#td$nsub <- td$loc <- td$nf <- 0
+for (i in 1:length(tamods)){
+    m <- tamods[i]
+    if (str_count(m, '/') == 0){
+        x <- trt[[m]] * tnc[[m]]
+        td$na0[i] <- x[1]
+        td$na1[i] <- median(x, na.rm=TRUE)
+        td$na2[i] <- tail(x, 1)
+        td$nc0[i] <- tnc[[m]][1]
+        td$nc1[i] <- median(tnc[[m]], na.rm=TRUE)
+        td$nc2[i] <- tail(tnc[[m]], 1)
+        td$rt0[i] <- trt[[m]][1]
+        td$rt1[i] <- median(trt[[m]], na.rm=TRUE)
+        td$rt2[i] <- tail(trt[[m]], 1)
+    } else {
+        x <- mrt[[m]] * mnc[[m]]
+        td$na0[i] <- x[1]
+        td$na1[i] <- median(x, na.rm=TRUE)
+        td$na2[i] <- tail(x, 1)
+        td$nc0[i] <- mnc[[m]][1]
+        td$nc1[i] <- median(mnc[[m]], na.rm=TRUE)
+        td$nc2[i] <- tail(mnc[[m]], 1)
+        td$rt0[i] <- mrt[[m]][1]
+        td$rt1[i] <- median(mrt[[m]], na.rm=TRUE)
+        td$rt2[i] <- tail(mrt[[m]], 1)
+    }
+}
+x <- 'drivers, 20400, 1300782, 126
+drivers/net, 3408, 130933, 27
+drivers/staging, 2025, 947093, 44
+drivers/media, 2139, 1053471, 13
+net/mac80211, 78, 61080, 0
+net, 1675, 912541, 58
+sound, 1919, 916824, 21
+drivers/gpu, 2323, 1311866, 4
+drivers/usb, 726, 464484, 22
+drivers/scsi, 825, 890998, 33
+net/ipv4, 136, 90970, 1
+net/ipv6, 104, 59551, 1
+net/netfilter, 215, 90583, 2
+net/wireless, 42, 36449, 0
+sound/soc, 817, 385175, 32
+sound/usb, 107, 37521, 7
+sound/pci, 405, 274228, 25
+kernel, 344, 250672, 14
+mm, 107, 112484, 1
+fs, 1858, 1162143, 71
+drivers/video, 606, 355369, 4
+drivers/acpi, 280, 140342, 3
+net/core, 41, 43320, 0
+net/sched, 67, 36894, 0
+net/bluetooth, 57, 53903, 4
+net/sunrpc, 63, 41543, 2
+sound/core, 101, 44496, 2
+sound/oss, 79, 41085, 1
+sound/isa, 97, 40755, 11
+arch, 17385, 484689, 31
+'
+con <- textConnection(x)
+x <- read.csv(con, header=FALSE, col.names=c('mod', 'nf', 'loc', 'nd'))
+td <- merge(td, x, by='mod')
+td$a <- paste(td$na0, td$na1, td$na2, sep=', ')
+td$c <- paste(td$nc0, td$nc1, td$nc2, sep=', ')
+td$rt <- paste(round(td$rt0, 2), round(td$rt1, 2), round(td$rt2, 2), sep=', ')
+td$code <- paste(td$nf, td$loc, round(td$loc / td$nc2, 2), sep=', ')
+td$own <- ''
+xshow <- c('mod', 'a', 'c', 'rt', 'code', 'nd', 'own')
+rownames(td) <- td$mod
+print(xtable(td[tamods, xshow], align='ll|r|r|r|r|r|l', caption='Classification of modules: beginning, median, ending'),
+    hline.after=c(-1, 0, 1:nrow(td), which(tamods %in% c('net/mac80211', 'sound/pci'))),
+    include.rownames=FALSE, include.colnames =TRUE,
+    caption.placement='top')
